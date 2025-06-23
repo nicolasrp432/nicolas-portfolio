@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
+import Layout from './components/layout/Layout.jsx';
+import Home from './pages/Home.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 function App() {
   // Scroll to top on page change
@@ -22,4 +22,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
