@@ -218,11 +218,11 @@ const Projects = () => {
   const projectsData = [
     {
       id: 1,
-      title: 'E-commerce Dashboard',
-      description: 'Panel de administración para tienda online con análisis de datos y gestión de productos.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-      github: 'https://github.com',
-      live: 'https://example.com',
+      title: 'El Costurero',
+      description: 'Tienda online de costura y confección de ropa.',
+      image: '/costurero.png',
+      github: 'https://github.com/nicolasrp432/Costurero',
+      live: 'https://costurero.vercel.app/',
       tech: ['React', 'TypeScript', 'Tailwind'],
       category: 'web',
     },
