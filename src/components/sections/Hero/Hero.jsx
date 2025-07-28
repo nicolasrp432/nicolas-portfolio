@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaArrowDown } from 'react-icons/fa';
+import { Boxes } from '../../ui/background-boxes';
 
 const HeroContainer = styled.section`
   height: 100vh;
@@ -9,30 +10,7 @@ const HeroContainer = styled.section`
   align-items: center;
   position: relative;
   overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,126,95,0.1) 0%, rgba(255,94,125,0.05) 70%, rgba(26,26,26,0) 100%);
-    z-index: -1;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -150px;
-    left: -150px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(254,180,123,0.1) 0%, rgba(255,126,95,0.05) 70%, rgba(26,26,26,0) 100%);
-    z-index: -1;
-  }
+  background: var(--bg-primary);
 `;
 
 const HeroContent = styled.div`
@@ -148,6 +126,7 @@ const Hero = () => {
   
   return (
     <HeroContainer>
+      <Boxes />
       <HeroContent>
         <HeroTitle
           initial={{ opacity: 0, y: 20 }}
