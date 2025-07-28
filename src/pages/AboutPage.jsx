@@ -1,6 +1,6 @@
 import React from 'react';
 import About from '../components/sections/About/About.jsx';
-import { Boxes } from '/components/ui/background-boxes.tsx';
+import { Boxes } from '../components/ui/background-boxes.tsx';
 
 const AboutPage = () => {
   return (
