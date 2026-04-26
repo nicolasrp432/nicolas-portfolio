@@ -1,420 +1,420 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { 
-  FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt, 
-  FaSass, FaFigma, FaNpm, FaDocker
-} from 'react-icons/fa';
-import { 
-  SiTypescript, SiNextdotjs, SiRedux, SiTailwindcss, 
-  SiGraphql, SiJest, SiWebpack, SiFirebase
-} from 'react-icons/si';
+import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 
-const SkillsContainer = styled.section`
-  padding: 8rem 0;
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const CARD = 68;
+const MAX_SCROLL = 2500;
+
+const SKILLS = [
+  { name: 'HTML5',       icon: 'https://cdn.simpleicons.org/html5/E34F26' },
+  { name: 'CSS3',        icon: 'https://cdn.simpleicons.org/css3/1572B6' },
+  { name: 'JavaScript',  icon: 'https://cdn.simpleicons.org/javascript/F7DF1E' },
+  { name: 'TypeScript',  icon: 'https://cdn.simpleicons.org/typescript/3178C6' },
+  { name: 'React',       icon: 'https://cdn.simpleicons.org/react/61DAFB' },
+  { name: 'Next.js',     icon: 'https://cdn.simpleicons.org/nextdotjs/white' },
+  { name: 'Styled',      icon: 'https://cdn.simpleicons.org/styledcomponents/DB7093' },
+  { name: 'Framer',      icon: 'https://cdn.simpleicons.org/framer/0055FF' },
+  { name: 'Vite',        icon: 'https://cdn.simpleicons.org/vite/646CFF' },
+  { name: 'Claude',      icon: 'https://cdn.simpleicons.org/anthropic/white' },
+  { name: 'Gemini',      icon: 'https://cdn.simpleicons.org/googlegemini/8E75B2' },
+  { name: 'n8n',         icon: 'https://cdn.simpleicons.org/n8n/FF6D5B' },
+  { name: 'Git',         icon: 'https://cdn.simpleicons.org/git/F05032' },
+  { name: 'VS Code',     icon: 'https://cdn.simpleicons.org/visualstudiocode/007ACC' },
+  { name: 'Docker',      icon: 'https://cdn.simpleicons.org/docker/2496ED' },
+  { name: 'Figma',       icon: 'https://cdn.simpleicons.org/figma/F24E1E' },
+  { name: 'Linux',       icon: 'https://cdn.simpleicons.org/linux/FCC624' },
+  { name: 'Premiere',    icon: 'https://cdn.simpleicons.org/adobepremierepro/9999FF' },
+  { name: 'After FX',    icon: 'https://cdn.simpleicons.org/adobeaftereffects/9999FF' },
+  { name: 'Photoshop',   icon: 'https://cdn.simpleicons.org/adobephotoshop/31A8FF' },
+];
+
+
+
+const TOTAL = SKILLS.length;
+const lerp = (a, b, t) => a * (1 - t) + b * t;
+
+// ─── Styled Components ────────────────────────────────────────────────────────
+
+const SkillsSection = styled.section`
+  padding: var(--space-3xl) 0;
+  background: var(--dark-bg);
   position: relative;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  max-width: none;
+  margin: 0;
+`;
+
+const SectionHeader = styled.div`
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+  padding: 0 5%;
+`;
+
+const H2 = styled(motion.h2)`
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0.5rem 0 0;
+`;
+
+const Stage = styled.div`
+  position: relative;
+  width: 100%;
+  height: 600px;
   overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: -200px;
-    left: -200px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(254,180,123,0.08) 0%, rgba(255,126,95,0.04) 70%, rgba(26,26,26,0) 100%);
-    z-index: 0;
-  }
+  background: var(--surface-1);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  cursor: default;
 `;
 
-const SkillsContent = styled.div`
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-`;
-
-const SectionTitle = styled(motion.h2)`
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -10px;
-    width: 50px;
-    height: 4px;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    border-radius: 2px;
-    transform: translateX(-50%);
-  }
-`;
-
-const SectionSubtitle = styled(motion.p)`
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 4rem;
-`;
-
-const SkillsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4rem;
-  
-  @media (max-width: 992px) {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-`;
-
-const SkillsCategory = styled.div`
+const InnerStage = styled.div`
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
-const CategoryTitle = styled(motion.h3)`
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  position: relative;
-  display: inline-block;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -8px;
-    width: 40px;
-    height: 3px;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    border-radius: 2px;
-  }
-`;
-
-const SkillsItems = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 2rem;
-`;
-
-const SkillItem = styled(motion.div)`
+const FrontFace = styled.div`
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: center;
+  gap: 6px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: border-color 0.2s;
 `;
 
-const SkillIcon = styled.div`
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: ${({ color }) => color || 'var(--text-primary)'};
-  transition: var(--transition);
-  
-  &:hover {
-    transform: translateY(-5px);
-  }
-`;
-
-const SkillName = styled.span`
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-`;
-
-const ProgressBars = styled.div`
-  margin-top: 3rem;
-`;
-
-const ProgressItem = styled(motion.div)`
-  margin-bottom: 2rem;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-const ProgressHeader = styled.div`
+const BackFace = styled.div`
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.8rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
 `;
 
-const ProgressTitle = styled.h4`
-  font-size: 1rem;
-  font-weight: 500;
+const ScrollHint = styled(motion.p)`
+  text-align: center;
+  margin-top: var(--space-lg);
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
 `;
 
-const ProgressValue = styled.span`
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+const CenterText = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  width: min(280px, 55%);
+  transition: opacity 0.4s ease;
 `;
 
-const ProgressBarContainer = styled.div`
-  width: 100%;
-  height: 8px;
-  background-color: #333;
-  border-radius: 4px;
-  overflow: hidden;
+const BigTitle = styled.h3`
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 0.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
-const ProgressBarFill = styled(motion.div)`
-  height: 100%;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-  border-radius: 4px;
-  width: ${({ value }) => `${value}%`};
+const CenterSubtitle = styled.p`
+  font-family: var(--font-mono);
+  font-size: clamp(0.62rem, 1.2vw, 0.75rem);
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  margin: 0;
+  line-height: 1.5;
 `;
+
+// ─── FlipCard ─────────────────────────────────────────────────────────────────
+
+function FlipCard({ skill, target }) {
+  return (
+    <motion.div
+      animate={{
+        x: target.x,
+        y: target.y,
+        rotate: target.rotation,
+        scale: target.scale,
+        opacity: target.opacity,
+      }}
+      transition={{ type: 'spring', stiffness: 40, damping: 15 }}
+      style={{
+        position: 'absolute',
+        width: CARD,
+        height: CARD,
+        transformStyle: 'preserve-3d',
+        perspective: '1000px',
+        cursor: 'pointer',
+      }}
+    >
+      <motion.div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          transformStyle: 'preserve-3d',
+        }}
+        transition={{ duration: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
+        whileHover={{ rotateY: 180 }}
+      >
+        <FrontFace>
+          <img
+            src={skill.icon}
+            alt={skill.name}
+            width={36}
+            height={36}
+            style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.08))' }}
+          />
+        </FrontFace>
+        <BackFace>
+          <span style={{
+            fontSize: '0.6rem',
+            fontFamily: 'var(--font-mono)',
+            color: 'var(--color-code)',
+            textAlign: 'center',
+            lineHeight: 1.3,
+          }}>
+            {skill.name}
+          </span>
+        </BackFace>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 const Skills = () => {
-  const technicalSkills = [
-    { name: 'HTML5', icon: <FaHtml5 />, color: '#E34F26' },
-    { name: 'CSS3', icon: <FaCss3Alt />, color: '#1572B6' },
-    { name: 'JavaScript', icon: <FaJs />, color: '#F7DF1E' },
-    { name: 'TypeScript', icon: <SiTypescript />, color: '#3178C6' },
-    { name: 'React', icon: <FaReact />, color: '#61DAFB' },
-    { name: 'Redux', icon: <SiRedux />, color: '#764ABC' },
-    { name: 'Next.js', icon: <SiNextdotjs />, color: '#FFFFFF' },
-    { name: 'Node.js', icon: <FaNodeJs />, color: '#339933' },
-    { name: 'SASS', icon: <FaSass />, color: '#CC6699' },
-    { name: 'Tailwind', icon: <SiTailwindcss />, color: '#06B6D4' },
-    { name: 'GraphQL', icon: <SiGraphql />, color: '#E10098' },
-    { name: 'Jest', icon: <SiJest />, color: '#C21325' },
-  ];
-  
-  const toolsSkills = [
-    { name: 'Git', icon: <FaGitAlt />, color: '#F05032' },
-    { name: 'Figma', icon: <FaFigma />, color: '#F24E1E' },
-    { name: 'npm', icon: <FaNpm />, color: '#CB3837' },
-    { name: 'Webpack', icon: <SiWebpack />, color: '#8DD6F9' },
-    { name: 'Docker', icon: <FaDocker />, color: '#2496ED' },
-    { name: 'Firebase', icon: <SiFirebase />, color: '#FFCA28' },
-  ];
-  
-  const expertiseAreas = [
-    { title: 'Frontend Development', value: 95 },
-    { title: 'Responsive Design', value: 90 },
-    { title: 'UI/UX Implementation', value: 85 },
-    { title: 'Performance Optimization', value: 80 },
-    { title: 'Backend Integration', value: 75 },
-  ];
-  
+  const [introPhase, setIntroPhase] = useState('scatter');
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [textVisible, setTextVisible] = useState(false);
+  const stageRef = useRef(null);
+
+  // Measure stage dimensions
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        setContainerSize({ width: entry.contentRect.width, height: entry.contentRect.height });
+      }
+    });
+    observer.observe(el);
+    setContainerSize({ width: el.offsetWidth, height: el.offsetHeight });
+    return () => observer.disconnect();
+  }, []);
+
+  // Virtual scroll (captured inside the stage)
+  const virtualScroll = useMotionValue(0);
+  const scrollRef = useRef(0);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const handleWheel = e => {
+      e.preventDefault();
+      const next = Math.min(Math.max(scrollRef.current + e.deltaY, 0), MAX_SCROLL);
+      scrollRef.current = next;
+      virtualScroll.set(next);
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [virtualScroll]);
+
+  // Morph: circle → arc (scroll 0–600)
+  const morphProgress = useTransform(virtualScroll, [0, 600], [0, 1]);
+  const smoothMorph = useSpring(morphProgress, { stiffness: 40, damping: 20 });
+
+  // Scroll-driven arc rotation (scroll 600–2500)
+  const scrollRotate = useTransform(virtualScroll, [600, 2500], [0, 360]);
+  const smoothRotate = useSpring(scrollRotate, { stiffness: 40, damping: 20 });
+
+  // Mouse parallax
+  const mouseX = useMotionValue(0);
+  const smoothMouseX = useSpring(mouseX, { stiffness: 30, damping: 20 });
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const handle = e => {
+      const rect = el.getBoundingClientRect();
+      const norm = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseX.set(norm * 60);
+    };
+    el.addEventListener('mousemove', handle);
+    return () => el.removeEventListener('mousemove', handle);
+  }, [mouseX]);
+
+  // Derived values for render loop
+  const [morphVal, setMorphVal] = useState(0);
+  const [rotateVal, setRotateVal] = useState(0);
+  const [parallaxVal, setParallaxVal] = useState(0);
+
+  useEffect(() => {
+    const u1 = smoothMorph.on('change', setMorphVal);
+    const u2 = smoothRotate.on('change', setRotateVal);
+    const u3 = smoothMouseX.on('change', setParallaxVal);
+    return () => { u1(); u2(); u3(); };
+  }, [smoothMorph, smoothRotate, smoothMouseX]);
+
+  // Intro sequence: scatter → line → circle
+  useEffect(() => {
+    const t1 = setTimeout(() => setIntroPhase('line'), 400);
+    const t2 = setTimeout(() => setIntroPhase('circle'), 1800);
+    const t3 = setTimeout(() => setTextVisible(true), 2400);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, []);
+
+  // Stable random scatter positions
+  const scatter = useMemo(() => SKILLS.map(() => ({
+    x: (Math.random() - 0.5) * 1200,
+    y: (Math.random() - 0.5) * 700,
+    rotation: (Math.random() - 0.5) * 180,
+    scale: 0.6,
+    opacity: 0,
+  })), []);
+
   return (
-    <SkillsContainer id="skills">
-      <SkillsContent>
-        <SectionTitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+    <SkillsSection id="skills">
+      <Container>
+
+        {/* HEADER */}
+        <SectionHeader>
+          <motion.p
+            className="eyebrow"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            / stack
+          </motion.p>
+          <H2
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            Con qué construyo
+          </H2>
+        </SectionHeader>
+
+        {/* STAGE */}
+        <Stage ref={stageRef}>
+          <InnerStage>
+            {/* CENTER TEXT — visible in circle phase, fades as cards morph to arc */}
+            <CenterText style={{ opacity: textVisible ? Math.max(0, 1 - morphVal * 1.5) : 0 }}>
+              <BigTitle>Mi Stack</BigTitle>
+              <CenterSubtitle>// hover sobre las cartas para explorar</CenterSubtitle>
+            </CenterText>
+
+            {SKILLS.map((skill, i) => {
+              let target = { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1 };
+
+              if (introPhase === 'scatter') {
+                target = scatter[i];
+
+              } else if (introPhase === 'line') {
+                const spacing = 76;
+                const totalW = TOTAL * spacing;
+                target = {
+                  x: i * spacing - totalW / 2,
+                  y: 0,
+                  rotation: 0,
+                  scale: 1,
+                  opacity: 1,
+                };
+
+              } else {
+                // Circle → Arc morph
+                const isMobile = containerSize.width < 768;
+                const minDim = Math.min(containerSize.width, containerSize.height);
+
+                // A. Circle position
+                const circleR = Math.min(minDim * 0.32, 210);
+                const cAngle = (i / TOTAL) * 360;
+                const cRad = (cAngle * Math.PI) / 180;
+                const circlePos = {
+                  x: Math.cos(cRad) * circleR,
+                  y: Math.sin(cRad) * circleR,
+                  rotation: cAngle + 90,
+                };
+
+                // B. Arc position
+                const baseR = Math.min(containerSize.width, containerSize.height * 1.5);
+                const arcR = baseR * (isMobile ? 1.4 : 1.0);
+                const apexY = containerSize.height * 0.28;
+                const arcCenterY = apexY + arcR;
+                const spread = isMobile ? 100 : 130;
+                const startAngle = -90 - spread / 2;
+                const step = spread / (TOTAL - 1);
+                const scrollProgress = Math.min(Math.max(rotateVal / 360, 0), 1);
+                const boundedRot = -scrollProgress * spread * 0.8;
+                const arcAngle = startAngle + i * step + boundedRot;
+                const arcRad = (arcAngle * Math.PI) / 180;
+                const arcPos = {
+                  x: Math.cos(arcRad) * arcR + parallaxVal,
+                  y: Math.sin(arcRad) * arcR + arcCenterY,
+                  rotation: arcAngle + 90,
+                  scale: isMobile ? 1.3 : 1.6,
+                };
+
+                // C. Interpolate
+                target = {
+                  x: lerp(circlePos.x, arcPos.x, morphVal),
+                  y: lerp(circlePos.y, arcPos.y, morphVal),
+                  rotation: lerp(circlePos.rotation, arcPos.rotation, morphVal),
+                  scale: lerp(1, arcPos.scale, morphVal),
+                  opacity: 1,
+                };
+              }
+
+              return <FlipCard key={skill.name} skill={skill} target={target} />;
+            })}
+          </InnerStage>
+        </Stage>
+
+        {/* HINT */}
+        <ScrollHint
+          animate={{ opacity: morphVal > 0.6 ? 0 : 1 }}
+          transition={{ duration: 0.4 }}
         >
-          Mis Habilidades
-        </SectionTitle>
-        
-        <SectionSubtitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Tecnologías y herramientas que domino para crear experiencias web excepcionales
-        </SectionSubtitle>
-        
-        <SkillsGrid>
-          <SkillsCategory>
-            <CategoryTitle
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Tecnologías
-            </CategoryTitle>
-            
-            <SkillsItems>
-              {technicalSkills.map((skill, index) => (
-                <SkillItem
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.1 * index }}
-                >
-                  <SkillIcon color={skill.color}>
-                    {skill.icon}
-                  </SkillIcon>
-                  <SkillName>{skill.name}</SkillName>
-                </SkillItem>
-              ))}
-            </SkillsItems>
-            
-            <CategoryTitle
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{ marginTop: '3rem' }}
-            >
-              Herramientas
-            </CategoryTitle>
-            
-            <SkillsItems>
-              {toolsSkills.map((skill, index) => (
-                <SkillItem
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.1 * index + 0.3 }}
-                >
-                  <SkillIcon color={skill.color}>
-                    {skill.icon}
-                  </SkillIcon>
-                  <SkillName>{skill.name}</SkillName>
-                </SkillItem>
-              ))}
-            </SkillsItems>
-          </SkillsCategory>
-          
-          <SkillsCategory>
-            <CategoryTitle
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Áreas de Especialización
-            </CategoryTitle>
-            
-            <ProgressBars>
-              {expertiseAreas.map((area, index) => (
-                <ProgressItem
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.1 * index }}
-                >
-                  <ProgressHeader>
-                    <ProgressTitle>{area.title}</ProgressTitle>
-                    <ProgressValue>{area.value}%</ProgressValue>
-                  </ProgressHeader>
-                  <ProgressBarContainer>
-                    <ProgressBarFill
-                      value={area.value}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${area.value}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.8, delay: 0.2 * index }}
-                    />
-                  </ProgressBarContainer>
-                </ProgressItem>
-              ))}
-            </ProgressBars>
-            
-            <CategoryTitle
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{ marginTop: '3rem' }}
-            >
-              Soft Skills
-            </CategoryTitle>
-            
-            <ProgressBars>
-              <ProgressItem
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <ProgressHeader>
-                  <ProgressTitle>Trabajo en Equipo</ProgressTitle>
-                  <ProgressValue>95%</ProgressValue>
-                </ProgressHeader>
-                <ProgressBarContainer>
-                  <ProgressBarFill
-                    value={95}
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '95%' }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </ProgressBarContainer>
-              </ProgressItem>
-              
-              <ProgressItem
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <ProgressHeader>
-                  <ProgressTitle>Comunicación</ProgressTitle>
-                  <ProgressValue>90%</ProgressValue>
-                </ProgressHeader>
-                <ProgressBarContainer>
-                  <ProgressBarFill
-                    value={90}
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '90%' }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                  />
-                </ProgressBarContainer>
-              </ProgressItem>
-              
-              <ProgressItem
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <ProgressHeader>
-                  <ProgressTitle>Resolución de Problemas</ProgressTitle>
-                  <ProgressValue>92%</ProgressValue>
-                </ProgressHeader>
-                <ProgressBarContainer>
-                  <ProgressBarFill
-                    value={92}
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '92%' }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
-                  />
-                </ProgressBarContainer>
-              </ProgressItem>
-              
-              <ProgressItem
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <ProgressHeader>
-                  <ProgressTitle>Adaptabilidad</ProgressTitle>
-                  <ProgressValue>88%</ProgressValue>
-                </ProgressHeader>
-                <ProgressBarContainer>
-                  <ProgressBarFill
-                    value={88}
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '88%' }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.8 }}
-                  />
-                </ProgressBarContainer>
-              </ProgressItem>
-            </ProgressBars>
-          </SkillsCategory>
-        </SkillsGrid>
-      </SkillsContent>
-    </SkillsContainer>
+          // hover & scroll inside to explore
+        </ScrollHint>
+
+      </Container>
+    </SkillsSection>
   );
 };
 

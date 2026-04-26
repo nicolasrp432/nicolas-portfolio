@@ -14,12 +14,13 @@ const NotFoundContainer = styled.div`
 `;
 
 const NotFoundTitle = styled(motion.h1)`
+  font-family: var(--font-heading);
   font-size: 8rem;
   margin-bottom: 1rem;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  
+
   @media (max-width: 768px) {
     font-size: 5rem;
   }
@@ -44,16 +45,18 @@ const NotFoundText = styled(motion.p)`
 const HomeButton = styled(motion.div)`
   a {
     display: inline-block;
-    padding: 1rem 2rem;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+    padding: 0.75rem 1.75rem;
+    background: var(--gradient-primary);
     color: white;
-    border-radius: 50px;
-    font-weight: 500;
+    border-radius: var(--radius-md);
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.9rem;
     transition: var(--transition);
-    
+
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(255, 126, 95, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 126, 95, 0.25);
     }
   }
 `;

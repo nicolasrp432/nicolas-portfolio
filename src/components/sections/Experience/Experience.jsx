@@ -1,42 +1,122 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FaBriefcase, FaGraduationCap, FaCalendarAlt, FaMapMarkerAlt } from 'react-icons/fa';
+import { useState, Suspense, Component } from 'react';
 
-const ExperienceContainer = styled.section`
-  padding: 8rem 0;
-  background-color: #1c1c1c;
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -200px;
-    right: -200px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,94,125,0.08) 0%, rgba(255,126,95,0.04) 70%, rgba(26,26,26,0) 100%);
-    z-index: 0;
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
   }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Gallery Error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ 
+          position: 'absolute', 
+          inset: 0, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          color: '#ff7e5f',
+          background: 'rgba(0,0,0,0.8)',
+          zIndex: 10,
+          padding: '2rem',
+          textAlign: 'center'
+        }}>
+          <div>
+            <h3>Error al cargar la galería 3D</h3>
+            <p>{this.state.error?.message || "Error desconocido"}</p>
+            <button onClick={() => window.location.reload()} style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              background: '#ff7e5f',
+              border: 'none',
+              borderRadius: '4px',
+              color: 'white',
+              cursor: 'pointer'
+            }}>
+              Reintentar
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaBriefcase, FaGraduationCap, FaCalendarAlt, FaMapMarkerAlt, FaMouse } from 'react-icons/fa';
+import InfiniteGallery from '../../ui/InfiniteGallery';
+
+// ─── Gallery images (tech / coding themed) ───────────────────────────────────
+
+const GALLERY_IMAGES = [
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+  { src: '/fotonico.jpg', alt: 'code' },
+];
+
+// ─── Styled components ────────────────────────────────────────────────────────
+
+const Section = styled.section`
+  position: relative;
+  min-height: 100vh;
+  background: var(--dark-bg);
+  overflow: hidden;
 `;
 
-const ExperienceContent = styled.div`
+const GalleryBg = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.55;
+`;
+
+const EdgeVignette = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom,  var(--dark-bg) 0%,  transparent 18%),
+    linear-gradient(to top,     var(--dark-bg) 0%,  transparent 18%),
+    linear-gradient(to right,   var(--dark-bg) 0%,  transparent 12%),
+    linear-gradient(to left,    var(--dark-bg) 0%,  transparent 12%);
+`;
+
+const Content = styled.div`
+  position: relative;
+  z-index: 2;
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
+  padding: 8rem 0 6rem;
+
+  @media (max-width: 768px) {
+    padding: 5rem 0 4rem;
+  }
 `;
 
 const SectionTitle = styled(motion.h2)`
-  font-size: 2.5rem;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.5rem);
   margin-bottom: 1rem;
   text-align: center;
-  position: relative;
   display: inline-block;
-  
+  position: relative;
+
   &::after {
     content: '';
     position: absolute;
@@ -44,405 +124,439 @@ const SectionTitle = styled(motion.h2)`
     bottom: -10px;
     width: 50px;
     height: 4px;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+    background: var(--gradient-primary);
     border-radius: 2px;
     transform: translateX(-50%);
   }
 `;
 
 const SectionSubtitle = styled(motion.p)`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
   text-align: center;
-  max-width: 700px;
-  margin: 0 auto 3rem;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
 `;
 
-const TabsContainer = styled(motion.div)`
+const SectionIntro = styled.div`
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+`;
+
+const AnimatedIntro = styled(motion.p)`
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-style: italic;
+  opacity: 0.85;
+`;
+
+const TitleWrap = styled.div`
+  text-align: center;
+  margin-bottom: 2.5rem;
+`;
+
+const Tabs = styled(motion.div)`
   display: flex;
   justify-content: center;
+  gap: 0.5rem;
   margin-bottom: 3rem;
-  border-bottom: 1px solid #333;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    gap: 0.35rem;
+    margin-bottom: 2rem;
+  }
 `;
 
 const Tab = styled.button`
-  padding: 1rem 2rem;
-  background: transparent;
-  color: ${({ active }) => active ? 'var(--accent-gradient-1)' : 'var(--text-secondary)'};
-  border: none;
-  font-size: 1.1rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  min-height: 44px;
+  background: ${({ $active }) => $active ? 'rgba(255,126,95,0.15)' : 'rgba(21,21,21,0.7)'};
+  border: 1px solid ${({ $active }) => $active ? 'rgba(255,126,95,0.5)' : 'rgba(42,42,42,0.8)'};
+  border-radius: var(--radius-md);
+  color: ${({ $active }) => $active ? 'var(--accent-primary)' : 'var(--text-secondary)'};
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
   cursor: pointer;
   transition: var(--transition);
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: ${({ active }) => active ? '100%' : '0'};
-    height: 3px;
-    background: ${({ active }) => active ? 'linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2))' : 'transparent'};
-    transition: var(--transition);
-  }
-  
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
   &:hover {
-    color: var(--accent-gradient-1);
-  }
-  
-  @media (max-width: 768px) {
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
+    border-color: rgba(255,126,95,0.4);
+    color: var(--accent-primary);
+    background: rgba(255,126,95,0.1);
   }
 `;
 
-const TabIcon = styled.span`
-  margin-right: 0.5rem;
-  font-size: 1.2rem;
-  vertical-align: middle;
+const CardGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+
+  @media (max-width: 992px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
 `;
 
-const TimelineContainer = styled(motion.div)`
-  position: relative;
-  max-width: 800px;
-  margin: 0 auto;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20px;
-    height: 100%;
-    width: 2px;
-    background: linear-gradient(to bottom, var(--accent-gradient-1), var(--accent-gradient-2));
-    
-    @media (min-width: 768px) {
-      left: 50%;
-      transform: translateX(-50%);
-    }
+const Card = styled(motion.div)`
+  background: rgba(15, 15, 15, 0.82);
+  border: 1px solid rgba(42, 42, 42, 0.85);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: rgba(255, 126, 95, 0.35);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+    transform: translateY(-4px);
   }
 `;
 
-const TimelineItem = styled(motion.div)`
-  position: relative;
-  margin-bottom: 3rem;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-  
-  @media (min-width: 768px) {
-    width: 50%;
-    margin-left: ${({ position }) => position === 'right' ? '50%' : '0'};
-    padding-left: ${({ position }) => position === 'right' ? '3rem' : '0'};
-    padding-right: ${({ position }) => position === 'left' ? '3rem' : '0'};
-    text-align: ${({ position }) => position === 'left' ? 'right' : 'left'};
-  }
-`;
-
-const TimelineDot = styled.div`
-  position: absolute;
-  top: 0;
-  left: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+const CardIcon = styled.div`
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 126, 95, 0.12);
+  border: 1px solid rgba(255, 126, 95, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1.2rem;
-  z-index: 2;
-  
-  @media (min-width: 768px) {
-    left: ${({ position }) => position === 'right' ? '-20px' : 'auto'};
-    right: ${({ position }) => position === 'left' ? '-20px' : 'auto'};
-  }
-`;
-
-const TimelineContent = styled.div`
-  background-color: #252525;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-left: 60px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  
-  @media (min-width: 768px) {
-    margin-left: 0;
-  }
-`;
-
-const TimelineDate = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--accent-gradient-1);
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  
-  @media (min-width: 768px) {
-    justify-content: ${({ position }) => position === 'left' ? 'flex-end' : 'flex-start'};
-  }
-`;
-
-const TimelineTitle = styled.h3`
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-`;
-
-const TimelineSubtitle = styled.h4`
+  color: var(--accent-primary);
   font-size: 1rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+`;
+
+const CardHeader = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  
-  @media (min-width: 768px) {
-    justify-content: ${({ position }) => position === 'left' ? 'flex-end' : 'flex-start'};
-  }
+  align-items: flex-start;
+  gap: 0.85rem;
 `;
 
-const TimelineDescription = styled.p`
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
+const CardHeaderText = styled.div`
+  flex: 1;
+  min-width: 0;
 `;
 
-const TimelineTags = styled.div`
+const CardTitle = styled.h3`
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+`;
+
+const CardOrg = styled.p`
+  font-size: 0.85rem;
+  color: var(--accent-secondary);
+  font-weight: 500;
+  margin: 0;
+`;
+
+const MetaRow = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  
-  @media (min-width: 768px) {
-    justify-content: ${({ position }) => position === 'left' ? 'flex-end' : 'flex-start'};
-  }
+  gap: 0.75rem;
 `;
 
-const TimelineTag = styled.span`
-  font-size: 0.8rem;
-  padding: 0.3rem 0.8rem;
-  background-color: #333;
-  border-radius: 50px;
-  color: var(--text-secondary);
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+
+  svg { color: var(--accent-primary); flex-shrink: 0; }
 `;
+
+const CardDesc = styled.p`
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  flex: 1;
+`;
+
+const TagRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+`;
+
+const Tag = styled.span`
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(37, 37, 37, 0.9);
+  border: 1px solid rgba(42, 42, 42, 0.8);
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+`;
+
+const GalleryHint = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+`;
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const EXPERIENCE = [
+  {
+    id: 1,
+    title: 'Senior Frontend Developer',
+    org: 'Tech Innovations Inc.',
+    location: 'Madrid, España',
+    date: 'Enero 2022 – Presente',
+    description: 'Lidero el desarrollo de interfaces para aplicaciones web de alto rendimiento. Arquitecturas escalables, optimización y code reviews.',
+    tags: ['React', 'TypeScript', 'Next.js', 'Redux'],
+    icon: <FaBriefcase />,
+  },
+  {
+    id: 2,
+    title: 'Frontend Developer',
+    org: 'Digital Solutions',
+    location: 'Barcelona, España',
+    date: 'Mar 2019 – Dic 2021',
+    description: 'Desarrollé y mantuve múltiples sitios y apps para clientes de distintos sectores. Implementé mejoras de UX/UI y nuevas características.',
+    tags: ['React', 'JavaScript', 'SASS', 'REST API'],
+    icon: <FaBriefcase />,
+  },
+  {
+    id: 3,
+    title: 'Web Developer',
+    org: 'Creative Agency',
+    location: 'Valencia, España',
+    date: 'Jun 2017 – Feb 2019',
+    description: 'Desarrollo de sitios responsivos desde Figma. Colaboración directa con el equipo de diseño para mejorar la experiencia de usuario.',
+    tags: ['HTML/CSS', 'JavaScript', 'WordPress', 'jQuery'],
+    icon: <FaBriefcase />,
+  },
+];
+
+const EDUCATION = [
+  {
+    id: 0,
+    title: '42 School',
+    org: 'Red Global de Escuelas 42',
+    location: 'Cursando',
+    date: '2024 – Presente',
+    description: 'Modelo peer-to-peer sin profesores. Formación en C, Unix y algoritmos. Aprendo resolviendo, colaborando y fallando hacia adelante.',
+    tags: ['C', 'Unix', 'Algoritmos', 'Peer Learning'],
+    icon: <FaGraduationCap />,
+  },
+  {
+    id: 1,
+    title: 'Máster en Desarrollo Web',
+    org: 'Universidad Tecnológica',
+    location: 'Madrid, España',
+    date: '2016 – 2017',
+    description: 'Tecnologías web modernas, arquitectura de aplicaciones y UX. Proyecto final: plataforma de e-learning con React y Node.js.',
+    tags: ['Frontend', 'Backend', 'UX/UI', 'Arquitectura'],
+    icon: <FaGraduationCap />,
+  },
+  {
+    id: 2,
+    title: 'Grado en Ing. Informática',
+    org: 'Universidad Politécnica',
+    location: 'Valencia, España',
+    date: '2012 – 2016',
+    description: 'Ciencias de la computación, algoritmos, estructuras de datos y desarrollo de software. Especialización en desarrollo web.',
+    tags: ['Programación', 'Algoritmos', 'BD', 'Software'],
+    icon: <FaGraduationCap />,
+  },
+];
+
+const CERTIFICATIONS = [
+  {
+    id: 1,
+    title: 'AWS Certified Developer',
+    org: 'Amazon Web Services',
+    location: 'Online',
+    date: 'Diciembre 2022',
+    description: 'Desarrollo, implementación y depuración de aplicaciones en la nube. Serverless, Lambda, y servicios managed de AWS.',
+    tags: ['Cloud', 'AWS', 'Serverless', 'DevOps'],
+    icon: <FaGraduationCap />,
+  },
+  {
+    id: 2,
+    title: 'Professional React Developer',
+    org: 'React Training',
+    location: 'Online',
+    date: 'Marzo 2021',
+    description: 'Patrones avanzados de React, optimización de rendimiento y arquitectura de aplicaciones complejas con Redux.',
+    tags: ['React', 'Redux', 'Performance', 'Testing'],
+    icon: <FaGraduationCap />,
+  },
+  {
+    id: 3,
+    title: 'UI/UX Design Fundamentals',
+    org: 'Design Academy',
+    location: 'Online',
+    date: 'Septiembre 2020',
+    description: 'Principios de diseño de interfaces, experiencia de usuario, prototipado con Figma y testing con usuarios reales.',
+    tags: ['UI', 'UX', 'Figma', 'Prototyping'],
+    icon: <FaGraduationCap />,
+  },
+];
+
+const TAB_CONFIG = [
+  { key: 'experience', label: 'Experiencia', icon: <FaBriefcase />, data: EXPERIENCE },
+  { key: 'education', label: 'Educación', icon: <FaGraduationCap />, data: EDUCATION },
+  { key: 'certifications', label: 'Formación Extra', icon: <FaGraduationCap />, data: CERTIFICATIONS },
+];
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i) => ({ opacity: 1, y: 0, transition: { duration: 0.45, delay: i * 0.1 } }),
+  exit: { opacity: 0, y: -16, transition: { duration: 0.2 } },
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 const Experience = () => {
   const [activeTab, setActiveTab] = useState('experience');
-  
-  const experienceData = [
-    {
-      id: 1,
-      title: 'Senior Frontend Developer',
-      company: 'Tech Innovations Inc.',
-      location: 'Madrid, España',
-      date: 'Enero 2022 - Presente',
-      description: 'Lidero el desarrollo de interfaces de usuario para aplicaciones web de alto rendimiento. Implemento arquitecturas escalables y optimizo el rendimiento de aplicaciones existentes.',
-      tags: ['React', 'TypeScript', 'Next.js', 'Redux'],
-      position: 'right',
-      icon: <FaBriefcase />
-    },
-    {
-      id: 2,
-      title: 'Frontend Developer',
-      company: 'Digital Solutions',
-      location: 'Barcelona, España',
-      date: 'Marzo 2019 - Diciembre 2021',
-      description: 'Desarrollé y mantuve múltiples sitios web y aplicaciones para clientes de diversos sectores. Colaboré en la implementación de nuevas características y mejoras de UX/UI.',
-      tags: ['React', 'JavaScript', 'SASS', 'REST API'],
-      position: 'left',
-      icon: <FaBriefcase />
-    },
-    {
-      id: 3,
-      title: 'Web Developer',
-      company: 'Creative Agency',
-      location: 'Valencia, España',
-      date: 'Junio 2017 - Febrero 2019',
-      description: 'Trabajé en el desarrollo de sitios web responsivos para clientes de la agencia. Implementé diseños desde Figma y colaboré con el equipo de diseño para mejorar la experiencia de usuario.',
-      tags: ['HTML/CSS', 'JavaScript', 'WordPress', 'jQuery'],
-      position: 'right',
-      icon: <FaBriefcase />
-    },
-  ];
-  
-  const educationData = [
-    {
-      id: 1,
-      title: 'Máster en Desarrollo Web',
-      institution: 'Universidad Tecnológica',
-      location: 'Madrid, España',
-      date: '2016 - 2017',
-      description: 'Especialización en tecnologías web modernas, arquitectura de aplicaciones y experiencia de usuario. Proyecto final: Plataforma de e-learning con React y Node.js.',
-      tags: ['Frontend', 'Backend', 'UX/UI', 'Arquitectura Web'],
-      position: 'right',
-      icon: <FaGraduationCap />
-    },
-    {
-      id: 2,
-      title: 'Grado en Ingeniería Informática',
-      institution: 'Universidad Politécnica',
-      location: 'Valencia, España',
-      date: '2012 - 2016',
-      description: 'Formación integral en ciencias de la computación, algoritmos, estructuras de datos y desarrollo de software. Especialización en desarrollo web y aplicaciones.',
-      tags: ['Programación', 'Algoritmos', 'Bases de Datos', 'Desarrollo Web'],
-      position: 'left',
-      icon: <FaGraduationCap />
-    },
-  ];
-  
-  const certificationData = [
-    {
-      id: 1,
-      title: 'AWS Certified Developer',
-      institution: 'Amazon Web Services',
-      location: 'Online',
-      date: 'Diciembre 2022',
-      description: 'Certificación que valida la experiencia en desarrollo, implementación y depuración de aplicaciones basadas en la nube utilizando AWS.',
-      tags: ['Cloud', 'AWS', 'Serverless', 'DevOps'],
-      position: 'right',
-      icon: <FaGraduationCap />
-    },
-    {
-      id: 2,
-      title: 'Professional React Developer',
-      institution: 'React Training',
-      location: 'Online',
-      date: 'Marzo 2021',
-      description: 'Certificación avanzada en desarrollo con React, incluyendo patrones de diseño, optimización de rendimiento y arquitectura de aplicaciones complejas.',
-      tags: ['React', 'Redux', 'Performance', 'Testing'],
-      position: 'left',
-      icon: <FaGraduationCap />
-    },
-    {
-      id: 3,
-      title: 'UI/UX Design Fundamentals',
-      institution: 'Design Academy',
-      location: 'Online',
-      date: 'Septiembre 2020',
-      description: 'Formación en principios de diseño de interfaces, experiencia de usuario, prototipado y testing con usuarios reales.',
-      tags: ['UI', 'UX', 'Figma', 'Prototyping'],
-      position: 'right',
-      icon: <FaGraduationCap />
-    },
-  ];
-  
-  const renderData = () => {
-    let data;
-    
-    switch(activeTab) {
-      case 'experience':
-        data = experienceData;
-        break;
-      case 'education':
-        data = educationData;
-        break;
-      case 'certifications':
-        data = certificationData;
-        break;
-      default:
-        data = experienceData;
-    }
-    
-    return (
-      <TimelineContainer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        {data.map((item) => (
-          <TimelineItem 
-            key={item.id}
-            position={item.position}
-            initial={{ opacity: 0, x: item.position === 'left' ? 50 : -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 * item.id }}
-          >
-            <TimelineDot position={item.position}>
-              {item.icon}
-            </TimelineDot>
-            <TimelineContent>
-              <TimelineDate position={item.position}>
-                <FaCalendarAlt />
-                {item.date}
-              </TimelineDate>
-              <TimelineTitle>{item.title}</TimelineTitle>
-              <TimelineSubtitle position={item.position}>
-                {item.company || item.institution}
-                <FaMapMarkerAlt />
-                {item.location}
-              </TimelineSubtitle>
-              <TimelineDescription>{item.description}</TimelineDescription>
-              <TimelineTags position={item.position}>
-                {item.tags.map((tag, index) => (
-                  <TimelineTag key={index}>{tag}</TimelineTag>
-                ))}
-              </TimelineTags>
-            </TimelineContent>
-          </TimelineItem>
-        ))}
-      </TimelineContainer>
-    );
-  };
-  
+  const activeData = TAB_CONFIG.find((t) => t.key === activeTab)?.data ?? EXPERIENCE;
+
   return (
-    <ExperienceContainer id="experience">
-      <ExperienceContent>
-        <SectionTitle
-          initial={{ opacity: 0, y: 20 }}
+    <Section id="experience">
+      {/* 3D gallery — background layer */}
+      <GalleryBg>
+        <ErrorBoundary>
+          <Suspense fallback={
+            <div style={{ 
+              position: 'absolute', 
+              inset: 0, 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              color: 'var(--text-tertiary)',
+              fontSize: '0.8rem',
+              fontFamily: 'var(--font-mono)'
+            }}>
+              Cargando galería 3D...
+            </div>
+          }>
+            <InfiniteGallery
+              images={GALLERY_IMAGES}
+              speed={0.9}
+              visibleCount={10}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      </GalleryBg>
+
+
+      {/* Edge vignette so content stays readable */}
+      <EdgeVignette />
+
+      <Content>
+        <TitleWrap>
+          <p className="eyebrow" style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+            / experiencia
+          </p>
+
+          <SectionTitle
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            Experiencia & Educación
+          </SectionTitle>
+
+          <SectionSubtitle
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            Mi trayectoria profesional y formación académica
+          </SectionSubtitle>
+
+          <SectionIntro>
+            <AnimatedIntro
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              De la teoría a la práctica. Aquí está el camino construido.
+            </AnimatedIntro>
+          </SectionIntro>
+        </TitleWrap>
+
+        <Tabs
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
         >
-          Experiencia & Educación
-        </SectionTitle>
-        
-        <SectionSubtitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Mi trayectoria profesional y formación académica
-        </SectionSubtitle>
-        
-        <TabsContainer
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <Tab 
-            active={activeTab === 'experience'} 
-            onClick={() => setActiveTab('experience')}
-          >
-            <TabIcon><FaBriefcase /></TabIcon>
-            Experiencia
-          </Tab>
-          <Tab 
-            active={activeTab === 'education'} 
-            onClick={() => setActiveTab('education')}
-          >
-            <TabIcon><FaGraduationCap /></TabIcon>
-            Educación
-          </Tab>
-          <Tab 
-            active={activeTab === 'certifications'} 
-            onClick={() => setActiveTab('certifications')}
-          >
-            <TabIcon><FaGraduationCap /></TabIcon>
-            Certificaciones
-          </Tab>
-        </TabsContainer>
-        
-        {renderData()}
-      </ExperienceContent>
-    </ExperienceContainer>
+          {TAB_CONFIG.map(({ key, label, icon }) => (
+            <Tab key={key} $active={activeTab === key} onClick={() => setActiveTab(key)}>
+              {icon} {label}
+            </Tab>
+          ))}
+        </Tabs>
+
+        <AnimatePresence mode="wait">
+          <CardGrid key={activeTab}>
+            {activeData.map((item, i) => (
+              <Card
+                key={item.id}
+                custom={i}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <CardHeader>
+                  <CardIcon>{item.icon}</CardIcon>
+                  <CardHeaderText>
+                    <CardTitle>{item.title}</CardTitle>
+                    <CardOrg>{item.org}</CardOrg>
+                  </CardHeaderText>
+                </CardHeader>
+
+                <MetaRow>
+                  <MetaItem><FaCalendarAlt /> {item.date}</MetaItem>
+                  <MetaItem><FaMapMarkerAlt /> {item.location}</MetaItem>
+                </MetaRow>
+
+                <CardDesc>{item.description}</CardDesc>
+
+                <TagRow>
+                  {item.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
+                </TagRow>
+              </Card>
+            ))}
+          </CardGrid>
+        </AnimatePresence>
+
+        <GalleryHint>
+          <FaMouse />
+          Pasa el cursor sobre la galería y usa la rueda del ratón para explorar
+        </GalleryHint>
+      </Content>
+    </Section>
   );
 };
 

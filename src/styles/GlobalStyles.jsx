@@ -2,13 +2,39 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
   :root {
-    --dark-bg: #1a1a1a;
-    --text-primary: #ffffff;
-    --text-secondary: #e0e0e0;
-    --accent-gradient-1: #ff7e5f;
-    --accent-gradient-2: #feb47b;
+    --dark-bg: #0f0f0f;
+    --surface-1: #151515;
+    --surface-2: #1e1e1e;
+    --surface-3: #252525;
+    --border: #2a2a2a;
+    --text-primary: #f0f0f0;
+    --text-secondary: #888888;
+    --text-tertiary: #555555;
+    --text-accent: #ff7e5f;
+    --accent-primary: #ff7e5f;
+    --accent-secondary: #feb47b;
     --accent-pink: #ff5e7d;
-    --transition: all 0.3s ease-in-out;
+    --gradient-primary: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    --color-ai: #7c6ef0;
+    --color-code: #4ec9b0;
+    --color-design: #ff7e5f;
+    --color-content: #ffd166;
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --space-2xl: 5rem;
+    --space-3xl: 8rem;
+    --font-main: 'Inter', sans-serif;
+    --font-heading: 'Syne', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --transition: all 0.2s ease-in-out;
+    --transition-slow: all 0.5s ease-in-out;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
   }
 
   * {
@@ -18,7 +44,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-main);
     background-color: var(--dark-bg);
     color: var(--text-primary);
     line-height: 1.6;
@@ -63,12 +89,12 @@ const GlobalStyles = createGlobalStyle`
     bottom: -10px;
     width: 50%;
     height: 4px;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+    background: var(--gradient-primary);
     border-radius: 2px;
   }
 
   .gradient-text {
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -77,10 +103,20 @@ const GlobalStyles = createGlobalStyle`
     .section {
       padding: 4rem 0;
     }
-    
+
     .section-title {
       font-size: 2rem;
     }
+  }
+
+  .mono { font-family: var(--font-mono); }
+  .heading { font-family: var(--font-heading); }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 `;
 

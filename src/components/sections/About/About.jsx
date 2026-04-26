@@ -1,309 +1,357 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FaLaptopCode, FaUserTie, FaLightbulb } from 'react-icons/fa';
+import { motion, useInView } from 'framer-motion';
 
-const AboutContainer = styled.section`
-  padding: 8rem 0;
+// ─── Counter Hook ─────────────────────────────────────────────────────────────
+
+const useCounter = (target, inView) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!inView || typeof target !== 'number') return;
+    let start = 0;
+    const duration = 1500;
+    const step = (target / duration) * 16;
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, target]);
+  return count;
+};
+
+// ─── Styled Components ────────────────────────────────────────────────────────
+
+const AboutSection = styled.section`
+  padding: var(--space-3xl) 0;
+  background: var(--dark-bg);
   position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -200px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,94,125,0.08) 0%, rgba(255,126,95,0.04) 70%, rgba(26,26,26,0) 100%);
-    z-index: -1;
-    transform: translateY(-50%);
-  }
 `;
 
-const AboutContent = styled.div`
+const Container = styled.div`
   width: 90%;
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
-const SectionTitle = styled(motion.h2)`
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+const SectionHeader = styled.div`
   text-align: center;
-  position: relative;
-  display: inline-block;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -10px;
-    width: 50px;
-    height: 4px;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    border-radius: 2px;
-    transform: translateX(-50%);
-  }
+  margin-bottom: var(--space-2xl);
 `;
 
-const SectionSubtitle = styled(motion.p)`
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  text-align: center;
-  max-width: 700px;
-  margin-bottom: 4rem;
+const AccentLine = styled.div`
+  width: 40px;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+  margin: 0.75rem auto 0;
+`;
+
+const H2 = styled(motion.h2)`
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0.5rem 0 0;
 `;
 
 const AboutGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4rem;
-  width: 100%;
-  
-  @media (max-width: 992px) {
+  grid-template-columns: 55fr 45fr;
+  gap: var(--space-2xl);
+  align-items: start;
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: var(--space-xl);
   }
 `;
 
-const AboutImage = styled(motion.div)`
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  height: 500px;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom right, rgba(255,126,95,0.2), rgba(255,94,125,0.2));
-    z-index: 1;
-  }
-  
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  @media (max-width: 992px) {
-    height: 400px;
-  }
-`;
+// ─── Left Column ──────────────────────────────────────────────────────────────
 
-const AboutImageBorder = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  z-index: 2;
-  pointer-events: none;
-`;
-
-const AboutInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const AboutTitle = styled(motion.h3)`
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  
-  span {
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-`;
-
-const AboutDescription = styled(motion.p)`
-  font-size: 1.1rem;
+const BodyText = styled(motion.p)`
+  font-family: var(--font-main);
+  font-size: 1rem;
   color: var(--text-secondary);
-  margin-bottom: 2rem;
   line-height: 1.8;
 `;
 
-const AboutFeatures = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-`;
-
-const FeatureItem = styled(motion.div)`
+const TextStack = styled.div`
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: var(--space-lg);
 `;
 
-const FeatureIcon = styled.div`
-  font-size: 1.5rem;
-  color: var(--accent-gradient-1);
-  background: rgba(255, 126, 95, 0.1);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+const ChipsRow = styled(motion.div)`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: var(--space-lg);
+`;
+
+const AreaChip = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  cursor: default;
+
+  &:hover {
+    border-color: rgba(255, 126, 95, 0.4);
+    color: var(--text-primary);
+  }
 `;
 
-const FeatureText = styled.div`
-  h4 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  }
-`;
-
-const AboutCTA = styled(motion.a)`
+const BtnOutline = styled.a`
   display: inline-block;
-  padding: 0.8rem 2rem;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-  color: white;
-  border-radius: 50px;
-  font-weight: 500;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: var(--transition);
-  align-self: flex-start;
-  
+  text-decoration: none;
+
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(255, 126, 95, 0.2);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
   }
 `;
 
-const About = () => {
+// ─── Right Column ─────────────────────────────────────────────────────────────
+
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+`;
+
+const StatCard = styled(motion.div)`
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+`;
+
+const StatNumber = styled.span`
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 2.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+`;
+
+const StatLabel = styled.span`
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+`;
+
+const CurrentlyBlock = styled(motion.div)`
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+`;
+
+const CurrentlyItem = styled.p`
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding-left: 1rem;
+  position: relative;
+  margin-bottom: 0.4rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &::before {
+    content: '▪';
+    position: absolute;
+    left: 0;
+    color: var(--accent-primary);
+  }
+`;
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const areas = [
+  { icon: '💻', label: 'Desarrollo Web' },
+  { icon: '🤖', label: 'IA & Automatización' },
+  { icon: '🎬', label: 'Contenido & Video' },
+  { icon: '📚', label: 'Aprendizaje Constante' },
+];
+
+const stats = [
+  { display: null, numericTarget: 5, suffix: '+', label: 'años de experiencia' },
+  { display: null, numericTarget: 20, suffix: '+', label: 'proyectos entregados' },
+  { display: null, numericTarget: 42, suffix: '', label: 'school — cursando' },
+  { display: '∞', numericTarget: null, suffix: '', label: 'aprendizaje constante' },
+];
+
+const currentlyItems = [
+  'Estudiante en 42 School',
+  'Explorando agentes de IA',
+  'Proyectos freelance activos',
+];
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+const AnimatedStat = ({ stat, inView }) => {
+  const count = useCounter(stat.numericTarget, inView);
+  const display = stat.display !== null
+    ? stat.display
+    : `${count}${stat.suffix}`;
+
   return (
-    <AboutContainer id="about">
-      <AboutContent>
-        <SectionTitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          Sobre Mí
-        </SectionTitle>
-        
-        <SectionSubtitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Conozca más sobre mi trayectoria, pasión y enfoque en el desarrollo frontend
-        </SectionSubtitle>
-        
+    <StatCard
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+    >
+      <StatNumber>{display}</StatNumber>
+      <StatLabel>{stat.label}</StatLabel>
+    </StatCard>
+  );
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+const About = () => {
+  const statsRef = useRef(null);
+  const statsInView = useInView(statsRef, { once: true, margin: '-80px' });
+
+  return (
+    <AboutSection id="about">
+      <Container>
+
+        {/* HEADER */}
+        <SectionHeader>
+          <motion.p
+            className="eyebrow"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            / sobre mí
+          </motion.p>
+          <H2
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            Más que código
+          </H2>
+          <AccentLine />
+        </SectionHeader>
+
+        {/* GRID */}
         <AboutGrid>
-          <AboutImage
-            initial={{ opacity: 0, x: -50 }}
+
+          {/* LEFT — Texto + Chips + CTA */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
-            <img src="/fotonico.jpg" alt="Nicolas Rodriguez" />
-            <AboutImageBorder />
-          </AboutImage>
-          
-          <AboutInfo>
-            <AboutTitle
-              initial={{ opacity: 0, y: 20 }}
+            <TextStack>
+              <BodyText>
+                Soy Nicolás, desarrollador frontend y constructor de soluciones digitales.
+                Me interesa entender cómo funcionan las cosas — no solo hacerlas funcionar.
+              </BodyText>
+              <BodyText>
+                Trabajo con React y TypeScript, pero mi stack incluye herramientas de IA (Claude, Gemini),
+                automatización y diseño. Actualmente estudiante en 42, una escuela de programación sin profesores
+                donde aprendes resolviendo proyectos reales.
+              </BodyText>
+              <BodyText>
+                También creo contenido y edito video, lo que me da una visión más completa de los productos
+                que construyo.
+              </BodyText>
+            </TextStack>
+
+            <ChipsRow
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Creando <span>experiencias digitales</span> memorables
-            </AboutTitle>
-            
-            <AboutDescription
-              initial={{ opacity: 0, y: 20 }}
+              {areas.map(area => (
+                <AreaChip key={area.label}>
+                  <span>{area.icon}</span>
+                  <span>{area.label}</span>
+                </AreaChip>
+              ))}
+            </ChipsRow>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
             >
-              Soy un desarrollador frontend apasionado con más de 5 años de experiencia creando interfaces de usuario atractivas e interactivas. Mi enfoque combina diseño estético con funcionalidad intuitiva para ofrecer experiencias de usuario excepcionales.
-              <br /><br />
-              Mi objetivo es transformar ideas complejas en soluciones digitales elegantes y accesibles que no solo cumplan con los requisitos técnicos, sino que también deleiten a los usuarios finales.
-            </AboutDescription>
-            
-            <AboutFeatures>
-              <FeatureItem
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <FeatureIcon>
-                  <FaLaptopCode />
-                </FeatureIcon>
-                <FeatureText>
-                  <h4>Desarrollo Moderno</h4>
-                  <p>Utilizando las últimas tecnologías y frameworks</p>
-                </FeatureText>
-              </FeatureItem>
-              
-              <FeatureItem
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <FeatureIcon>
-                  <FaUserTie />
-                </FeatureIcon>
-                <FeatureText>
-                  <h4>Enfoque Profesional</h4>
-                  <p>Comprometido con la calidad y los plazos</p>
-                </FeatureText>
-              </FeatureItem>
-              
-              <FeatureItem
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <FeatureIcon>
-                  <FaLightbulb />
-                </FeatureIcon>
-                <FeatureText>
-                  <h4>Soluciones Creativas</h4>
-                  <p>Resolviendo problemas con ideas innovadoras</p>
-                </FeatureText>
-              </FeatureItem>
-            </AboutFeatures>
-            
-            <AboutCTA
-              href="#contact"
-              initial={{ opacity: 0, y: 20 }}
+              <BtnOutline href="/cv.pdf" target="_blank" rel="noopener noreferrer">
+                Descargar CV
+              </BtnOutline>
+            </motion.div>
+          </motion.div>
+
+          {/* RIGHT — Stats + Actualmente */}
+          <div ref={statsRef}>
+            <StatsGrid>
+              {stats.map(stat => (
+                <AnimatedStat key={stat.label} stat={stat} inView={statsInView} />
+              ))}
+            </StatsGrid>
+
+            <CurrentlyBlock
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Descargar CV
-            </AboutCTA>
-          </AboutInfo>
+              <p
+                className="mono"
+                style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem', marginBottom: '0.75rem' }}
+              >
+                // actualmente
+              </p>
+              {currentlyItems.map(item => (
+                <CurrentlyItem key={item}>{item}</CurrentlyItem>
+              ))}
+            </CurrentlyBlock>
+          </div>
+
         </AboutGrid>
-      </AboutContent>
-    </AboutContainer>
+      </Container>
+    </AboutSection>
   );
 };
 

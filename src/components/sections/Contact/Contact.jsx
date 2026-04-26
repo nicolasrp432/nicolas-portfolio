@@ -1,428 +1,470 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaEnvelope, FaMapMarkerAlt, FaGithub, FaLinkedin, FaCheckCircle } from 'react-icons/fa';
 
-const ContactContainer = styled.section`
-  padding: 8rem 0;
+// ─── Styled Components ────────────────────────────────────────────────────────
+
+const ContactSection = styled.section`
+  padding: var(--space-3xl) 0;
+  background: var(--surface-2);
   position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: -200px;
-    right: -200px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(254,180,123,0.08) 0%, rgba(255,126,95,0.04) 70%, rgba(26,26,26,0) 100%);
-    z-index: 0;
-  }
 `;
 
-const ContactContent = styled.div`
+const Container = styled.div`
   width: 90%;
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
 `;
 
-const SectionTitle = styled(motion.h2)`
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+const SectionHeader = styled.div`
   text-align: center;
-  position: relative;
-  display: inline-block;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -10px;
-    width: 50px;
-    height: 4px;
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    border-radius: 2px;
-    transform: translateX(-50%);
-  }
+  margin-bottom: var(--space-2xl);
 `;
 
-const SectionSubtitle = styled(motion.p)`
-  font-size: 1.2rem;
+const H2 = styled(motion.h2)`
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0.5rem 0 0.75rem;
+`;
+
+const HeaderSubtitle = styled(motion.p)`
   color: var(--text-secondary);
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 4rem;
+  max-width: 480px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.7;
 `;
+
+// ─── Grid ─────────────────────────────────────────────────────────────────────
 
 const ContactGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4rem;
-  
-  @media (max-width: 992px) {
+  gap: var(--space-2xl);
+  align-items: start;
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: var(--space-xl);
   }
 `;
 
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+// ─── Left Column ──────────────────────────────────────────────────────────────
 
 const ContactTitle = styled(motion.h3)`
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  
-  span {
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem;
 `;
 
 const ContactText = styled(motion.p)`
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-secondary);
-  margin-bottom: 2rem;
   line-height: 1.8;
+  margin-bottom: 2rem;
 `;
 
 const ContactItems = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 `;
 
 const ContactItem = styled(motion.div)`
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 `;
 
 const ContactIcon = styled.div`
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  color: white;
+  font-size: 1rem;
+  color: var(--accent-primary);
+  flex-shrink: 0;
 `;
 
 const ContactItemContent = styled.div`
   h4 {
-    font-size: 1.1rem;
-    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
   }
-  
-  p, a {
-    font-size: 1rem;
+
+  a, p {
+    font-size: 0.95rem;
     color: var(--text-secondary);
     transition: var(--transition);
   }
-  
+
   a:hover {
-    color: var(--accent-gradient-1);
+    color: var(--accent-primary);
   }
+`;
+
+const AvailabilityBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+`;
+
+const GreenDot = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-code);
+  display: inline-block;
+  flex-shrink: 0;
 `;
 
 const SocialLinks = styled(motion.div)`
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 `;
 
 const SocialLink = styled.a`
-  width: 45px;
-  height: 45px;
-  background-color: #252525;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
   transition: var(--transition);
-  
+
   &:hover {
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+    background: var(--gradient-primary);
+    border-color: transparent;
     color: white;
-    transform: translateY(-3px);
   }
 `;
 
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
 const ContactForm = styled(motion.form)`
-  background-color: #252525;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 `;
 
 const FormLabel = styled.label`
   display: block;
-  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
-  color: var(--text-secondary);
 `;
 
-const FormInput = styled.input`
+const inputBase = `
   width: 100%;
-  padding: 1rem;
-  background-color: #333;
-  border: none;
-  border-radius: 5px;
+  padding: 0.85rem 1rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-size: 1rem;
-  transition: var(--transition);
-  
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--accent-gradient-1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--text-tertiary);
   }
 `;
+
+const FormInput = styled.input`${inputBase}`;
 
 const FormTextarea = styled.textarea`
-  width: 100%;
-  padding: 1rem;
-  background-color: #333;
-  border: none;
-  border-radius: 5px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  min-height: 150px;
+  ${inputBase}
+  min-height: 140px;
   resize: vertical;
-  transition: var(--transition);
-  
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--accent-gradient-1);
-  }
 `;
 
-const FormButton = styled(motion.button)`
-  padding: 1rem 2rem;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
+const BtnPrimary = styled.button`
+  width: 100%;
+  background: var(--gradient-primary);
   color: white;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 0.95rem;
   border: none;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  
+  margin-top: 0.5rem;
+
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(255, 126, 95, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 126, 95, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
+const SuccessBox = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: var(--space-xl);
+  text-align: center;
+`;
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically handle form submission, e.g., send data to a server
-    console.log('Form submitted:', formData);
-    alert('¡Mensaje enviado! Gracias por contactarme.');
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+    setSubmitted(true);
+    setFormData({ name: '', email: '', subject: '', message: '' });
+    setTimeout(() => setSubmitted(false), 5000);
   };
-  
+
   return (
-    <ContactContainer id="contact">
-      <ContactContent>
-        <SectionTitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          Contacto
-        </SectionTitle>
-        
-        <SectionSubtitle
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          ¿Tienes un proyecto en mente? ¡Hablemos!
-        </SectionSubtitle>
-        
+    <ContactSection id="contact">
+      <Container>
+
+        {/* HEADER */}
+        <SectionHeader>
+          <motion.p
+            className="eyebrow"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            / contacto
+          </motion.p>
+          <H2
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            ¿Tienes algo que construir?
+          </H2>
+          <HeaderSubtitle
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Cuéntame tu proyecto. Si puedo ayudarte, lo hacemos.
+          </HeaderSubtitle>
+        </SectionHeader>
+
         <ContactGrid>
-          <ContactInfo>
-            <ContactTitle
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Conversemos sobre tu <span>proyecto</span>
-            </ContactTitle>
-            
-            <ContactText
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Estoy interesado en oportunidades freelance y colaboraciones en proyectos ambiciosos e innovadores. Si tienes una solicitud o pregunta, no dudes en contactarme.
+
+          {/* LEFT — Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <ContactTitle>Hablemos directamente</ContactTitle>
+
+            <ContactText>
+              Estoy disponible para proyectos freelance, colaboraciones y consultoría.
+              Prefiero hablar claro desde el inicio.
             </ContactText>
-            
+
             <ContactItems>
               <ContactItem
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -15 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <ContactIcon>
-                  <FaEnvelope />
-                </ContactIcon>
+                <ContactIcon><FaEnvelope /></ContactIcon>
                 <ContactItemContent>
                   <h4>Email</h4>
-                  <a href="mailto:contact@nicolasrodriguez.dev">contact@nicolasrodriguez.dev</a>
+                  <a href="mailto:nicolasrp432@gmail.com">nicolasrp432@gmail.com</a>
                 </ContactItemContent>
               </ContactItem>
-              
+
               <ContactItem
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -15 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <ContactIcon>
-                  <FaPhone />
-                </ContactIcon>
-                <ContactItemContent>
-                  <h4>Teléfono</h4>
-                  <a href="tel:+123456789">+12 345 6789</a>
-                </ContactItemContent>
-              </ContactItem>
-              
-              <ContactItem
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <ContactIcon>
-                  <FaMapMarkerAlt />
-                </ContactIcon>
+                <ContactIcon><FaMapMarkerAlt /></ContactIcon>
                 <ContactItemContent>
                   <h4>Ubicación</h4>
                   <p>Madrid, España</p>
                 </ContactItemContent>
               </ContactItem>
             </ContactItems>
-            
+
+            <AvailabilityBadge>
+              <GreenDot />
+              <span
+                className="mono"
+                style={{ color: 'var(--color-code)', fontSize: '0.8rem' }}
+              >
+                Disponible para proyectos
+              </span>
+            </AvailabilityBadge>
+
             <SocialLinks
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <SocialLink href="https://github.com/nicolasrodriguez" target="_blank" rel="noopener noreferrer">
+              <SocialLink
+                href="https://github.com/nicolasrp432"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
                 <FaGithub />
               </SocialLink>
-              <SocialLink href="https://linkedin.com/in/nicolasrodriguez" target="_blank" rel="noopener noreferrer">
+              <SocialLink
+                href="https://linkedin.com/in/nicolasrodriguez"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
                 <FaLinkedin />
               </SocialLink>
-              <SocialLink href="https://twitter.com/nicolasrodriguez" target="_blank" rel="noopener noreferrer">
-                <FaTwitter />
-              </SocialLink>
             </SocialLinks>
-          </ContactInfo>
-          
+          </motion.div>
+
+          {/* RIGHT — Form */}
           <ContactForm
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             onSubmit={handleSubmit}
           >
-            <FormGroup>
-              <FormLabel>Nombre</FormLabel>
-              <FormInput 
-                type="text" 
-                name="name" 
-                value={formData.name} 
-                onChange={handleChange} 
-                required 
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <FormLabel>Email</FormLabel>
-              <FormInput 
-                type="email" 
-                name="email" 
-                value={formData.email} 
-                onChange={handleChange} 
-                required 
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <FormLabel>Asunto</FormLabel>
-              <FormInput 
-                type="text" 
-                name="subject" 
-                value={formData.subject} 
-                onChange={handleChange} 
-                required 
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <FormLabel>Mensaje</FormLabel>
-              <FormTextarea 
-                name="message" 
-                value={formData.message} 
-                onChange={handleChange} 
-                required 
-              />
-            </FormGroup>
-            
-            <FormButton 
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Enviar Mensaje
-            </FormButton>
+            <AnimatePresence mode="wait">
+              {submitted ? (
+                <SuccessBox
+                  key="success"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <FaCheckCircle style={{ fontSize: '2rem', color: 'var(--color-code)' }} />
+                  <p style={{ color: 'var(--text-primary)', fontSize: '1rem' }}>
+                    Mensaje enviado.
+                  </p>
+                  <p
+                    className="mono"
+                    style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}
+                  >
+                    // Respondo en menos de 24h
+                  </p>
+                </SuccessBox>
+              ) : (
+                <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <FormGroup>
+                    <FormLabel htmlFor="name">Nombre</FormLabel>
+                    <FormInput
+                      id="name"
+                      type="text"
+                      name="name"
+                      placeholder="Tu nombre"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormInput
+                      id="email"
+                      type="email"
+                      name="email"
+                      placeholder="tu@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <FormLabel htmlFor="subject">Asunto</FormLabel>
+                    <FormInput
+                      id="subject"
+                      type="text"
+                      name="subject"
+                      placeholder="¿De qué se trata?"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <FormLabel htmlFor="message">Mensaje</FormLabel>
+                    <FormTextarea
+                      id="message"
+                      name="message"
+                      placeholder="Cuéntame tu proyecto..."
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <BtnPrimary type="submit">Enviar →</BtnPrimary>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </ContactForm>
+
         </ContactGrid>
-      </ContactContent>
-    </ContactContainer>
+      </Container>
+    </ContactSection>
   );
 };
 
