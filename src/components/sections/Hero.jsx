@@ -1,209 +1,157 @@
-import React from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FaArrowDown } from 'react-icons/fa';
+import { FiArrowDownRight, FiCode } from 'react-icons/fi';
+import { RiRobot2Line } from 'react-icons/ri';
+import { gsap, MOTION_OK } from '../../lib/gsap';
+import { useGsapScope } from '../../hooks/useGsapScope';
+import { GITHUB_USER, heroFacts } from '../../data/site';
+import { SplitHeadline } from '../motion/SplitHeadline';
+import { Magnetic } from '../motion/Magnetic';
+import { ArrowLink } from '../ui/ArrowLink';
 
-const HeroContainer = styled.section`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,126,95,0.1) 0%, rgba(255,94,125,0.05) 70%, rgba(26,26,26,0) 100%);
-    z-index: -1;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -150px;
-    left: -150px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(254,180,123,0.1) 0%, rgba(255,126,95,0.05) 70%, rgba(26,26,26,0) 100%);
-    z-index: -1;
-  }
-`;
+const HEADLINE = [
+  [{ text: 'Construyo ideas' }],
+  [{ text: 'que se sienten ' }, { text: 'claras.', accent: true }],
+];
 
-const HeroContent = styled.div`
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
+/**
+ * The opening spread.
+ *
+ * One choreographed entrance, played once when the curtain lifts: characters
+ * roll up out of their line masks, the portrait wipes in from the bottom, then
+ * the orbit rings and floating cards settle. After that the only motion is a
+ * slow orbit rotation and the scrubbed parallax on scroll.
+ */
+export function Hero({ ready }) {
+  const scope = useGsapScope(
+    (root) => {
+      if (!ready) return undefined;
 
-const HeroTitle = styled(motion.h1)`
-  font-size: 4.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-  
-  @media (max-width: 768px) {
-    font-size: 3rem;
-  }
-`;
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
 
-const GradientSpan = styled.span`
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
+      tl.fromTo('.hero-kicker', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 })
+        .fromTo(
+          '.hero-headline .split-char',
+          { yPercent: 110 },
+          { yPercent: 0, duration: 1.1, stagger: { each: 0.015 } },
+          '-=0.45',
+        )
+        .fromTo('.hero-intro', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.7')
+        .fromTo('.hero-actions > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, '-=0.55')
+        .fromTo(
+          '.hero-portrait',
+          { clipPath: 'inset(100% 0 0 0)', scale: 1.08 },
+          { clipPath: 'inset(0% 0 0 0)', scale: 1, duration: 1.2 },
+          '-=1',
+        )
+        .fromTo('.hero-orbit', { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.1, stagger: 0.1 }, '-=0.9')
+        .fromTo(
+          '.hero-chip',
+          { opacity: 0, scale: 0.8, rotate: 0 },
+          { opacity: 1, scale: 1, rotate: (i) => (i === 0 ? -5 : 5), duration: 0.6, stagger: 0.1 },
+          '-=0.7',
+        )
+        .fromTo('.hero-facts > *', { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.08 }, '-=0.4');
 
-const HeroSubtitle = styled(motion.h2)`
-  font-size: 1.5rem;
-  font-weight: 400;
-  margin-bottom: 2rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-`;
+      // Ambient: the rings keep turning, at opposite speeds.
+      gsap.to('.hero-orbit-a', { rotate: 360, duration: 60, ease: 'none', repeat: -1 });
+      gsap.to('.hero-orbit-b', { rotate: -360, duration: 90, ease: 'none', repeat: -1 });
 
-const HeroButtons = styled(motion.div)`
-  display: flex;
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 1rem;
-  }
-`;
+      // Scrubbed depth: the portrait lags the rings as the page moves away.
+      // `root` is the <section> itself — a '.hero' selector would resolve
+      // against its descendants and match nothing.
+      const onHeroScroll = { trigger: root, start: 'top top', end: 'bottom top', scrub: true };
+      gsap.to('.hero-visual-inner', { yPercent: 14, ease: 'none', scrollTrigger: onHeroScroll });
+      gsap.to('.hero-copy', {
+        yPercent: -8,
+        opacity: 0.35,
+        ease: 'none',
+        scrollTrigger: onHeroScroll,
+      });
 
-const PrimaryButton = styled(motion.a)`
-  display: inline-block;
-  padding: 0.8rem 2rem;
-  background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-  color: white;
-  border-radius: 50px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(255, 126, 95, 0.2);
-  }
-`;
-
-const SecondaryButton = styled(motion.a)`
-  display: inline-block;
-  padding: 0.8rem 2rem;
-  background: transparent;
-  color: var(--text-primary);
-  border: 2px solid var(--accent-gradient-1);
-  border-radius: 50px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(255, 126, 95, 0.1);
-    background: linear-gradient(to right, var(--accent-gradient-1), var(--accent-gradient-2));
-    color: white;
-  }
-`;
-
-const ScrollDown = styled(motion.div)`
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const ScrollText = styled.span`
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-secondary);
-`;
-
-const ScrollIcon = styled(motion.div)`
-  font-size: 1.2rem;
-  color: var(--accent-gradient-1);
-`;
-
-const Hero = () => {
-  const scrollToProjects = () => {
-    const projectsSection = document.getElementById('projects');
-    projectsSection.scrollIntoView({ behavior: 'smooth' });
-  };
-  
-  return (
-    <HeroContainer>
-      <HeroContent>
-        <HeroTitle
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Hola, soy <GradientSpan>Nicolas Rodriguez</GradientSpan>
-        </HeroTitle>
-        
-        <HeroSubtitle
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          Frontend Developer especializado en crear experiencias web interactivas y atractivas
-        </HeroSubtitle>
-        
-        <HeroButtons
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <PrimaryButton 
-            href="#projects"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Ver Proyectos
-          </PrimaryButton>
-          
-          <SecondaryButton 
-            href="#contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contactame
-          </SecondaryButton>
-        </HeroButtons>
-      </HeroContent>
-      
-      <ScrollDown
-        onClick={scrollToProjects}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-      >
-        <ScrollText>Scroll Down</ScrollText>
-        <ScrollIcon
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-        >
-          <FaArrowDown />
-        </ScrollIcon>
-      </ScrollDown>
-    </HeroContainer>
+      return () => tl.kill();
+    },
+    [ready],
+    MOTION_OK,
   );
-};
 
-export default Hero;
+  return (
+    <section className="hero" id="inicio" ref={scope}>
+      <p className="hero-kicker">
+        <span className="hero-pulse" aria-hidden="true" />
+        Frontend × productos digitales × IA
+      </p>
+
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <SplitHeadline lines={HEADLINE} className="hero-headline" autoAnimate={false} />
+
+          <p className="hero-intro">
+            Soy Nicolás, desarrollador frontend y constructor de soluciones digitales. Convierto
+            problemas en productos útiles, visuales y bien pensados.
+          </p>
+
+          <div className="hero-actions">
+            <Magnetic>
+              <a className="button-slab" href="#proyectos" data-cursor="VER">
+                Explorar proyectos
+                <FiArrowDownRight aria-hidden="true" />
+              </a>
+            </Magnetic>
+            <ArrowLink
+              href={`https://github.com/${GITHUB_USER}`}
+              label="Perfil de GitHub (se abre en una pestaña nueva)"
+            >
+              github/{GITHUB_USER}
+            </ArrowLink>
+          </div>
+        </div>
+
+        <div className="hero-visual">
+          <div className="hero-visual-inner">
+            <span className="hero-orbit hero-orbit-a" aria-hidden="true" />
+            <span className="hero-orbit hero-orbit-b" aria-hidden="true" />
+
+            <picture className="hero-portrait">
+              <source srcSet="/portrait-640.webp" type="image/webp" media="(max-width: 700px)" />
+              <source srcSet="/portrait-1200.webp" type="image/webp" />
+              <img
+                src="/portrait-1200.png"
+                alt="Nicolás Rodríguez trabajando con su portátil"
+                width="960"
+                height="1200"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
+
+            <span className="hero-chip chip-code" aria-hidden="true">
+              <FiCode />
+              <span>
+                build
+                <strong>with intent</strong>
+              </span>
+            </span>
+            <span className="hero-chip chip-ai" aria-hidden="true">
+              <RiRobot2Line />
+              <span>
+                AI
+                <strong>as a system</strong>
+              </span>
+            </span>
+
+            <span className="hero-caption" aria-hidden="true">
+              Curiosidad
+              <br />
+              en movimiento ↗
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <ul className="hero-facts">
+        {heroFacts.map((fact) => (
+          <li key={fact}>{fact}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}

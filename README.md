@@ -1,145 +1,98 @@
-# Nicolas Portfolio
+# Portfolio — Nicolás Rodríguez
 
-A modern, responsive portfolio website built with React and Vite.
+Portfolio personal: frontend, producto digital e IA. React 19 + Vite 7, animado
+con GSAP y construido sobre un sistema de diseño propio.
 
-## 🚀 Features
-
-- **Fast Development**: Built with Vite for lightning-fast hot reload
-- **Modern React**: Uses React 19 with latest features
-- **Responsive Design**: Mobile-first approach with styled-components
-- **Smooth Animations**: Powered by Framer Motion
-- **SEO Optimized**: Meta tags and proper structure
-- **Performance**: Optimized bundle with Vite
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 19, Vite
-- **Styling**: Styled Components
-- **Animations**: Framer Motion
-- **Icons**: React Icons
-- **Routing**: React Router DOM
-- **Performance**: Web Vitals
-
-## 📦 Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd nicolas-portfolio
-```
-
-2. Install dependencies:
 ```bash
 npm install
+npm run dev      # http://localhost:3000
+npm run build    # -> dist/
+npm run preview  # sirve dist/
+npm test         # vitest
 ```
 
-## 🚀 Development
+## Dirección de diseño
 
-Start the development server:
-```bash
-npm run dev
-```
+**Editorial Brutalism.** Papel y tinta con un único acento coral, tipografía
+sobredimensionada y rejilla asimétrica. Tres registros tipográficos con papeles
+distintos y no intercambiables:
 
-The application will be available at `http://localhost:3000`
+| Registro | Fuente | Uso |
+| --- | --- | --- |
+| Estructura | Manrope 600–800 | Titulares y cuerpo |
+| Énfasis | Playfair Display *italic* | El corte serif dentro de un titular — nunca en cuerpo |
+| Metadatos | DM Mono | Índices, etiquetas, pies |
 
-## 🏗️ Build
+La paleta vive entera en `src/styles/tokens.css`. **Ningún color se escribe
+fuera de ese archivo.** Sombras duras desplazadas, nunca elevación difusa.
 
-Build for production:
-```bash
-npm run build
-```
+El elemento identitario es el **rail de índice** fijo a la izquierda: marca el
+progreso de lectura, numera el capítulo actual y se recolorea según el fondo de
+la sección (`theme` en `navLinks`).
 
-Preview the production build:
-```bash
-npm run preview
-```
-
-## 📁 Project Structure
+## Arquitectura
 
 ```
 src/
-├── components/
-│   ├── layout/          # Layout components (Navbar, Footer, etc.)
-│   └── sections/        # Page sections (Hero, About, Projects, etc.)
-├── pages/               # Page components
-├── styles/              # Global styles and theme
-├── App.jsx              # Main App component
-└── main.jsx             # Entry point
+├─ data/          Contenido y enlaces — única fuente de verdad, sin URLs sueltas
+├─ hooks/         useGsapScope, useGithubProjects, useMediaQuery, useScrollLock
+├─ lib/gsap.js    Registro de plugins, defaults y el interruptor de movimiento
+├─ components/
+│  ├─ motion/     SplitHeadline · Reveal · Marquee · Magnetic · Parallax
+│  ├─ chrome/     Preloader · Cursor · SectionRail · Navbar · Footer · GrainOverlay
+│  ├─ ui/         BrandMark · ArrowLink · SectionHeading · CopyEmail
+│  └─ sections/   Hero · Ticker · Projects · Profile · Toolbox · Roadmap · Contact
+└─ styles/        tokens → base → components → chrome → sections (orden obligatorio)
 ```
 
-## 🎨 Customization
+### Animación
 
-- **Theme**: Edit `src/styles/theme.jsx` to customize colors and styling
-- **Content**: Update components in `src/components/sections/` to modify content
-- **Layout**: Modify `src/components/layout/` for structural changes
+Toda animación se registra dentro de un bloque `gsap.matchMedia()` con la clave
+`MOTION_OK`. Si alguien pide movimiento reducido, el bloque **nunca se ejecuta** y
+`matchMedia` revierte lo que hubiera creado.
 
-## 📱 Responsive Design
+Los elementos que GSAP va a animar solo se pre-ocultan con
+`<html data-motion="on">`, atributo que fija `main.jsx` antes del primer pintado.
+Sin JS o con movimiento reducido el atributo no existe y **todo el contenido se
+ve**: nunca queda atrapado detrás de una animación que no va a ocurrir.
 
-The portfolio is fully responsive and optimized for:
-- Desktop (1200px+)
-- Tablet (768px - 1199px)
-- Mobile (320px - 767px)
+> Al añadir una variante nueva a `Reveal`, hay que añadir su estado previo en
+> `components.css`. Una variante sin pre-estado produce un parpadeo.
 
-## 🚀 Performance
+⚠️ `gsap.context` resuelve los selectores contra los **descendientes** del scope.
+Una sección que quiera dispararse con sus propios límites debe usar el nodo que
+recibe `useGsapScope(setup)`, no un selector con su propia clase — este último no
+encuentra nada y GSAP solo lo avisa por consola. Hay un test que lo vigila.
 
-- **Lighthouse Score**: 90+ across all metrics
-- **Bundle Size**: Optimized with Vite
-- **Loading Speed**: Fast initial load with code splitting
+### Proyectos
 
-## 📄 License
+`useGithubProjects` lee la API pública de GitHub, ordena por estrellas y
+actividad, y cachea 30 min en `sessionStorage` (el límite sin autenticar es de 60
+peticiones/hora). `projectOverrides` en `src/data/projects.js` permite sustituir
+la descripción de un repo por copy editorial; el resto usa los datos de la API.
+Si la petición falla, se renderiza la selección curada.
 
-This project is open source and available under the [MIT License](LICENSE).
+## Accesibilidad
 
-## 📋 Descripción
+- Skip link como primer elemento enfocable.
+- Titulares partidos en caracteres: los `span` van `aria-hidden` y la frase se
+  expone una vez en `aria-label`, no letra a letra.
+- Foco siempre visible, con contraste invertido sobre los fondos de tinta.
+- Cursor personalizado solo con puntero fino; el nativo se oculta bajo esa misma
+  condición, así que nunca se pierde.
+- El email se copia con anuncio `aria-live` y recurre a seleccionar el texto si
+  no hay Clipboard API.
 
-Portfolio personal interactivo para Nicolas Rodriguez, Frontend Developer. Este sitio web presenta las habilidades, proyectos, experiencia y educación de Nicolas en un diseño moderno e interactivo.
+## Rendimiento
 
-## 🚀 Instalación y Uso
+El retrato pesaba 2,2 MB (un PNG en base64 dentro de un SVG). Ahora son 102 KB en
+WebP con `<picture>`, variante de 640 px para móvil y PNG de respaldo.
 
-1. Clona este repositorio:
-   ```bash
-   git clone https://github.com/nicolasrodriguez/portfolio.git
-   ```
+Build actual: **~94 KB gzip** de aplicación + **27 KB gzip** de GSAP en su propio
+chunk. El grano de la página es un filtro SVG en línea de ~300 bytes, no un bitmap.
 
-2. Instala las dependencias:
-   ```bash
-   cd nicolas-portfolio
-   npm install
-   ```
+## Pendiente
 
-3. Inicia el servidor de desarrollo:
-   ```bash
-   npm start
-   ```
-
-4. Abre [http://localhost:3000](http://localhost:3000) para ver la aplicación en tu navegador.
-
-## 📦 Construcción para Producción
-
-Para crear una versión optimizada para producción:
-
-```bash
-npm run build
-```
-
-Los archivos se generarán en la carpeta `build`.
-
-## 🎨 Personalización
-
-Puedes personalizar fácilmente varios aspectos del portfolio:
-
-- **Colores**: Modifica las variables en `src/styles/GlobalStyles.js` y `src/styles/theme.js`.
-- **Contenido**: Actualiza la información en los componentes de sección en `src/components/sections/`.
-- **Imágenes**: Reemplaza las imágenes de ejemplo con tus propias imágenes.
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
-
-## 👤 Autor
-
-**Nicolas Rodriguez**
-
-- Website: [nicolasrodriguez.dev](https://nicolasrodriguez.dev)
-- GitHub: [@nicolasrodriguez](https://github.com/nicolasrodriguez)
-- LinkedIn: [@nicolasrodriguez](https://linkedin.com/in/nicolasrodriguez)
+- Sustituir la URL de LinkedIn en `src/data/site.js` por la real.
+- `site.url` y las URL absolutas de `index.html` asumen GitHub Pages; ajustar si
+  se despliega en otro dominio.

@@ -1,0 +1,284 @@
+/* ============================================================
+   CHROME — everything that frames the page rather than sits in it
+   ============================================================ */
+
+.shell { position: relative; }
+
+/* --- Film grain ----------------------------------------- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  /* ~300 bytes of SVG turbulence instead of a noise bitmap. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) { .grain { opacity: 0.2; } }
+
+/* --- Custom cursor -------------------------------------- */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  /* Difference blending is what lets one cursor stay legible over the paper
+     sections and the ink ones without any per-section bookkeeping. */
+  mix-blend-mode: difference;
+}
+.cursor-dot, .cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+  will-change: transform;
+}
+.cursor-dot { width: 6px; height: 6px; background: #fff; }
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #fff;
+  display: grid;
+  place-items: center;
+}
+/* Scaled 2.6× by GSAP on hover, so the type is authored small on purpose. */
+.cursor-label {
+  font: 500 0.3rem/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.cursor-ring.is-labelled { background: rgb(255 255 255 / 0.18); }
+.cursor-ring.is-labelled .cursor-label { opacity: 1; }
+
+/* Hide the native cursor only where the custom one is actually mounted. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body, a, button { cursor: none; }
+}
+
+/* --- Left index rail ------------------------------------ */
+.section-rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: var(--z-nav);
+  width: 58px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--nav-h) + var(--space-6)) 0 var(--space-6);
+  pointer-events: none;
+  /* The rail re-themes itself from the chapter it is currently reporting,
+     rather than relying on a blend mode that would mangle the coral. */
+  --rail-ink: var(--ink);
+  --rail-bg: var(--paper);
+  --rail-line: var(--line);
+  color: var(--rail-ink);
+  border-right: 1px solid var(--rail-line);
+  transition: color var(--dur-slow) var(--ease-editorial),
+              border-color var(--dur-slow) var(--ease-editorial);
+}
+.section-rail[data-theme='ink'] {
+  --rail-ink: var(--paper);
+  --rail-bg: var(--ink);
+  --rail-line: var(--line-invert);
+}
+.section-rail[data-theme='coral'] {
+  --rail-ink: var(--ink);
+  --rail-bg: var(--coral);
+  --rail-line: var(--line-strong);
+}
+.rail-track { position: relative; flex: 1; width: var(--rail-w); background: var(--rail-line); margin: var(--space-4) 0; }
+.rail-progress {
+  position: absolute;
+  inset: 0;
+  background: var(--coral);
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+.section-rail[data-theme='coral'] .rail-progress { background: var(--ink); }
+.rail-readout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  writing-mode: vertical-rl;
+  background: var(--rail-bg);
+  padding: var(--space-3) 0;
+  transition: background var(--dur-slow) var(--ease-editorial);
+}
+.rail-index { font: 700 1.05rem/1 var(--font-sans); letter-spacing: -0.06em; color: var(--coral); }
+.section-rail[data-theme='coral'] .rail-index { color: var(--ink); }
+.rail-label {
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+}
+.rail-foot { font: 700 0.62rem/1 var(--font-mono); letter-spacing: 0.1em; }
+
+@media (min-width: 1200px) and (prefers-reduced-motion: no-preference) {
+  .section-rail { display: flex; }
+  /* The masthead is sticky *inside* the shell, so one offset covers both. */
+  .shell { padding-left: 58px; }
+}
+
+/* --- Masthead ------------------------------------------- */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding-inline: var(--gutter);
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.masthead-brand { font-size: 1.5rem; margin-right: auto; }
+.masthead-nav { display: flex; gap: clamp(1rem, 2.4vw, 2.2rem); }
+.masthead-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.masthead-nav a i {
+  font: 500 0.56rem/1 var(--font-mono);
+  font-style: normal;
+  color: var(--coral);
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.masthead-nav a:hover i, .masthead-nav a:focus-visible i { opacity: 1; }
+.masthead-nav a::after {
+  content: '';
+  position: absolute;
+  inset: auto 100% -6px 0;
+  height: 2px;
+  background: var(--coral);
+  transition: right var(--dur-base) var(--ease-out-expo);
+}
+.masthead-nav a:hover::after, .masthead-nav a:focus-visible::after { right: 0; }
+.masthead-cta { margin-left: var(--space-6); }
+
+/* --- Mobile menu ---------------------------------------- */
+.menu-toggle { display: none; width: 44px; height: 44px; margin-left: auto; place-items: center; }
+.menu-bars { position: relative; display: block; width: 22px; height: 2px; background: var(--ink); }
+.menu-bars::before, .menu-bars::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+}
+.menu-bars::before { top: -7px; }
+.menu-bars::after  { top: 7px; width: 14px; }
+.menu-toggle svg { font-size: 1.5rem; }
+
+.menu-panel {
+  position: fixed;
+  inset: var(--nav-h) 0 0;
+  z-index: var(--z-nav);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.menu-panel nav { display: flex; flex-direction: column; gap: var(--space-2); padding-top: var(--space-8); }
+.menu-entry {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  font-size: clamp(2.2rem, 11vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.1;
+}
+.menu-entry i { font: 500 0.7rem/1 var(--font-mono); font-style: normal; color: var(--coral); }
+.menu-foot { display: flex; flex-wrap: wrap; gap: var(--space-6); padding-top: var(--space-8); }
+
+@media (max-width: 900px) {
+  .masthead-nav, .masthead-cta { display: none; }
+  .menu-toggle { display: grid; }
+}
+
+/* --- Preloader ------------------------------------------ */
+.preloader { position: fixed; inset: 0; z-index: var(--z-preloader); }
+.preloader-slat {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(100% / 5 + 1px);
+  left: calc(var(--slat) * 20%);
+  background: var(--ink);
+  transform-origin: top center;
+}
+.preloader-meta {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  color: var(--paper);
+}
+.preloader-mark .brand-mark { transform: scale(1.8); box-shadow: 5px 5px 0 var(--coral); }
+.preloader-track { width: min(240px, 50vw); height: 2px; background: rgb(241 238 231 / 0.2); }
+.preloader-line { display: block; height: 100%; background: var(--coral); transform: scaleX(0); transform-origin: left center; }
+.preloader-count {
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  letter-spacing: var(--tracking-meta);
+  color: var(--paper-on-ink);
+}
+
+/* --- Colophon ------------------------------------------- */
+.colophon {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--gutter);
+  background: var(--ink);
+  color: var(--paper);
+  border-top: 1px solid var(--line-invert);
+  font: 400 var(--step-meta)/1.4 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.colophon p { margin-right: auto; }
+.colophon-links { display: flex; gap: var(--space-6); }
+.colophon-links a { border-bottom: 1px solid transparent; transition: border-color var(--dur-fast), color var(--dur-fast); }
+.colophon-links a:hover { color: var(--coral); border-color: var(--coral); }
+.colophon-top {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line-invert);
+  border-radius: 50%;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+.colophon-top:hover { background: var(--coral); border-color: var(--coral); }
+
+@media (max-width: 600px) {
+  .colophon { flex-direction: column; align-items: flex-start; }
+  .colophon p { margin-right: 0; }
+}

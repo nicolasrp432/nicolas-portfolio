@@ -1,0 +1,17 @@
+/* ============================================================
+   Nicolás Rodríguez — portfolio stylesheet
+   Layer order is load-bearing: tokens define the vocabulary, base
+   resets and sets defaults, components own the reusable pieces,
+   chrome frames the page, sections lay out the chapters.
+   ============================================================ */
+
+/* Only the weights actually used: 400/600/700/800 sans, one mono
+   weight, one serif italic. `display=swap` keeps text visible while
+   the faces download. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap');
+
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './chrome.css';
+@import './sections.css';

@@ -1,0 +1,204 @@
+/* ============================================================
+   COMPONENTS — the reusable vocabulary of the design system
+   ============================================================ */
+
+/* --- Brand monogram ------------------------------------- */
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12em;
+  padding: 0.42em 0.52em;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 9px;
+  font: 700 0.72rem/1 var(--font-mono);
+  letter-spacing: -0.08em;
+  box-shadow: var(--shadow-slab-coral);
+  transition: box-shadow var(--dur-base) var(--ease-out-expo),
+              transform var(--dur-base) var(--ease-out-expo);
+}
+.brand-mark strong { font: 800 1.35rem/0.8 var(--font-sans); color: var(--paper); }
+.brand-mark i { font-style: normal; color: var(--coral); }
+.brand-mark.is-compact { transform: scale(0.86); transform-origin: left center; }
+
+a:hover > .brand-mark,
+a:focus-visible > .brand-mark { box-shadow: 8px 8px 0 var(--coral); transform: translate(-2px, -2px); }
+
+/* --- Arrow link ----------------------------------------- */
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.35em 0;
+  border-bottom: 1px solid currentColor;
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.arrow-link svg { transition: transform var(--dur-base) var(--ease-out-expo); }
+.arrow-link:hover svg, .arrow-link:focus-visible svg { transform: translate(3px, -3px); }
+.arrow-link.masthead-cta {
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  padding: 0.68em 1.1em;
+  transition: background var(--dur-base), color var(--dur-base);
+}
+.arrow-link.masthead-cta:hover { background: var(--ink); color: var(--paper); }
+
+/* --- Slab button ---------------------------------------- */
+.button-slab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 1.05em 1.5em;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* Coral wipes up from the base rather than a colour cross-fade. */
+.button-slab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--coral);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+.button-slab:hover::before, .button-slab:focus-visible::before { transform: scaleY(1); }
+.button-slab svg { transition: transform var(--dur-base) var(--ease-out-expo); }
+.button-slab:hover svg { transform: translate(3px, 3px); }
+
+/* --- Tag rows ------------------------------------------- */
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.tag-row li {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 0.4em 0.75em;
+  font: 400 0.6rem/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.on-ink .tag-row li { border-color: var(--line-invert); }
+.tag-row.is-large { gap: 0.6rem; }
+.tag-row.is-large li {
+  font-size: 0.78rem;
+  padding: 0.6em 1.1em;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.tag-row.is-large li:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+/* --- Split headline ------------------------------------- */
+.split-headline { display: block; }
+.split-line { display: block; overflow: hidden; }
+/* The mask needs a touch of slack or descenders (g, y, í) get clipped. */
+.split-line-inner { display: block; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.split-part { display: inline; }
+.split-char { display: inline-block; will-change: transform; }
+
+/* --- Reveal pre-states (motion-enabled documents only) --- */
+[data-motion='on'] .reveal-rise { opacity: 0; }
+[data-motion='on'] .reveal-wipe { clip-path: inset(0 100% 0 0); }
+
+/* --- Section heading ------------------------------------ */
+.section-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 420px);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: end;
+  margin-bottom: clamp(3rem, 6vw, 4.5rem);
+}
+.section-heading.is-compact { margin-bottom: var(--space-8); }
+.section-title { font-size: var(--step-display); margin-top: var(--space-4); }
+.section-standfirst { color: var(--ink-faint); line-height: 1.75; max-width: var(--measure); }
+.on-ink .section-standfirst { color: var(--paper-on-ink); }
+
+/* --- Marquee -------------------------------------------- */
+.marquee { overflow: hidden; width: 100%; }
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+.marquee-group { display: flex; align-items: center; }
+.marquee-group li {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  padding-right: clamp(1.5rem, 3vw, 2.75rem);
+  font-size: clamp(1.1rem, 2.2vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.marquee-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--coral);
+  flex: none;
+}
+
+/* --- Pulse dot ------------------------------------------ */
+.hero-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+  flex: none;
+  box-shadow: 0 0 0 0 rgb(255 90 54 / 0.5);
+  animation: pulse 2.4s var(--ease-out-expo) infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgb(255 90 54 / 0.5); }
+  70%  { box-shadow: 0 0 0 10px rgb(255 90 54 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(255 90 54 / 0); }
+}
+
+/* --- Copy-email control --------------------------------- */
+.copy-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--line-invert);
+}
+.copy-email-address {
+  font-size: clamp(1.2rem, 3vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  background-image: linear-gradient(var(--coral), var(--coral));
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--dur-base) var(--ease-out-expo);
+}
+.copy-email-address:hover, .copy-email-address:focus-visible { background-size: 100% 2px; }
+.copy-email-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1em;
+  border: 1px solid var(--line-invert);
+  border-radius: var(--radius-pill);
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.copy-email-button:hover { background: var(--acid); color: var(--ink); border-color: var(--acid); }
+.copy-email-status {
+  flex-basis: 100%;
+  min-height: 1.2em;
+  font: 400 var(--step-meta)/1.2 var(--font-mono);
+  color: var(--acid);
+}
+
+@media (max-width: 900px) {
+  .section-heading { grid-template-columns: 1fr; align-items: start; }
+}

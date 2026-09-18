@@ -1,13 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import reportWebVitals from './reportWebVitals.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import { enableMotionStyles } from './lib/gsap';
+import './styles/index.css';
 
+// Set before the first paint: CSS uses `[data-motion="on"]` to pre-hide the
+// elements GSAP is about to animate in. Without it, nothing is ever hidden.
+enableMotionStyles();
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
     <App />
-  </React.StrictMode>,
-)
-
-reportWebVitals(); 
+  </StrictMode>,
+);
