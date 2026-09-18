@@ -12,9 +12,3 @@
 @media(max-width:900px){.hero-visual{min-height:520px}.portrait-frame{height:520px;width:min(500px,92%)}}
 @media(max-width:600px){.hero-visual{min-height:430px}.portrait-frame{height:430px;width:100%}.project-art{padding:1.5rem}.project-art strong{font-size:2.25rem}}
 @media(prefers-reduced-motion:reduce){.project-art,.tool-icons svg{transform:none!important}}
-
-/* Minimal brand mark and final hero portrait */
-.brand-mark{gap:.1rem;padding:0;background:transparent;border-radius:0;box-shadow:none;color:var(--ink);font-size:.62rem}.brand-mark strong{font-size:1rem;line-height:1;color:var(--ink)}.brand-mark i{color:var(--coral)}footer .brand-mark{color:var(--paper)}footer .brand-mark strong{color:var(--paper)}
-.portrait-frame{width:min(600px,108%);height:660px;transform:translate(2.5vw,28px)}.portrait-frame img{filter:drop-shadow(0 28px 30px rgba(25,24,22,.12))}.closing-orb{display:none}
-@media(max-width:900px){.portrait-frame{width:min(560px,100%);height:560px;transform:translateY(18px)}}
-@media(max-width:600px){.portrait-frame{width:108%;height:455px;transform:translate(-3%,12px)}}

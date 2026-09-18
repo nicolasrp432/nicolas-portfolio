@@ -114,7 +114,7 @@ function App() {
           <ol className="roadmap-list"><li><span>Ahora</span><strong>Casos de estudio</strong><p>Documentar reto, proceso, decisiones y resultado de los proyectos clave.</p></li><li><span>Siguiente</span><strong>Laboratorio visual</strong><p>Experimentos breves con IA, motion, automatización y prototipos.</p></li><li><span>Después</span><strong>Prueba de impacto</strong><p>Añadir métricas, aprendizajes y testimonios con contexto verificable.</p></li></ol>
         </section>
 
-        <section className="closing"><p>¿Tienes una idea, un problema o algo por mejorar?</p><h2>Hagámoslo<br/><em>real.</em></h2><ArrowLink className="closing-link" href={`https://github.com/${GITHUB_USER}`}>Conversemos en GitHub</ArrowLink></section>
+        <section className="closing"><p>¿Tienes una idea, un problema o algo por mejorar?</p><h2>Hagámoslo<br/><em>real.</em></h2><ArrowLink className="closing-link" href={`https://github.com/${GITHUB_USER}`}>Conversemos en GitHub</ArrowLink><div className="closing-orb"><BrandMark /></div></section>
       </main>
       <footer><a className="wordmark" href="#inicio" aria-label="Volver al inicio"><BrandMark compact /></a><p>Diseñado y construido con curiosidad por Nicolás.</p><span>© {new Date().getFullYear()}</span></footer>
     </div>

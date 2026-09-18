@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
   <title id="title">Logo de Nicolás Rodríguez</title>
-  <path d="M16 18 7 32l9 14M48 18l9 14-9 14" fill="none" stroke="#ff6a45" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M24 41V23l16 18V23" fill="none" stroke="#191816" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="64" height="64" rx="14" fill="#191816"/>
+  <path d="M15 20 7 32l8 12M49 20l8 12-8 12" fill="none" stroke="#ff6a45" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22 43V21l20 22V21" fill="none" stroke="#f1eee7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
