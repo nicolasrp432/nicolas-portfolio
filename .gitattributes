@@ -1,0 +1,11 @@
+# Keep source and vector assets reviewable in pull-request diffs.
+*.svg text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# Raster assets should be uploaded separately when the review platform rejects binaries.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary

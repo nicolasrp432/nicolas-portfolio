@@ -67,7 +67,7 @@ function App() {
         <a className="wordmark" href="#inicio" onClick={closeMenu} aria-label="Ir al inicio"><BrandMark /></a>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Abrir navegación">{menuOpen ? <FiX /> : <FiMenu />}</button>
         <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Navegación principal">
-          <a href="#proyectos" onClick={closeMenu}>Proyectos</a><a href="#perfil" onClick={closeMenu}>Perfil</a><a href="#herramientas" onClick={closeMenu}>Herramientas</a><a href="#ruta" onClick={closeMenu}>Ruta visual</a>
+          <a href="#proyectos" onClick={closeMenu}>Proyectos</a><a href="#perfil" onClick={closeMenu}>Perfil</a><a href="#herramientas" onClick={closeMenu}>Herramientas</a><a href="#ruta" onClick={closeMenu}>Proceso</a>
         </nav>
         <ArrowLink className="nav-cta" href={`https://github.com/${GITHUB_USER}`} label="Ver perfil de GitHub">GitHub</ArrowLink>
       </header>
@@ -122,13 +122,17 @@ function App() {
         </section>
 
         <section className="roadmap section" id="ruta">
-          <div className="roadmap-intro"><span className="eyebrow">Plan visual · Próximas iteraciones</span><h2>Un portfolio que<br/>también <em>evoluciona.</em></h2><p>La nueva base ya prioriza trabajo real, narrativa y una identidad propia. Estos son los siguientes pasos de diseño para mantenerlo vivo.</p></div>
-          <ol className="roadmap-list"><li><span>Ahora</span><strong>Casos de estudio</strong><p>Documentar reto, proceso, decisiones y resultado de los proyectos clave.</p></li><li><span>Siguiente</span><strong>Laboratorio visual</strong><p>Experimentos breves con IA, motion, automatización y prototipos.</p></li><li><span>Después</span><strong>Prueba de impacto</strong><p>Añadir métricas, aprendizajes y testimonios con contexto verificable.</p></li></ol>
+          <div className="roadmap-intro"><span className="eyebrow">Proceso de trabajo · De idea a producto</span><h2>Menos ruido.<br/>Más <em>dirección.</em></h2><p>Cada proyecto empieza por entender el problema y termina con una solución medible, mantenible y lista para crecer.</p></div>
+          <ol className="roadmap-list"><li><span>01</span><strong>Descubrir</strong><p>Aclaro objetivos, usuarios y restricciones para trabajar sobre el problema correcto.</p></li><li><span>02</span><strong>Diseñar y validar</strong><p>Convierto hipótesis en flujos y prototipos claros antes de invertir en desarrollo.</p></li><li><span>03</span><strong>Construir y mejorar</strong><p>Desarrollo, mido y refino el producto cuidando accesibilidad, velocidad y mantenibilidad.</p></li></ol>
         </section>
 
         <section className="closing"><p>¿Tienes una idea, un problema o algo por mejorar?</p><h2>Hagámoslo<br/><em>real.</em></h2><ArrowLink className="closing-link" href={`https://github.com/${GITHUB_USER}`}>Conversemos en GitHub</ArrowLink></section>
       </main>
-      <footer><a className="wordmark" href="#inicio" aria-label="Volver al inicio"><BrandMark compact /></a><p>Diseñado y construido con curiosidad por Nicolás.</p><span>© {new Date().getFullYear()}</span></footer>
+      <footer className="site-footer">
+        <div className="footer-brand"><a className="wordmark" href="#inicio" aria-label="Volver al inicio"><BrandMark compact /></a><p>Diseñado y construido con curiosidad por Nicolás.</p></div>
+        <nav className="footer-nav" aria-label="Navegación secundaria"><a href="#proyectos">Proyectos</a><a href="#perfil">Perfil</a><a href="#herramientas">Stack</a></nav>
+        <div className="footer-meta"><a href={`https://github.com/${GITHUB_USER}`} target="_blank" rel="noreferrer">GitHub <FiArrowUpRight aria-hidden="true" /></a><a href="#inicio">Volver arriba ↑</a><span>© {new Date().getFullYear()}</span></div>
+      </footer>
     </div>
   );
 }
