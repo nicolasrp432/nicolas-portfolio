@@ -70,7 +70,7 @@ function App() {
             </motion.div>
             <motion.div className="hero-visual" aria-label="Retrato de Nicolás" initial={{ opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .9, delay: .25 }}>
               <div className="orbit orbit-one" /><div className="orbit orbit-two" />
-              <div className="portrait-frame"><img src="/nicolas.png" alt="Nicolás, desarrollador frontend" /></div>
+              <div className="portrait-frame"><img src="/nicolas-hero.svg" alt="Nicolás trabajando con su portátil" /></div>
               <div className="floating-card card-code"><FiCode /><span>build<br/><strong>with intent</strong></span></div>
               <div className="floating-card card-ai"><RiRobot2Line /><span>AI<br/><strong>as a system</strong></span></div>
               <span className="visual-caption">Curiosidad<br/>en movimiento ↗</span>
