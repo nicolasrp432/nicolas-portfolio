@@ -1,0 +1,121 @@
+/* ============================================================
+   BASE — reset, typography defaults, accessibility primitives
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+  /* Anchor targets must clear the sticky masthead. */
+  scroll-padding-top: calc(var(--nav-h) + var(--space-4));
+  -webkit-text-size-adjust: 100%;
+  /* `clip` rather than `hidden`: it contains the oversized decorative
+     elements without turning the root into a scroll container, which would
+     silently break `position: sticky` on the masthead. */
+  overflow-x: clip;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-body);
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Locked while the intro curtain or the mobile menu owns the viewport. */
+body[data-scroll-locked='true'] { overflow: hidden; }
+
+img, svg, video { display: block; max-width: 100%; }
+img { height: auto; }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+ul, ol { list-style: none; padding: 0; }
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  line-height: 0.93;
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+/* The serif italic is the identity's signature cut — it only ever
+   appears inside a heading, never as body copy. */
+h1 em, h2 em, h3 em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--coral);
+  letter-spacing: -0.02em;
+}
+
+p { text-wrap: pretty; }
+
+::selection { background: var(--coral); color: var(--paper); }
+
+/* --- Focus: visible, high contrast, never removed -------- */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+.on-ink :focus-visible, .ink-surface :focus-visible { outline-color: var(--acid); }
+
+/* --- Utilities ------------------------------------------ */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 200;
+  transform: translateY(-200%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--space-3) var(--space-4);
+  font: 500 var(--step-meta) / 1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  transition: transform var(--dur-fast) var(--ease-out-expo);
+}
+.skip-link:focus-visible { transform: translateY(0); }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: 500 var(--step-meta) / 1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-faint);
+}
+.on-ink .eyebrow { color: var(--paper-on-ink); }
+
+.section {
+  position: relative;
+  padding: var(--section-y) var(--gutter);
+}
+
+/* --- Motion opt-out: one global kill switch -------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
