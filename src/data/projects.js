@@ -9,15 +9,49 @@ import { GITHUB_USER } from './site';
  * impossible to control. Now the list below decides what appears and in what
  * order; GitHub only supplies freshness on top of it.
  *
- * It has to carry the copy, too: all but three of these repos have no
- * description on GitHub, and the three that do have templates
- * ("React + TypeScript + Vite"). Nothing here is inferred from a repo name.
+ * It has to carry the copy, too: most of these repos have no description on
+ * GitHub, and several of the READMEs are still the framework template
+ * ("React + TypeScript + Vite"). Nothing here is inferred from a repo name:
+ * every entry was checked against the repo tree and the live deploy.
  *
  * `featured` entries get a full card with a colour plate; the rest render as
  * compact index rows, so thirteen projects stay scannable instead of becoming
  * a wall of plates.
  */
 export const curatedProjects = [
+  {
+    slug: 'AppLectorJournal',
+    title: 'LectorApp',
+    kind: 'App de lectura · móvil y web',
+    summary:
+      'App para entrenar la lectura, no solo para leer: biblioteca, lector propio, lecciones, ejercicios, flashcards y palacios de memoria, con ruta de aprendizaje y seguimiento del progreso. Hecha con Expo y React Native sobre Supabase, y exportada también a web.',
+    tags: ['React Native', 'Expo', 'Supabase'],
+    liveUrl: 'https://app-lector-journal.vercel.app',
+    year: '2026',
+    featured: true,
+  },
+  {
+    slug: 'PlataformaAinara',
+    title: 'Mitra',
+    kind: 'Plataforma educativa',
+    summary:
+      'Plataforma de formación en micro-learning para desarrollo personal: itinerarios, mentoría y comunidad, con autenticación y niveles de acceso. Next.js 15 y React 19 sobre Supabase, con migraciones y datos de arranque versionados.',
+    tags: ['Next.js', 'React', 'Supabase'],
+    liveUrl: 'https://v0-plataforma-ainara.vercel.app',
+    year: '2026',
+    featured: true,
+  },
+  {
+    slug: 'exampractice2',
+    title: '42 Prep',
+    kind: 'Examen de 42 · estudio',
+    summary:
+      'Plataforma para preparar el examen de programación en C de la escuela 42: los ejercicios reales agrupados por rango, corrección y seguimiento del progreso sobre Firebase.',
+    tags: ['Vite', 'Tailwind', 'Firebase'],
+    liveUrl: 'https://exampractice2.vercel.app',
+    year: '2026',
+    featured: true,
+  },
   {
     slug: 'SulyWeb',
     title: 'Suly Pretty Nails',
