@@ -173,11 +173,14 @@ sección vacía se lee como un sitio a medio hacer. Cada certificado exige
 
 ## Rendimiento
 
-El retrato es `public/nicolasrp-Photoroom.png`, el recorte sin fondo tal cual. Se
-sirve como WebP de 76 KB (32 KB en móvil) mediante `<picture>`, con el PNG de
-1,7 MB solo como respaldo para navegadores sin WebP. Las derivadas son
+El retrato es `public/nicoalsrphero.png`, el recorte sin fondo tal cual. Se
+sirve como WebP de 94 KB (37 KB en móvil) mediante `<picture>`, con el PNG de
+1,35 MB solo como respaldo para navegadores sin WebP. Las derivadas son
 **reencodings, no recortes**: mismo encuadre, y el CSS lo dibuja con
-`object-fit: contain` sobre una caja `aspect-ratio`, sin altura fija que lo corte.
+`object-fit: contain` sobre una caja `aspect-ratio` de 1122/1402, sin altura fija
+que lo corte. Al sustituir el retrato hay que regenerar `hero-1122.webp`,
+`hero-640.webp` y `og-image.jpg`, y ajustar el `aspect-ratio` si cambia la
+proporción del original.
 
 Build actual: **~94 KB gzip** de aplicación + **27 KB gzip** de GSAP en su propio
 chunk. El grano de la página es un filtro SVG en línea de ~300 bytes, no un bitmap.
