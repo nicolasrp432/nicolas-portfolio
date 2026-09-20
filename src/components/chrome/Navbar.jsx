@@ -4,11 +4,12 @@ import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { useActiveSection } from '../../hooks/useActiveSection';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
-import { navLinks, socials, site, GITHUB_USER } from '../../data/site';
+import { navLinks, chapters, socials, site, GITHUB_USER } from '../../data/site';
 import { BrandMark } from '../ui/BrandMark';
 import { ArrowLink } from '../ui/ArrowLink';
 
-const SECTION_IDS = ['inicio', ...navLinks.map((link) => link.id)];
+/** Only in-page chapters can ever be "active": a page link is elsewhere. */
+const SECTION_IDS = ['inicio', ...chapters.map((link) => link.id)];
 
 /**
  * The masthead and the mobile menu.
@@ -27,7 +28,14 @@ const SECTION_IDS = ['inicio', ...navLinks.map((link) => link.id)];
  * chapter, `aria-current` for assistive tech, and a hairline progress rule that
  * stands in for the index rail on screens too narrow to show it.
  */
-export function Navbar() {
+/**
+ * @param {object} props
+ * @param {'home'|string} [props.currentPage]
+ *        Which document this masthead is mounted in. Anywhere but 'home', a
+ *        chapter link has to leave for the home page before it can scroll.
+ */
+export function Navbar({ currentPage = 'home' }) {
+  const isHome = currentPage === 'home';
   const navRef = useRef(null);
   const pillRef = useRef(null);
   const progressRef = useRef(null);
@@ -42,21 +50,41 @@ export function Navbar() {
 
   const close = useCallback(() => setOpen(false), []);
 
-  /** Anchors are handled here so the panel can close before the page moves. */
+  /** Where a nav entry points from *this* document. */
+  const hrefFor = useCallback(
+    (link) => {
+      if (link.href) return link.href;
+      return isHome ? `#${link.id}` : `/#${link.id}`;
+    },
+    [isHome],
+  );
+
+  /**
+   * In-page anchors are handled here so the panel can close before the page
+   * moves. Everything else is left to the browser.
+   *
+   * The check has to come *before* `preventDefault`. The previous version
+   * cancelled the click first and only looked for the target inside a later
+   * frame, so any link pointing at another document was silently dead: the
+   * navigation was cancelled and nothing replaced it.
+   */
   const goTo = useCallback(
-    (event, id) => {
+    (event, link) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+      if (link.href) return;
+
+      const target = document.getElementById(link.id);
+      if (!target) return;
+
       event.preventDefault();
       setOpen(false);
 
       requestAnimationFrame(() => {
-        const target = document.getElementById(id);
-        if (!target) return;
         target.scrollIntoView({
           behavior: prefersReducedMotion() ? 'auto' : 'smooth',
           block: 'start',
         });
-        window.history.replaceState(null, '', `#${id}`);
+        window.history.replaceState(null, '', `#${link.id}`);
       });
     },
     [],
@@ -194,8 +222,8 @@ export function Navbar() {
         <div className="masthead-bar">
           <a
             className="masthead-brand"
-            href="#inicio"
-            onClick={(event) => goTo(event, 'inicio')}
+            href={isHome ? '#inicio' : '/'}
+            onClick={(event) => goTo(event, { id: 'inicio' })}
             aria-label={`${site.name} — ir al inicio`}
           >
             <BrandMark />
@@ -210,12 +238,16 @@ export function Navbar() {
             {navLinks.map((link) => (
               <a
                 key={link.id}
-                href={`#${link.id}`}
+                href={hrefFor(link)}
                 data-section={link.id}
-                aria-current={active === link.id ? 'true' : undefined}
-                onClick={(event) => goTo(event, link.id)}
+                aria-current={
+                  (link.href ? currentPage === link.id : active === link.id) ? 'true' : undefined
+                }
+                onClick={(event) => goTo(event, link)}
               >
-                <i aria-hidden="true">{link.index}</i>
+                {/* A page link has no chapter numeral; the outbound glyph says
+                    it leaves this document instead. */}
+                <i aria-hidden="true">{link.index ?? '↗'}</i>
                 <span>{link.label}</span>
               </a>
             ))}
@@ -277,12 +309,14 @@ export function Navbar() {
               <a
                 className="menu-entry"
                 key={link.id}
-                href={`#${link.id}`}
-                aria-current={active === link.id ? 'true' : undefined}
-                onClick={(event) => goTo(event, link.id)}
+                href={link.id === 'inicio' && !isHome ? '/' : hrefFor(link)}
+                aria-current={
+                  (link.href ? currentPage === link.id : active === link.id) ? 'true' : undefined
+                }
+                onClick={(event) => goTo(event, link)}
               >
                 <span className="menu-entry-inner">
-                  <i aria-hidden="true">{link.index}</i>
+                  <i aria-hidden="true">{link.index ?? '↗'}</i>
                   {link.label}
                 </span>
               </a>

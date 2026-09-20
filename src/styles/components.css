@@ -124,6 +124,223 @@ a:focus-visible > .brand-mark { box-shadow: 8px 8px 0 var(--coral); transform: t
 .section-standfirst { color: var(--ink-faint); line-height: 1.75; max-width: var(--measure); }
 .on-ink .section-standfirst { color: var(--paper-on-ink); }
 
+/* --- Project card & index row --------------------------- */
+/* Shared vocabulary: the home page and /educacion/ both render these. */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 3vw, 2.5rem);
+}
+/* The offset column is what keeps the grid from reading as a table. */
+.project-card:nth-child(even) { margin-top: clamp(2rem, 6vw, 5rem); }
+
+.project-plate {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--ink-raised);
+}
+.project-plate-inner {
+  position: absolute;
+  /* Oversized so the parallax drift never exposes an edge. */
+  inset: -8% 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.25rem, 3vw, 2.2rem);
+  color: var(--ink);
+  transition: transform var(--dur-slow) var(--ease-editorial);
+}
+.project-card:hover .project-plate-inner { transform: scale(1.03); }
+
+/* Four fixed plate tones, cycled by position — never random. */
+.tone-0 { background: var(--acid); }
+.tone-1 { background: var(--coral); color: var(--paper); }
+.tone-2 { background: #d7c9ff; }
+.tone-3 { background: var(--paper); }
+
+.plate-chrome { position: absolute; top: 1.3rem; left: 1.3rem; display: flex; gap: 0.35rem; }
+.plate-chrome i { width: 7px; height: 7px; border: 1px solid currentColor; border-radius: 50%; }
+.project-plate-inner strong {
+  position: relative;
+  z-index: 2;
+  max-width: 75%;
+  font-size: clamp(1.8rem, 3.6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: var(--tracking-tight);
+  text-transform: capitalize;
+}
+.project-plate-inner small {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.8rem;
+  font: 500 0.6rem/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.plate-shape {
+  position: absolute;
+  right: -8%;
+  top: -10%;
+  width: 46%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.tone-0 .plate-shape { background: var(--coral); }
+.tone-1 .plate-shape { background: var(--paper); border-radius: 4px; rotate: 18deg; }
+.tone-2 .plate-shape { background: var(--ink); border-radius: 50% 0 50% 50%; }
+.tone-3 .plate-shape { background: var(--acid); border-radius: 8px; rotate: 45deg; }
+
+.project-number {
+  position: absolute;
+  z-index: 3;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem;
+  background: var(--ink);
+  color: var(--acid);
+  font: 500 0.65rem/1 var(--font-mono);
+}
+.project-open {
+  position: absolute;
+  z-index: 3;
+  right: 1rem;
+  bottom: 1rem;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+.project-card:hover .project-open { transform: translate(3px, -3px) rotate(8deg); }
+
+.project-body { padding: 1.5rem 0; border-bottom: 1px solid var(--line-invert); }
+.project-title-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.project-title-row h3 { font-size: var(--step-title); text-transform: capitalize; letter-spacing: -0.04em; }
+.project-badges { display: flex; gap: 0.75rem; flex: none; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font: 500 0.58rem/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--paper-on-ink);
+}
+.badge.is-live { color: var(--paper); }
+.badge.is-live i { width: 6px; height: 6px; border-radius: 50%; background: var(--live); }
+
+.project-body > p { min-height: 3em; margin: var(--space-3) 0 var(--space-4); color: var(--paper-on-ink); }
+.project-meta { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+.project-links { display: flex; gap: 1rem; flex: none; }
+.project-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font: 500 0.66rem/1 var(--font-mono);
+  text-transform: uppercase;
+  border-bottom: 1px solid transparent;
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.project-links a:hover { color: var(--coral); border-color: var(--coral); }
+
+/* --- The index register ---------------------------------- */
+/* Six plates plus seven rows. Thirteen plates would be a wall; as rows the
+   rest stay scannable and nothing has to hide behind a "show more". */
+.project-index-title {
+  margin: var(--space-24) 0 var(--space-6);
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--paper-on-ink);
+}
+
+.project-index { border-top: 1px solid var(--line-invert); }
+.project-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--line-invert);
+}
+
+.project-row-main {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: clamp(1rem, 2.2vw, 1.5rem) 0;
+  transition: color var(--dur-base) var(--ease-editorial);
+}
+.project-row-number { font: 500 0.66rem/1 var(--font-mono); color: var(--coral); }
+.project-row-title {
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+.project-row-kind {
+  font: 400 var(--step-meta)/1.3 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--paper-on-ink);
+}
+.project-row-year { font: 400 var(--step-meta)/1 var(--font-mono); color: var(--paper-on-ink); }
+.project-row-go {
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: translate(-8px, 8px);
+  transition: opacity var(--dur-base), transform var(--dur-base) var(--ease-out-expo);
+}
+.project-row-main:hover .project-row-title,
+.project-row-main:focus-visible .project-row-title { transform: translateX(6px); color: var(--coral); }
+.project-row-main:hover .project-row-go,
+.project-row-main:focus-visible .project-row-go { opacity: 1; transform: translate(0, 0); }
+
+.project-row-code {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line-invert);
+  border-radius: 50%;
+  color: var(--paper-on-ink);
+  flex: none;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.project-row-code:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+
+/* Long unbroken tokens: a repo slug has no natural break opportunity. */
+.project-plate-inner strong,
+.project-title-row h3 { overflow-wrap: anywhere; }
+
+@media (max-width: 900px) {
+  .project-grid { grid-template-columns: 1fr; }
+  .project-card:nth-child(even) { margin-top: 0; }
+}
+
+@media (max-width: 600px) {
+  .project-meta { flex-direction: column; align-items: flex-start; }
+
+  /* The row folds in two: identity above, metadata below. The arrow is
+     dropped — on a touch screen the whole row is the tap target. */
+  .project-row-main {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    row-gap: var(--space-1);
+  }
+  .project-row-kind { grid-column: 2; }
+  .project-row-year { grid-column: 2; }
+  .project-row-go { display: none; }
+}
+
 /* --- Marquee -------------------------------------------- */
 .marquee { overflow: hidden; width: 100%; }
 .marquee-track { display: flex; width: max-content; will-change: transform; }

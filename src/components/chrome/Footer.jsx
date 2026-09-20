@@ -2,11 +2,17 @@ import { FiArrowUp } from 'react-icons/fi';
 import { site, socials } from '../../data/site';
 import { BrandMark } from '../ui/BrandMark';
 
-/** Colophon: authorship, the three channels again, and a way back to the top. */
-export function Footer() {
+/**
+ * Colophon: authorship, the three channels again, and a way back to the top.
+ *
+ * @param {object} props
+ * @param {string} [props.homeHref] Where the monogram leads. `/` off the home page.
+ * @param {string} [props.topHref]  The top of *this* document.
+ */
+export function Footer({ homeHref = '#inicio', topHref = '#inicio' }) {
   return (
     <footer className="colophon on-ink ink-surface">
-      <a className="colophon-brand" href="#inicio" aria-label="Volver al inicio">
+      <a className="colophon-brand" href={homeHref} aria-label="Ir al inicio">
         <BrandMark compact />
       </a>
 
@@ -24,7 +30,7 @@ export function Footer() {
 
       <span className="colophon-year">© {new Date().getFullYear()}</span>
 
-      <a className="colophon-top" href="#inicio">
+      <a className="colophon-top" href={topHref}>
         <FiArrowUp aria-hidden="true" />
         <span className="visually-hidden">Volver al inicio</span>
       </a>

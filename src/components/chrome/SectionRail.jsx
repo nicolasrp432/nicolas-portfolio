@@ -14,11 +14,11 @@ import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect
  * the navbar already carries the same information.
  */
 /** The hero has no nav entry of its own, so the rail opens on chapter zero. */
-const OPENING = { id: 'inicio', index: '00', label: 'Inicio', theme: 'paper' };
+const HOME_OPENING = { id: 'inicio', index: '00', label: 'Inicio', theme: 'paper' };
 
-export function SectionRail({ sections }) {
+export function SectionRail({ sections, opening = HOME_OPENING }) {
   const root = useRef(null);
-  const [active, setActive] = useState(OPENING);
+  const [active, setActive] = useState(opening);
 
   useIsomorphicLayoutEffect(() => {
     const element = root.current;
@@ -37,7 +37,7 @@ export function SectionRail({ sections }) {
 
         // One trigger per chapter, each claiming the rail as it takes over the
         // upper half of the viewport in either scroll direction.
-        const triggers = [OPENING, ...sections].map((section) => {
+        const triggers = [opening, ...sections].map((section) => {
           const target = document.getElementById(section.id);
           if (!target) return null;
           return ScrollTrigger.create({
@@ -55,7 +55,7 @@ export function SectionRail({ sections }) {
     }, root);
 
     return () => ctx.revert();
-  }, [sections]);
+  }, [sections, opening]);
 
   return (
     <aside className="section-rail" ref={root} data-theme={active.theme} aria-hidden="true">
