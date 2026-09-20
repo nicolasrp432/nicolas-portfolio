@@ -43,8 +43,16 @@
 }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(1.25rem, 3vw, 2rem); }
 
-.hero-visual { position: relative; display: grid; place-items: center; min-height: 620px; }
-.hero-visual-inner { position: relative; display: grid; place-items: center; width: 100%; height: 100%; }
+.hero-visual { position: relative; display: grid; place-items: center; }
+/* Everything in the visual is measured against this box, and the box never
+   exceeds its column. Decoration that bleeds past the column is what put a
+   horizontal scrollbar on the phone layout. */
+.hero-visual-inner {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(480px, 100%);
+}
 
 .hero-orbit {
   position: absolute;
@@ -52,15 +60,17 @@
   border-radius: 50%;
   pointer-events: none;
 }
-.hero-orbit-a { width: min(470px, 92%); aspect-ratio: 1; }
-.hero-orbit-b { width: min(570px, 110%); height: 250px; }
+.hero-orbit-a { width: 88%; aspect-ratio: 1; }
+.hero-orbit-b { width: 100%; height: clamp(170px, 46%, 250px); }
 
+/* The cut-out is drawn at its own aspect ratio and contained, never cropped:
+   no fixed pixel height, so the framing that ships is the framing that shows. */
 .hero-portrait {
   position: relative;
   z-index: 2;
-  width: min(520px, 96%);
-  height: 610px;
   display: block;
+  width: 100%;
+  aspect-ratio: 1122 / 1402;
 }
 .hero-portrait img {
   width: 100%;
@@ -95,15 +105,19 @@
 .hero-chip svg { font-size: 1.4rem; flex: none; }
 .hero-chip span { display: flex; flex-direction: column; }
 .hero-chip strong { font-size: 0.7rem; }
-.chip-code { left: 2%; top: 24%; background: var(--acid); rotate: -5deg; }
-.chip-ai { right: -1%; bottom: 25%; background: var(--coral); color: var(--paper); rotate: 5deg; }
+.chip-code { left: 0; top: 24%; background: var(--acid); rotate: -5deg; }
+.chip-ai { right: 0; bottom: 25%; background: var(--coral); color: var(--paper); rotate: 5deg; }
 
+/* Anchored to the visual column, not to the portrait box. */
 .hero-caption {
   position: absolute;
-  bottom: 4%;
-  left: 2%;
+  bottom: 0;
+  left: 0;
+  max-width: 9ch;
   font: italic 1.2rem/1.35 var(--font-serif);
+  pointer-events: none;
 }
+@media (max-width: 900px) { .hero-caption { display: none; } }
 
 .hero-facts {
   display: flex;
@@ -262,12 +276,12 @@
 .profile-aside { display: flex; flex-direction: column; }
 .profile-asterisk {
   display: block;
+  width: clamp(4.5rem, 11vw, 8rem);
   margin: clamp(2rem, 5vw, 4rem) 0 auto;
-  font-size: clamp(5rem, 12vw, 9rem);
-  line-height: 1;
   color: var(--coral);
   transform-origin: center;
 }
+.profile-asterisk .asterisk { display: block; width: 100%; height: auto; }
 .profile-aside blockquote { max-width: 350px; }
 .profile-aside blockquote p { font: italic 1.35rem/1.5 var(--font-serif); }
 
@@ -312,13 +326,38 @@
 .stack-icons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: clamp(1rem, 2.4vw, 1.6rem);
+  gap: clamp(0.5rem, 1.6vw, 0.9rem);
   margin-bottom: var(--space-12);
-  font-size: 1.8rem;
 }
-.stack-icons li { transition: color var(--dur-base), transform var(--dur-base) var(--ease-out-expo); }
-.stack-icons li:hover { color: var(--coral); transform: translateY(-5px) rotate(-4deg); }
+.stack-tile {
+  display: grid;
+  place-items: center;
+  gap: 0.45rem;
+  width: clamp(74px, 19vw, 106px);
+  padding: clamp(0.7rem, 2vw, 1rem) 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper-warm);
+  /* GSAP owns transform here; the hover states below must not compete for it. */
+  will-change: transform;
+  transition: background var(--dur-fast), border-color var(--dur-fast),
+              color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.stack-tile svg { font-size: clamp(1.35rem, 4vw, 1.85rem); }
+.stack-tile-label {
+  font: 500 0.54rem/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.stack-tile:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  box-shadow: var(--shadow-slab-coral);
+}
+.stack-tile:hover .stack-tile-label { color: var(--acid); }
 
 .tool-stage { position: relative; border-top: 1px solid var(--line); padding-top: var(--space-8); }
 .tool-progress { height: 2px; background: var(--line); margin-bottom: var(--space-8); }
@@ -441,29 +480,29 @@
 
 /* ============================================================
    RESPONSIVE
+
+   Rule of the file: nothing below may set a fixed pixel height or a width
+   above 100% on an element that sits in the document flow. Both are how a
+   phone ends up with a horizontal scrollbar nobody can see on a desktop.
    ============================================================ */
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
-  .hero-visual { min-height: 520px; margin-top: var(--space-8); }
-  .hero-portrait { height: 520px; width: min(500px, 92%); }
+  .hero-visual { margin-top: var(--space-8); }
   .hero-facts li:nth-child(2) { display: none; }
   .project-grid { grid-template-columns: 1fr; }
   .project-card:nth-child(even) { margin-top: 0; }
   .profile, .roadmap { grid-template-columns: 1fr; }
-  .profile-aside { min-height: 260px; }
+  .profile-aside { min-height: 0; }
   .profile-asterisk { margin: var(--space-8) 0 var(--space-4); }
-  .stack-icons { justify-content: flex-start; }
 }
 
 @media (max-width: 600px) {
   .hero { min-height: auto; }
   .hero-grid { padding: var(--space-12) 0 var(--space-8); }
-  .hero-visual { min-height: 400px; }
-  .hero-portrait { height: 400px; width: 100%; }
-  .hero-orbit-a { width: 320px; }
-  .hero-orbit-b { width: 360px; height: 190px; }
+  .hero-visual-inner { width: min(360px, 100%); }
   .hero-chip { padding: 0.55rem; }
+  .hero-caption { font-size: 1rem; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .hero-facts { flex-direction: column; gap: var(--space-2); }
   .profile-copy { grid-template-columns: 1fr; }
@@ -471,4 +510,15 @@
   .project-meta { flex-direction: column; align-items: flex-start; }
   .projects-foot { justify-content: flex-start; }
   .principle { grid-template-columns: 36px 1fr; }
+
+  /* `clamp()` floors are not responsive: below ~380px the 4.5rem minimum is
+     wider than the screen, so the word is clipped rather than scaled. */
+  .contact-title { font-size: clamp(2.6rem, 15vw, 5rem); }
+  .tag-row.is-large li { white-space: normal; }
 }
+
+/* Long unbroken tokens: a repo slug, an email address. These are the only
+   strings on the page with no natural break opportunity. */
+.copy-email-address,
+.project-plate-inner strong,
+.project-title-row h3 { overflow-wrap: anywhere; }

@@ -7,8 +7,7 @@ import { SplitHeadline } from '../components/motion/SplitHeadline';
 import { toProjectCard } from '../data/projects';
 
 beforeEach(() => {
-  // Keep the intro curtain out of the way and the GitHub call off the network.
-  sessionStorage.setItem('nr:intro-seen', '1');
+  // Keep the GitHub call off the network; the page itself needs no priming.
   vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('offline'))));
 });
 

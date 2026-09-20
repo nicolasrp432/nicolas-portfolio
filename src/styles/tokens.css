@@ -58,6 +58,9 @@
 
   /* --- Structure ----------------------------------------- */
   --nav-h: 86px;
+  /* The height the bar condenses to once the reader has moved. Anchor
+     offsets key off this, because it is the state during navigation. */
+  --nav-h-min: 64px;
   --rail-w: 3px;
   --radius-sm: 2px;
   --radius-pill: 100px;
@@ -76,9 +79,9 @@
   --z-grain: 60;
   --z-cursor: 90;
   --z-nav: 40;
-  --z-preloader: 100;
+  --z-menu: 50;
 }
 
 @media (max-width: 600px) {
-  :root { --nav-h: 70px; }
+  :root { --nav-h: 70px; --nav-h-min: 58px; }
 }

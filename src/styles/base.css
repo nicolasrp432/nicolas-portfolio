@@ -8,16 +8,20 @@
 
 html {
   scroll-behavior: smooth;
-  /* Anchor targets must clear the sticky masthead. */
-  scroll-padding-top: calc(var(--nav-h) + var(--space-4));
+  /* Anchor targets clear the *condensed* bar: by the time a jump lands, the
+     masthead has always shrunk. Offsetting by the tall state leaves a gap. */
+  scroll-padding-top: calc(var(--nav-h-min) + var(--space-4));
   -webkit-text-size-adjust: 100%;
   /* `clip` rather than `hidden`: it contains the oversized decorative
      elements without turning the root into a scroll container, which would
-     silently break `position: sticky` on the masthead. */
+     silently break `position: sticky` on the masthead. Repeated on <body>
+     because a root-level clip is not honoured consistently once an element
+     inside a transformed subtree overflows. */
   overflow-x: clip;
 }
 
 body {
+  overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -28,11 +32,26 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Locked while the intro curtain or the mobile menu owns the viewport. */
+/* Locked while the mobile menu owns the viewport. */
 body[data-scroll-locked='true'] { overflow: hidden; }
 
 img, svg, video { display: block; max-width: 100%; }
 img { height: auto; }
+
+/* Grid and flex children default to `min-width: auto`, which means one long
+   unbroken token — a repo name, an email address — silently widens its whole
+   track past the viewport. This is the single most common source of the
+   stray horizontal scroll on phones, and it is invisible on a desktop. */
+.hero-grid > *,
+.project-grid > *,
+.project-card > *,
+.profile > *,
+.roadmap > *,
+.section-heading > *,
+.tool-act-head > *,
+.masthead-bar > * { min-width: 0; }
+
+h1, h2, h3, h4 { overflow-wrap: break-word; }
 
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
