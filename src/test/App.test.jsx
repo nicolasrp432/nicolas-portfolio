@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import App from '../App';
 import { CopyEmail } from '../components/ui/CopyEmail';
 import { SplitHeadline } from '../components/motion/SplitHeadline';
-import { toProjectCard } from '../data/projects';
+import { curatedProjects, toProjectCard } from '../data/projects';
 
 beforeEach(() => {
   // Keep the GitHub call off the network; the page itself needs no priming.
@@ -49,11 +49,29 @@ describe('App', () => {
     expect(screen.getByRole('link', { name: /saltar al contenido/i })).toHaveFocus();
   });
 
-  it('falls back to the curated project when GitHub is unreachable', async () => {
+  it('renders the whole curated list even with GitHub unreachable', async () => {
     await renderSettled();
 
-    const projects = document.getElementById('proyectos');
-    expect(within(projects).getByRole('heading', { name: /portfolio editorial/i })).toBeInTheDocument();
+    const section = document.getElementById('proyectos');
+    // The list is curated data, not an API response: losing the network costs
+    // freshness (year, stars, language), never a project.
+    curatedProjects.forEach((project) => {
+      // A featured project prints its title twice — once on the plate, once as
+      // the card heading — so this counts occurrences rather than demanding one.
+      expect(within(section).getAllByText(project.title).length, project.slug).toBeGreaterThan(0);
+    });
+  });
+
+  it('splits the list into featured cards and index rows', async () => {
+    await renderSettled();
+
+    const section = document.getElementById('proyectos');
+    const featured = curatedProjects.filter((project) => project.featured);
+
+    expect(section.querySelectorAll('.project-card')).toHaveLength(featured.length);
+    expect(section.querySelectorAll('.project-row')).toHaveLength(
+      curatedProjects.length - featured.length,
+    );
   });
 });
 
@@ -107,27 +125,60 @@ describe('CopyEmail', () => {
   });
 });
 
-describe('toProjectCard', () => {
-  it('prefers the curated copy over the raw GitHub description', () => {
-    const card = toProjectCard(
-      { name: 'nicolas-portfolio', description: 'raw text', html_url: '#', pushed_at: '2025-01-01' },
-      0,
-    );
+describe('the curated project list', () => {
+  it('gives every project the fields the cards read', () => {
+    curatedProjects.forEach((project) => {
+      expect(project.slug, `${project.slug}: slug`).toBeTruthy();
+      expect(project.title, `${project.slug}: title`).toBeTruthy();
+      expect(project.kind, `${project.slug}: kind`).toBeTruthy();
+      expect(project.tags?.length, `${project.slug}: tags`).toBeGreaterThan(0);
+      // Copy is written by hand because almost none of these repos carry a
+      // usable description on GitHub. A short one is a placeholder nobody
+      // replaced.
+      expect(project.summary?.length, `${project.slug}: summary`).toBeGreaterThan(30);
+    });
+  });
 
-    expect(card.title).toBe('Portfolio editorial');
-    expect(card.summary).not.toBe('raw text');
+  it('has no duplicate entries', () => {
+    const slugs = curatedProjects.map((project) => project.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+});
+
+describe('toProjectCard', () => {
+  it('never lets live repo data overwrite the curated copy', () => {
+    const project = curatedProjects[0];
+    const card = toProjectCard(project, 0, {
+      name: project.slug,
+      language: 'Brainfuck',
+      description: 'raw text nobody wrote for a portfolio',
+      pushed_at: '2026-01-01T00:00:00Z',
+      stargazers_count: 7,
+    });
+
+    expect(card.title).toBe(project.title);
+    expect(card.summary).toBe(project.summary);
+    expect(card.tags).toEqual(project.tags);
+
+    // Only what actually changes over time comes from the API.
+    expect(card.year).toBe('2026');
+    expect(card.stars).toBe(7);
+    expect(card.language).toBe('Brainfuck');
+  });
+
+  it('keeps the curated values when no repo was fetched', () => {
+    const project = curatedProjects[0];
+    const card = toProjectCard(project, 0, undefined);
+
+    expect(card.year).toBe(project.year);
+    expect(card.stars).toBe(0);
     expect(card.index).toBe('01');
   });
 
-  it('humanises an unknown repo name and keeps its own description', () => {
-    const card = toProjectCard(
-      { name: 'mi-app-genial', description: 'Una app', html_url: '#', language: 'TypeScript', topics: ['react'] },
-      4,
-    );
+  it('builds the repo URL from the owner when the project is not mine', () => {
+    const team = curatedProjects.find((project) => project.owner);
+    expect(team, 'expected at least one project owned by a collaborator').toBeDefined();
 
-    expect(card.title).toBe('mi app genial');
-    expect(card.summary).toBe('Una app');
-    expect(card.tags).toEqual(['TypeScript', 'react']);
-    expect(card.index).toBe('05');
+    expect(toProjectCard(team, 4).repoUrl).toBe(`https://github.com/${team.owner}/${team.slug}`);
   });
 });

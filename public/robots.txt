@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nicolasrp432.github.io/nicolas-portfolio/sitemap.xml
+Sitemap: https://nicolas-portfolio-eight.vercel.app/sitemap.xml

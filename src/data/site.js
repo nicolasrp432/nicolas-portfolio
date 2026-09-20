@@ -12,7 +12,7 @@ export const site = {
   email: 'nicolasrp432@gmail.com',
   location: 'España — remoto',
   availability: 'Disponible para colaborar',
-  url: 'https://nicolasrp432.github.io/nicolas-portfolio/',
+  url: 'https://nicolas-portfolio-eight.vercel.app/',
   description:
     'Portfolio de Nicolás Rodríguez, desarrollador frontend y constructor de producto digital. React, interfaces con criterio y soluciones apoyadas en IA.',
 };

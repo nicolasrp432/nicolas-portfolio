@@ -113,11 +113,24 @@ escritorio y es la causa habitual del scroll lateral en móvil.
 
 ### Proyectos
 
-`useGithubProjects` lee la API pública de GitHub, ordena por estrellas y
-actividad, y cachea 30 min en `sessionStorage` (el límite sin autenticar es de 60
-peticiones/hora). `projectOverrides` en `src/data/projects.js` permite sustituir
-la descripción de un repo por copy editorial; el resto usa los datos de la API.
-Si la petición falla, se renderiza la selección curada.
+`src/data/projects.js` es la **fuente de verdad**: lista curada y ordenada. Antes
+estaba invertido —la API de GitHub elegía los seis repos con más estrellas y
+actividad, y un mapa de overrides parcheaba el copy—, así que la portada la
+decidía el último push y la selección no se podía controlar.
+
+`useGithubProjects` ya no selecciona, solo **enriquece**: cruza por nombre de
+repo y aporta año del último push, lenguaje y estrellas. Sin red, con límite de
+peticiones agotado o para un repo de otra persona (el proyecto en equipo lo es),
+quedan los valores curados. La lista nunca depende de la red. La respuesta se
+cachea 30 min en `sessionStorage`: sin autenticar GitHub da 60 peticiones/hora.
+
+El copy va escrito a mano porque casi ningún repo tiene descripción en GitHub, y
+los que la tienen es de plantilla. Nada se infiere del nombre del repo. Un test
+falla si un `summary` baja de 30 caracteres, que es como se cuela un marcador de
+posición sin sustituir.
+
+Los `featured` llevan tarjeta con plancha de color; el resto son filas de índice
+compactas. Trece planchas serían un muro de 3.500 px.
 
 ## Accesibilidad
 
@@ -140,8 +153,3 @@ sirve como WebP de 76 KB (32 KB en móvil) mediante `<picture>`, con el PNG de
 
 Build actual: **~94 KB gzip** de aplicación + **27 KB gzip** de GSAP en su propio
 chunk. El grano de la página es un filtro SVG en línea de ~300 bytes, no un bitmap.
-
-## Pendiente
-
-- `site.url` y las URL absolutas de `index.html` asumen GitHub Pages; ajustar si
-  se despliega en otro dominio.

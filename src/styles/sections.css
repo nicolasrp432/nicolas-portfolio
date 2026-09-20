@@ -264,6 +264,74 @@
 }
 .project-links a:hover { color: var(--coral); border-color: var(--coral); }
 
+/* --- The index register ---------------------------------- */
+/* Six plates plus seven rows. Thirteen plates would be a wall; as rows the
+   rest stay scannable and nothing has to hide behind a "show more". */
+.project-index-title {
+  margin: var(--space-24) 0 var(--space-6);
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--paper-on-ink);
+}
+
+.project-index { border-top: 1px solid var(--line-invert); }
+.project-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--line-invert);
+}
+
+.project-row-main {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: clamp(1rem, 2.2vw, 1.5rem) 0;
+  transition: color var(--dur-base) var(--ease-editorial);
+}
+.project-row-number { font: 500 0.66rem/1 var(--font-mono); color: var(--coral); }
+.project-row-title {
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+.project-row-kind {
+  font: 400 var(--step-meta)/1.3 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--paper-on-ink);
+}
+.project-row-year { font: 400 var(--step-meta)/1 var(--font-mono); color: var(--paper-on-ink); }
+.project-row-go {
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: translate(-8px, 8px);
+  transition: opacity var(--dur-base), transform var(--dur-base) var(--ease-out-expo);
+}
+.project-row-main:hover .project-row-title,
+.project-row-main:focus-visible .project-row-title { transform: translateX(6px); color: var(--coral); }
+.project-row-main:hover .project-row-go,
+.project-row-main:focus-visible .project-row-go { opacity: 1; transform: translate(0, 0); }
+
+.project-row-code {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line-invert);
+  border-radius: 50%;
+  color: var(--paper-on-ink);
+  flex: none;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.project-row-code:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+
 .projects-foot { display: flex; justify-content: flex-end; margin-top: var(--space-16); }
 
 /* --- 03 · Profile --------------------------------------- */
@@ -515,6 +583,16 @@
   .profile-lead { grid-column: auto; }
   .project-meta { flex-direction: column; align-items: flex-start; }
   .projects-foot { justify-content: flex-start; }
+
+  /* The row folds in two: identity above, metadata below. The arrow is
+     dropped — on a touch screen the whole row is the tap target. */
+  .project-row-main {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    row-gap: var(--space-1);
+  }
+  .project-row-kind { grid-column: 2; }
+  .project-row-year { grid-column: 2; }
+  .project-row-go { display: none; }
   .principle { grid-template-columns: 36px 1fr; }
   .tag-row.is-large li { white-space: normal; }
 }
