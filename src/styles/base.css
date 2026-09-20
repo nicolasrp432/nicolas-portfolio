@@ -50,6 +50,7 @@ img { height: auto; }
 .section-heading > *,
 .tool-grid > *,
 .tool-card-head > *,
+.school-head > *,
 .masthead-bar > * { min-width: 0; }
 
 h1, h2, h3, h4 { overflow-wrap: break-word; }

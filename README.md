@@ -132,6 +132,34 @@ posición sin sustituir.
 Los `featured` llevan tarjeta con plancha de color; el resto son filas de índice
 compactas. Trece planchas serían un muro de 3.500 px.
 
+### Educación
+
+`/educacion/` es **un segundo documento**, no una ruta de cliente. El proyecto no
+tiene router y se despliega estático, así que se añade una entrada más a
+`rollupOptions.input` y Vercel la sirve sin reescrituras. A cambio: metadatos
+propios e indexables, las anclas `#seccion` siguen sin ambigüedad, y el JS de la
+home no crece — cada página carga su propio bundle sobre el chunk compartido.
+
+`src/data/education.js` separa el trabajo de escuela del de cliente a propósito:
+son ejercicios y currículo, no entregables para alguien. La forma del dato es
+idéntica, así que `toProjectCard`, `ProjectCard` y `ProjectRow` los renderizan
+sin cambios.
+
+⚠️ **Un enlace del navbar a otra página estaba condenado a morir.** `goTo`
+llamaba a `preventDefault()` sin condición y solo después buscaba el destino:
+cancelaba la navegación y no la sustituía por nada. Ahora la comprobación va
+antes, y un enlace con `href` se deja al navegador. Un test lo vigila afirmando
+que el click **no** queda cancelado.
+
+En `navLinks`, la ausencia de `index` es la señal de que una entrada vive fuera
+de la home: el rail y el espía de scroll solo ven `chapters`, la numeración
+01–05 sigue contigua, y el navbar marca esa entrada con `↗` en vez de numeral.
+
+Las certificaciones usan `<details>` / `<summary>` nativos —teclado, semántica y
+estado sin JS— y el bloque no se renderiza mientras la lista esté vacía: una
+sección vacía se lee como un sitio a medio hacer. Cada certificado exige
+`verifyUrl` o `file`; un test falla si falta cualquiera de los dos.
+
 ## Accesibilidad
 
 - Skip link como primer elemento enfocable.

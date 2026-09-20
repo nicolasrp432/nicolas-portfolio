@@ -15,8 +15,11 @@ import { GITHUB_USER } from './site';
  * every entry was checked against the repo tree and the live deploy.
  *
  * `featured` entries get a full card with a colour plate; the rest render as
- * compact index rows, so thirteen projects stay scannable instead of becoming
- * a wall of plates.
+ * compact index rows, so the list stays scannable instead of becoming a wall
+ * of plates.
+ *
+ * School work lives in `education.js`, not here: exercises and curriculum are
+ * a different kind of thing from work built for someone.
  */
 export const curatedProjects = [
   {
@@ -149,15 +152,6 @@ export const curatedProjects = [
     year: '2026',
   },
   {
-    slug: 'A-mazing',
-    title: 'A-Maze-ing',
-    kind: 'Algoritmos · Python',
-    summary:
-      'Generador de laberintos del currículo de 42: lee una configuración, construye el laberinto (opcionalmente perfecto), lo guarda en un formato hexadecimal compacto y lo dibuja en el terminal. La lógica vive en un módulo instalable aparte.',
-    tags: ['Python', 'Algoritmos'],
-    year: '2026',
-  },
-  {
     slug: 'xs-landing-page',
     title: 'XS Landing',
     kind: 'Landing de producto',
@@ -192,7 +186,9 @@ export const curatedProjects = [
  * Curated copy always wins — the point of the list is that it reads better
  * than a repo description. Live data only fills in what changes over time.
  *
- * @param {object} project A `curatedProjects` entry.
+ * Shared with `education.js`, whose entries have the same shape.
+ *
+ * @param {object} project A `curatedProjects` or `educationProjects` entry.
  * @param {number} index Position in the rendered list, for the numeral.
  * @param {object} [repo] The matching GitHub repo, when one was fetched.
  */
@@ -205,6 +201,8 @@ export function toProjectCard(project, index, repo) {
     name: project.slug,
     title: project.title,
     kind: project.kind,
+    // Only education entries carry this; it is what groups them by school.
+    school: project.school,
     summary: project.summary,
     tags: project.tags,
     featured: project.featured === true,

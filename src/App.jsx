@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { ScrollTrigger } from './lib/gsap';
 import { useHasPointer, useReducedMotion } from './hooks/useMediaQuery';
-import { navLinks } from './data/site';
+import { chapters } from './data/site';
 
 import { Cursor } from './components/chrome/Cursor';
 import { GrainOverlay } from './components/chrome/GrainOverlay';
@@ -48,7 +48,7 @@ export default function App() {
 
       {hasPointer && !reducedMotion && <Cursor />}
       <GrainOverlay />
-      <SectionRail sections={navLinks} />
+      <SectionRail sections={chapters} />
 
       <div className="shell">
         <Navbar />

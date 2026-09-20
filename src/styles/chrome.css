@@ -126,8 +126,11 @@
 
 @media (min-width: 1200px) and (prefers-reduced-motion: no-preference) {
   .section-rail { display: flex; }
-  /* The masthead is sticky *inside* the shell, so one offset covers both. */
-  .shell { padding-left: 58px; }
+  /* Only a shell that actually has a rail beside it gets the offset. The
+     education page renders no rail, and a bare `.shell` rule would leave it
+     with 58px of dead gutter. The masthead is sticky *inside* the shell, so
+     this one offset covers both. */
+  .section-rail + .shell { padding-left: 58px; }
 }
 
 /* --- Masthead ------------------------------------------- */

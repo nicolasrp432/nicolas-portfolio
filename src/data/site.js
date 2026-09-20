@@ -24,16 +24,28 @@ export const socials = [
 ];
 
 /**
- * The five chapters. `theme` names the background each section sits on, which
- * is what the index rail re-colours itself from as the reader moves through.
+ * Everything the masthead lists, in reading order.
+ *
+ * An entry with an `index` is a chapter of the home page: the rail numbers it
+ * and the active-section spy watches it. An entry with an `href` is a separate
+ * document — it has no numeral, which is what lets the chapter numbering stay
+ * contiguous at 01–05 and gives the navbar something to mark with an outbound
+ * glyph instead.
+ *
+ * `theme` names the background each chapter sits on, which is what the index
+ * rail re-colours itself from as the reader moves through.
  */
 export const navLinks = [
   { id: 'proyectos', label: 'Proyectos', index: '01', theme: 'ink' },
+  { id: 'educacion', label: 'Educación', href: '/educacion/' },
   { id: 'perfil', label: 'Perfil', index: '02', theme: 'paper' },
   { id: 'herramientas', label: 'Herramientas', index: '03', theme: 'paper' },
   { id: 'ruta', label: 'Ruta', index: '04', theme: 'coral' },
   { id: 'contacto', label: 'Contacto', index: '05', theme: 'ink' },
 ];
+
+/** Only what lives on the home page. The rail and the scroll spy use this. */
+export const chapters = navLinks.filter((link) => link.index);
 
 export const heroFacts = [
   site.availability,

@@ -1,24 +1,24 @@
-import { FiArrowUpRight, FiGithub, FiStar } from 'react-icons/fi';
 import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { useGithubProjects } from '../../hooks/useGithubProjects';
 import { GITHUB_USER } from '../../data/site';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ArrowLink } from '../ui/ArrowLink';
+import { ProjectCard } from '../ui/ProjectCard';
+import { ProjectRow } from '../ui/ProjectRow';
 
 const HEADING = [[{ text: 'Proyectos reales,' }], [{ text: 'ideas con ' }, { text: 'propósito.', accent: true }]];
 
 /**
  * The work index, rendered on ink, in two registers.
  *
- * Six featured projects get a full card with a generated colour plate — repos
- * change faster than screenshots do, and a typographic plate keeps the grid
- * coherent while still giving every project its own identity. The plate's
- * colour cycles a fixed four-tone set from the palette, never a random hue.
+ * The featured projects get a full card with a generated colour plate; the
+ * rest render as compact index rows. Sixteen plates in a row would be a wall
+ * nobody scrolls to the end of; as rows they stay scannable and the section
+ * still shows everything rather than hiding work behind a button.
  *
- * The rest render as compact index rows. Thirteen plates in a row would be a
- * 3,500px wall nobody scrolls to the end of; as rows they stay scannable and
- * the section still shows everything rather than hiding work behind a button.
+ * Both registers live in `ui/ProjectCard` and `ui/ProjectRow`, because the
+ * education page renders the same two shapes.
  */
 export function Projects() {
   const { projects, status } = useGithubProjects();
@@ -84,76 +84,7 @@ export function Projects() {
 
       <ul className="project-grid">
         {featured.map((project, index) => (
-          <li className="project-card" key={project.id}>
-            <a
-              className="project-plate"
-              href={project.liveUrl || project.repoUrl}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor="ABRIR"
-              aria-label={`Abrir ${project.title}${project.liveUrl ? '' : ' en GitHub'} (se abre en una pestaña nueva)`}
-            >
-              <span className={`project-plate-inner tone-${index % 4}`} aria-hidden="true">
-                <span className="plate-chrome">
-                  <i />
-                  <i />
-                  <i />
-                </span>
-                <strong>{project.title}</strong>
-                <small>
-                  {project.language} · {project.index}
-                </small>
-                <span className="plate-shape" />
-              </span>
-              <span className="project-number" aria-hidden="true">
-                {project.index}
-              </span>
-              <span className="project-open" aria-hidden="true">
-                <FiArrowUpRight />
-              </span>
-            </a>
-
-            <div className="project-body">
-              <div className="project-title-row">
-                <h3>{project.title}</h3>
-                <span className="project-badges">
-                  {project.stars > 0 && (
-                    <span className="badge">
-                      <FiStar aria-hidden="true" /> {project.stars}
-                      <span className="visually-hidden"> estrellas en GitHub</span>
-                    </span>
-                  )}
-                  {project.liveUrl && (
-                    <span className="badge is-live">
-                      <i aria-hidden="true" /> LIVE
-                    </span>
-                  )}
-                </span>
-              </div>
-
-              <p>{project.summary}</p>
-
-              <div className="project-meta">
-                <ul className="tag-row">
-                  {project.tags.map((tag) => (
-                    <li key={tag}>{tag}</li>
-                  ))}
-                </ul>
-                <div className="project-links">
-                  <a href={project.repoUrl} target="_blank" rel="noreferrer">
-                    <FiGithub aria-hidden="true" /> Código
-                    <span className="visually-hidden"> de {project.title} en GitHub</span>
-                  </a>
-                  {project.liveUrl && (
-                    <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                      Visitar <FiArrowUpRight aria-hidden="true" />
-                      <span className="visually-hidden"> {project.title} en vivo</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </li>
+          <ProjectCard key={project.id} project={project} tone={index} />
         ))}
       </ul>
 
@@ -163,40 +94,7 @@ export function Projects() {
 
           <ol className="project-index">
             {indexed.map((project) => (
-              <li className="project-row" key={project.id}>
-                {/* Two sibling links, never nested: the row opens the live
-                    site, the trailing mark opens the repository. */}
-                <a
-                  className="project-row-main"
-                  href={project.liveUrl || project.repoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-cursor={project.liveUrl ? 'ABRIR' : 'CÓDIGO'}
-                  aria-label={`${project.title} — ${project.kind}${project.liveUrl ? '' : ' (en GitHub)'} (se abre en una pestaña nueva)`}
-                >
-                  <span className="project-row-number" aria-hidden="true">
-                    {project.index}
-                  </span>
-                  <span className="project-row-title">{project.title}</span>
-                  <span className="project-row-kind">{project.kind}</span>
-                  <span className="project-row-year" aria-hidden="true">
-                    {project.year}
-                  </span>
-                  <span className="project-row-go" aria-hidden="true">
-                    <FiArrowUpRight />
-                  </span>
-                </a>
-
-                <a
-                  className="project-row-code"
-                  href={project.repoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`Código de ${project.title} en GitHub (se abre en una pestaña nueva)`}
-                >
-                  <FiGithub aria-hidden="true" />
-                </a>
-              </li>
+              <ProjectRow key={project.id} project={project} />
             ))}
           </ol>
         </>
