@@ -6,25 +6,29 @@ import { GITHUB_USER } from '../../data/site';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ArrowLink } from '../ui/ArrowLink';
 
-const HEADING = [[{ text: 'Proyectos reales,' }], [{ text: 'ideas con ', accent: false }, { text: 'propósito.', accent: true }]];
+const HEADING = [[{ text: 'Proyectos reales,' }], [{ text: 'ideas con ' }, { text: 'propósito.', accent: true }]];
 
 /**
- * The work index, rendered on ink.
+ * The work index, rendered on ink, in two registers.
  *
- * Each card gets a generated colour plate instead of a screenshot: repos
+ * Six featured projects get a full card with a generated colour plate — repos
  * change faster than screenshots do, and a typographic plate keeps the grid
  * coherent while still giving every project its own identity. The plate's
- * colour is derived from the project's position, cycling a fixed four-tone set
- * from the palette rather than a random hue.
+ * colour cycles a fixed four-tone set from the palette, never a random hue.
+ *
+ * The rest render as compact index rows. Thirteen plates in a row would be a
+ * 3,500px wall nobody scrolls to the end of; as rows they stay scannable and
+ * the section still shows everything rather than hiding work behind a button.
  */
 export function Projects() {
   const { projects, status } = useGithubProjects();
 
+  const featured = projects.filter((project) => project.featured);
+  const indexed = projects.filter((project) => !project.featured);
+
   const scope = useGsapScope(
     () => {
-      const cards = gsap.utils.toArray('.project-card');
-
-      cards.forEach((card) => {
+      gsap.utils.toArray('.project-card').forEach((card) => {
         gsap.fromTo(
           card,
           { y: 64, opacity: 0 },
@@ -49,6 +53,22 @@ export function Projects() {
           },
         );
       });
+
+      const rows = gsap.utils.toArray('.project-row');
+      if (rows.length > 0) {
+        gsap.fromTo(
+          rows,
+          { opacity: 0, x: -18 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.7,
+            ease: 'expo.out',
+            stagger: 0.06,
+            scrollTrigger: { trigger: rows[0], start: 'top 90%', once: true },
+          },
+        );
+      }
     },
     [projects.length],
     MOTION_OK,
@@ -57,13 +77,13 @@ export function Projects() {
   return (
     <section className="section projects on-ink ink-surface" id="proyectos" ref={scope}>
       <SectionHeading
-        eyebrow={status === 'live' ? 'Trabajo reciente · en vivo desde GitHub' : 'Trabajo reciente'}
+        eyebrow={status === 'live' ? 'Trabajo seleccionado · datos en vivo desde GitHub' : 'Trabajo seleccionado'}
         lines={HEADING}
-        standfirst="Una selección viva de productos que he diseñado y desarrollado. Cada pieza une una necesidad concreta, decisiones visuales y una implementación lista para evolucionar."
+        standfirst="Sitios para clientes, encargos propios y experimentos. Cada pieza une una necesidad concreta, decisiones visuales y una implementación lista para evolucionar."
       />
 
       <ul className="project-grid">
-        {projects.map((project, index) => (
+        {featured.map((project, index) => (
           <li className="project-card" key={project.id}>
             <a
               className="project-plate"
@@ -136,6 +156,51 @@ export function Projects() {
           </li>
         ))}
       </ul>
+
+      {indexed.length > 0 && (
+        <>
+          <h3 className="project-index-title">Más trabajo</h3>
+
+          <ol className="project-index">
+            {indexed.map((project) => (
+              <li className="project-row" key={project.id}>
+                {/* Two sibling links, never nested: the row opens the live
+                    site, the trailing mark opens the repository. */}
+                <a
+                  className="project-row-main"
+                  href={project.liveUrl || project.repoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor={project.liveUrl ? 'ABRIR' : 'CÓDIGO'}
+                  aria-label={`${project.title} — ${project.kind}${project.liveUrl ? '' : ' (en GitHub)'} (se abre en una pestaña nueva)`}
+                >
+                  <span className="project-row-number" aria-hidden="true">
+                    {project.index}
+                  </span>
+                  <span className="project-row-title">{project.title}</span>
+                  <span className="project-row-kind">{project.kind}</span>
+                  <span className="project-row-year" aria-hidden="true">
+                    {project.year}
+                  </span>
+                  <span className="project-row-go" aria-hidden="true">
+                    <FiArrowUpRight />
+                  </span>
+                </a>
+
+                <a
+                  className="project-row-code"
+                  href={project.repoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`Código de ${project.title} en GitHub (se abre en una pestaña nueva)`}
+                >
+                  <FiGithub aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
 
       <div className="projects-foot">
         <ArrowLink href={`https://github.com/${GITHUB_USER}?tab=repositories`}>

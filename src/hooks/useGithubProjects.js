@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GITHUB_USER } from '../data/site';
-import { fallbackProjects, toProjectCard } from '../data/projects';
+import { curatedProjects, toProjectCard } from '../data/projects';
 
 const CACHE_KEY = `gh:${GITHUB_USER}:repos`;
 const CACHE_TTL = 1000 * 60 * 30; // 30 min
@@ -25,20 +25,26 @@ function writeCache(repos) {
   }
 }
 
-const selectShowcase = (repos) =>
-  repos
-    .filter((repo) => !repo.fork && !repo.archived && repo.name !== GITHUB_USER)
-    .sort((a, b) => b.stargazers_count - a.stargazers_count || (a.pushed_at < b.pushed_at ? 1 : -1))
-    .slice(0, 6);
+/** Only the fields the cards actually read, so the cache entry stays small. */
+const slim = (repo) => ({
+  name: repo.name,
+  language: repo.language,
+  pushed_at: repo.pushed_at,
+  stargazers_count: repo.stargazers_count,
+});
 
 /**
- * Live project list, degraded gracefully: a curated fallback renders
- * immediately, then real repos replace it if the API answers.
+ * The curated work index, enriched with live repo data where it exists.
+ *
+ * The list never depends on the network: `curatedProjects` renders in full on
+ * the first paint and the fetch only adds last-push year, language and stars.
+ * A failed request, a rate limit or a repo owned by someone else (the team
+ * project is) simply leaves the curated values in place.
  *
  * @returns {{ projects: object[], status: 'idle'|'live'|'fallback' }}
  */
 export function useGithubProjects() {
-  const [repos, setRepos] = useState(fallbackProjects);
+  const [repos, setRepos] = useState(null);
   const [status, setStatus] = useState('idle');
 
   useEffect(() => {
@@ -51,16 +57,16 @@ export function useGithubProjects() {
 
     const controller = new AbortController();
 
-    fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=pushed&per_page=30`, {
+    fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100`, {
       signal: controller.signal,
       headers: { Accept: 'application/vnd.github+json' },
     })
       .then((response) => (response.ok ? response.json() : Promise.reject(new Error(response.status))))
       .then((data) => {
-        const showcase = selectShowcase(data);
-        if (!showcase.length) return;
-        writeCache(showcase);
-        setRepos(showcase);
+        if (!Array.isArray(data) || data.length === 0) return;
+        const slimmed = data.map(slim);
+        writeCache(slimmed);
+        setRepos(slimmed);
         setStatus('live');
       })
       .catch((error) => {
@@ -70,5 +76,12 @@ export function useGithubProjects() {
     return () => controller.abort();
   }, []);
 
-  return { projects: repos.map(toProjectCard), status };
+  const projects = useMemo(() => {
+    const byName = new Map((repos ?? []).map((repo) => [repo.name, repo]));
+    return curatedProjects.map((project, index) =>
+      toProjectCard(project, index, byName.get(project.slug)),
+    );
+  }, [repos]);
+
+  return { projects, status };
 }
