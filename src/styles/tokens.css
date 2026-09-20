@@ -31,9 +31,14 @@
   --font-serif:   'Playfair Display', ui-serif, Georgia, serif;
   --font-mono:    'DM Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* Fluid display scale. Each step is a deliberate jump, not a ramp. */
-  --step-hero:    clamp(3.4rem, 8.4vw, 8.75rem);
-  --step-display: clamp(2.8rem, 6vw, 6rem);
+  /* Fluid display scale. Each step is a deliberate jump, not a ramp.
+
+     The ceilings are set by the narrowest column each step has to live in,
+     not by what looks biggest on a wide monitor: `--step-hero` shares its
+     row with the portrait, `--step-display` with the standfirst. Sized past
+     that, a headline overflows its column and wraps badly. */
+  --step-hero:    clamp(2.6rem, 7.2vw, 6rem);
+  --step-display: clamp(2.4rem, 5vw, 5rem);
   --step-title:   clamp(1.5rem, 2.4vw, 2.1rem);
   --step-lead:    clamp(1.05rem, 1.5vw, 1.3rem);
   --step-body:    clamp(0.95rem, 1.05vw, 1.05rem);

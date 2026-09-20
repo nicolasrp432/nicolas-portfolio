@@ -19,8 +19,7 @@ export const site = {
 
 export const socials = [
   { id: 'github', label: 'GitHub', handle: `@${GITHUB_USER}`, url: `https://github.com/${GITHUB_USER}` },
-  // TODO: reemplazar por la URL real del perfil de LinkedIn.
-  { id: 'linkedin', label: 'LinkedIn', handle: '/in/nicolasrp432', url: 'https://www.linkedin.com/in/nicolasrp432/' },
+  { id: 'linkedin', label: 'LinkedIn', handle: '/in/nicolas-rodrigu3z', url: 'https://www.linkedin.com/in/nicolas-rodrigu3z/' },
   { id: 'email', label: 'Email', handle: site.email, url: `mailto:${site.email}` },
 ];
 

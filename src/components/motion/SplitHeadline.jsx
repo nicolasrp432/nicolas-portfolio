@@ -67,19 +67,35 @@ export function SplitHeadline({
       <span className="split-line-inner">
         {line.map((part, partIndex) => {
           const Tag = part.accent ? 'em' : 'span';
+
+          // Characters are `inline-block`, which turns every gap between them
+          // into a line-break opportunity: a headline wider than its column
+          // breaks *inside* a word ("Constru / yo"). Grouping each word into
+          // its own non-wrapping box leaves the spaces as the only break
+          // points, so a wrapped headline still reads as words.
+          const tokens = part.text.split(/(\s+)/).filter(Boolean);
+
           return createElement(
             Tag,
             { key: `part-${lineIndex}-${partIndex}`, className: 'split-part' },
-            // Array.from keeps accented and multi-byte characters intact.
-            Array.from(part.text).map((char, i) => (
-              <span
-                className="split-char"
-                key={`char-${lineIndex}-${partIndex}-${i}`}
-                style={{ '--char-index': charIndex++ }}
-              >
-                {char === ' ' ? ' ' : char}
-              </span>
-            )),
+            tokens.map((token, tokenIndex) =>
+              /^\s+$/.test(token) ? (
+                ' '
+              ) : (
+                <span className="split-word" key={`word-${lineIndex}-${partIndex}-${tokenIndex}`}>
+                  {/* Array.from keeps accented and multi-byte characters intact. */}
+                  {Array.from(token).map((char, i) => (
+                    <span
+                      className="split-char"
+                      key={`char-${lineIndex}-${partIndex}-${tokenIndex}-${i}`}
+                      style={{ '--char-index': charIndex++ }}
+                    >
+                      {char}
+                    </span>
+                  ))}
+                </span>
+              ),
+            ),
           );
         })}
       </span>

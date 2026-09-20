@@ -102,6 +102,9 @@ a:focus-visible > .brand-mark { box-shadow: 8px 8px 0 var(--coral); transform: t
 /* The mask needs a touch of slack or descenders (g, y, í) get clipped. */
 .split-line-inner { display: block; padding-bottom: 0.12em; margin-bottom: -0.12em; }
 .split-part { display: inline; }
+/* A word is one atomic box: the line can only break at the spaces between
+   words, never between two characters of the same word. */
+.split-word { display: inline-block; white-space: nowrap; }
 .split-char { display: inline-block; will-change: transform; }
 
 /* --- Reveal pre-states (motion-enabled documents only) --- */

@@ -326,70 +326,76 @@
 .stack-icons {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(0.5rem, 1.6vw, 0.9rem);
-  margin-bottom: var(--space-12);
+  gap: clamp(1.2rem, 3vw, 2rem);
+  margin-bottom: var(--space-16);
+  font-size: clamp(1.5rem, 4.6vw, 2.1rem);
 }
-.stack-tile {
+/* GSAP owns transform here, so the hover state only changes colour. */
+.stack-icon {
+  will-change: transform;
+  transition: color var(--dur-base) var(--ease-editorial);
+}
+.stack-icon:hover { color: var(--coral); }
+
+/* Three cards on a staircase: the descent to the right carries the 01 → 02 →
+   03 reading order, so no progress bar has to state it. */
+.tool-grid {
   display: grid;
-  place-items: center;
-  gap: 0.45rem;
-  width: clamp(74px, 19vw, 106px);
-  padding: clamp(0.7rem, 2vw, 1rem) 0.35rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.25rem, 2.4vw, 2rem);
+  padding-top: var(--space-12);
+  border-top: 1px solid var(--line);
+}
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: clamp(1.25rem, 2.4vw, 1.9rem);
+  background: var(--paper-warm);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: var(--paper-warm);
-  /* GSAP owns transform here; the hover states below must not compete for it. */
-  will-change: transform;
-  transition: background var(--dur-fast), border-color var(--dur-fast),
-              color var(--dur-fast), box-shadow var(--dur-fast);
+  --rule-scale: 1;
+  transition: transform var(--dur-base) var(--ease-out-expo),
+              box-shadow var(--dur-base) var(--ease-out-expo),
+              border-color var(--dur-base);
 }
-.stack-tile svg { font-size: clamp(1.35rem, 4vw, 1.85rem); }
-.stack-tile-label {
-  font: 500 0.54rem/1 var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--ink-faint);
-  text-align: center;
-}
-.stack-tile:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+.tool-card:nth-child(2) { margin-top: clamp(1.5rem, 3.5vw, 3rem); }
+.tool-card:nth-child(3) { margin-top: clamp(3rem, 7vw, 6rem); }
+.tool-card:hover {
+  transform: translate(-3px, -3px);
   box-shadow: var(--shadow-slab-coral);
-}
-.stack-tile:hover .stack-tile-label { color: var(--acid); }
-
-.tool-stage { position: relative; border-top: 1px solid var(--line); padding-top: var(--space-8); }
-.tool-progress { height: 2px; background: var(--line); margin-bottom: var(--space-8); }
-.tool-progress-bar {
-  display: block;
-  height: 100%;
-  background: var(--coral);
-  transform: scaleX(0.3334);
-  transform-origin: left center;
+  border-color: var(--ink);
 }
 
-.tool-acts { position: relative; min-height: 340px; }
-.tool-act { display: flex; flex-direction: column; gap: var(--space-8); }
-.tool-act-head { display: flex; align-items: flex-start; gap: clamp(1.5rem, 4vw, 3rem); }
-.tool-act-number {
-  font-size: clamp(4rem, 12vw, 10rem);
+.tool-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.tool-card-number {
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
   font-weight: 800;
   line-height: 0.8;
-  letter-spacing: -0.08em;
+  letter-spacing: -0.07em;
   color: var(--coral);
 }
-.tool-act-head h3 { font-size: clamp(1.8rem, 4vw, 3.2rem); margin-bottom: var(--space-2); }
-
-/* Pinned mode: the acts share one frame and cross-fade. */
-@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
-  .tool-acts { min-height: 420px; }
-  .tool-act { position: absolute; inset: 0; }
+.tool-card-caption {
+  font: 500 var(--step-meta)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-faint);
+  text-align: right;
 }
-/* Stacked mode: normal document flow. */
-@media (max-width: 900px), (prefers-reduced-motion: reduce) {
-  .tool-acts { display: flex; flex-direction: column; gap: var(--space-16); }
-  .tool-progress { display: none; }
+/* Drawn left to right on arrival, via the --rule-scale custom property. */
+.tool-card-rule {
+  display: block;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(var(--rule-scale));
+  transform-origin: left center;
+}
+.tool-card h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
+.tool-card .tag-row { margin-top: auto; padding-top: var(--space-2); }
+
+@media (max-width: 900px) {
+  .tool-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+  .tool-card:nth-child(2), .tool-card:nth-child(3) { margin-top: 0; }
 }
 
 /* --- 05 · Roadmap --------------------------------------- */
@@ -459,7 +465,7 @@
 }
 .contact-orb .brand-mark { transform: scale(2.4); box-shadow: 5px 5px 0 var(--acid); }
 .contact-inner { position: relative; z-index: 2; display: grid; justify-items: center; gap: var(--space-6); width: 100%; }
-.contact-title { font-size: clamp(4.5rem, 12vw, 11rem); }
+.contact-title { font-size: clamp(2.8rem, 13vw, 9rem); }
 .contact-title em { color: var(--acid); }
 
 .contact-channels { display: grid; justify-items: center; gap: var(--space-8); width: min(720px, 100%); margin-top: var(--space-8); }
@@ -510,10 +516,6 @@
   .project-meta { flex-direction: column; align-items: flex-start; }
   .projects-foot { justify-content: flex-start; }
   .principle { grid-template-columns: 36px 1fr; }
-
-  /* `clamp()` floors are not responsive: below ~380px the 4.5rem minimum is
-     wider than the screen, so the word is clipped rather than scaled. */
-  .contact-title { font-size: clamp(2.6rem, 15vw, 5rem); }
   .tag-row.is-large li { white-space: normal; }
 }
 

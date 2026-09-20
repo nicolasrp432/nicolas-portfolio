@@ -67,6 +67,22 @@ describe('SplitHeadline', () => {
     expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Hola' })).toBeInTheDocument();
   });
+
+  it('keeps each word in one unbreakable box', () => {
+    const { container } = render(
+      <SplitHeadline lines={[[{ text: 'dos palabras' }]]} autoAnimate={false} />,
+    );
+
+    const words = container.querySelectorAll('.split-word');
+    expect(words).toHaveLength(2);
+    expect(words[0]).toHaveTextContent('dos');
+    expect(words[1]).toHaveTextContent('palabras');
+
+    // Characters are inline-block, so without the word boxes the line could
+    // break anywhere — including inside a word. The space between words has
+    // to survive as the one real break opportunity.
+    expect(container.querySelector('.split-part')).toHaveTextContent('dos palabras');
+  });
 });
 
 describe('CopyEmail', () => {
