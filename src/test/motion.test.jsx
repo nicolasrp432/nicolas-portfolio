@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
+import { ScrollTrigger } from '../lib/gsap';
 
 /**
  * The default test environment reports `prefers-reduced-motion: reduce`, which
@@ -75,6 +76,20 @@ describe('with animations enabled', () => {
 
     expect(() => unmount()).not.toThrow();
     expect(document.body.dataset.scrollLocked).toBeUndefined();
+  });
+
+  it('takes no scroll hostage — nothing on the page is pinned', async () => {
+    render(<App />);
+    await screen.findByRole('heading', { name: /portfolio editorial/i });
+
+    // The toolbox used to pin itself for two extra viewports while its three
+    // acts cross-faded in place, which meant the groups could never be
+    // compared and the reader could not scroll past at their own pace.
+    const triggers = ScrollTrigger.getAll();
+    // Guards the guard: if the app ever stops registering triggers under the
+    // test stubs, the assertion below would pass for the wrong reason.
+    expect(triggers.length).toBeGreaterThan(0);
+    expect(triggers.filter((trigger) => trigger.pin)).toEqual([]);
   });
 
   it('mounts the custom cursor only where a fine pointer exists', async () => {

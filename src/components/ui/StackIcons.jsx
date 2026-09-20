@@ -16,14 +16,19 @@ const STACK = [
 ];
 
 /**
- * The stack strip: one tile per tool, animated in three registers.
+ * The stack strip: bare marks, no container and no caption. The tools are
+ * recognisable by their logos, and a row of naked glyphs sits better against
+ * the paper than a row of boxes — the label is carried for screen readers
+ * only.
  *
- * 1. Arrival — the tiles deal in from below with a counter-rotation, once,
+ * Animated in three registers:
+ *
+ * 1. Arrival — the marks deal in from below with a counter-rotation, once,
  *    when the row reaches the reading line.
- * 2. Drift — each tile then floats on its own loop. The durations are spread
+ * 2. Drift — each then floats on its own loop. The durations are spread
  *    across 2.8s–4.9s so the row never syncs into a single wave, which is what
  *    makes a floating row read as mechanical rather than alive.
- * 3. Response — the pointer pops a tile out of its drift and back.
+ * 3. Response — the pointer pops one out of its drift and back.
  *
  * The drift and hover tweens are created after the context has closed (inside
  * `onComplete` and inside event listeners), so `ctx.revert()` cannot see them.
@@ -40,7 +45,7 @@ export function StackIcons() {
       const mm = gsap.matchMedia();
 
       mm.add(MOTION_OK, () => {
-        const tiles = gsap.utils.toArray('.stack-tile', element);
+        const tiles = gsap.utils.toArray('.stack-icon', element);
         const drifts = [];
         const listeners = [];
 
@@ -75,7 +80,7 @@ export function StackIcons() {
 
         tiles.forEach((tile) => {
           const enter = () =>
-            gsap.to(tile, { scale: 1.18, rotate: -6, duration: 0.35, ease: 'back.out(3)', overwrite: 'auto' });
+            gsap.to(tile, { scale: 1.25, rotate: -8, duration: 0.35, ease: 'back.out(3)', overwrite: 'auto' });
           const leave = () =>
             gsap.to(tile, { scale: 1, rotate: 0, duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
 
@@ -101,9 +106,9 @@ export function StackIcons() {
   return (
     <ul className="stack-icons" ref={root} aria-label="Tecnologías principales">
       {STACK.map(({ Icon, label }) => (
-        <li className="stack-tile" key={label} data-cursor={label.toUpperCase()}>
+        <li className="stack-icon" key={label} data-cursor={label.toUpperCase()}>
           <Icon aria-hidden="true" />
-          <span className="stack-tile-label">{label}</span>
+          <span className="visually-hidden">{label}</span>
         </li>
       ))}
     </ul>

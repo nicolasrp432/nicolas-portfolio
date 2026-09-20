@@ -7,9 +7,12 @@ import { SplitHeadline } from '../motion/SplitHeadline';
 import { Magnetic } from '../motion/Magnetic';
 import { ArrowLink } from '../ui/ArrowLink';
 
+// Three short lines rather than two long ones: each one now fits its column
+// on a single row at every width the hero is laid out at.
 const HEADLINE = [
   [{ text: 'Construyo ideas' }],
-  [{ text: 'que se sienten ' }, { text: 'claras.', accent: true }],
+  [{ text: 'que se sienten' }],
+  [{ text: 'claras.', accent: true }],
 ];
 
 /**

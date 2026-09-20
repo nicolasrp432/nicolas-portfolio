@@ -61,6 +61,24 @@ ve**: nunca queda atrapado detrás de una animación que no va a ocurrir.
 > Al añadir una variante nueva a `Reveal`, hay que añadir su estado previo en
 > `components.css`. Una variante sin pre-estado produce un parpadeo.
 
+**Nada se fija (`pin`) ni se ata al scroll con `scrub` para cambiar contenido.**
+La caja de herramientas lo hacía: secuestraba dos viewports y cruzaba sus tres
+grupos en un mismo marco, así que no se podían comparar y no se podía pasar de
+largo. Ahora son tres tarjetas en escalera, las tres legibles a la vez. Hay un
+test que falla si vuelve a aparecer un trigger con `pin`.
+
+### Titulares
+
+`SplitHeadline` parte la frase en caracteres `inline-block`, y eso convierte
+cada hueco entre letras en un punto de corte de línea: un titular más ancho que
+su columna se rompe **dentro** de una palabra. Por eso cada palabra va envuelta
+en `.split-word` (`inline-block; white-space: nowrap`), que deja los espacios
+como único punto de corte.
+
+Los techos de `--step-hero` y `--step-display` los fija la columna más estrecha
+en la que viven, no lo que luce en un monitor ancho. `--step-hero` comparte fila
+con el retrato; `--step-display`, con el standfirst.
+
 ⚠️ `gsap.context` resuelve los selectores contra los **descendientes** del scope.
 Una sección que quiera dispararse con sus propios límites debe usar el nodo que
 recibe `useGsapScope(setup)`, no un selector con su propia clase — este último no
@@ -125,6 +143,5 @@ chunk. El grano de la página es un filtro SVG en línea de ~300 bytes, no un bi
 
 ## Pendiente
 
-- Sustituir la URL de LinkedIn en `src/data/site.js` por la real.
 - `site.url` y las URL absolutas de `index.html` asumen GitHub Pages; ajustar si
   se despliega en otro dominio.

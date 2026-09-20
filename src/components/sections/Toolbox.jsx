@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { gsap, MOTION_OK, MOTION_OK_DESKTOP } from '../../lib/gsap';
+import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { toolGroups } from '../../data/content';
 import { SectionHeading } from '../ui/SectionHeading';
@@ -7,15 +7,19 @@ import { StackIcons } from '../ui/StackIcons';
 
 const HEADING = [[{ text: 'El stack cambia.' }], [{ text: 'El ' }, { text: 'criterio', accent: true }, { text: ' queda.' }]];
 
-
 /**
- * The toolbox, presented as a pinned three-act sequence.
+ * The toolbox: three layers of practice, all three readable at once.
  *
- * On desktop the section pins and the reader scrubs through the three groups:
- * the oversized numeral swaps, the chips deal in, and a progress rule tracks
- * position. On narrow screens pinning costs more than it gives, so the same
- * three groups simply stack and reveal in turn — same content, same markup,
- * different choreography.
+ * This replaces a pinned, scrubbed sequence where the acts cross-faded in a
+ * single frame. That version failed the reader three ways: it took two extra
+ * viewports of scroll hostage, it swapped content in place so the three groups
+ * could never be compared, and it behaved nothing like the plain stack it fell
+ * back to on phones.
+ *
+ * Now they are three cards on one staircase — descending to the right, which
+ * reads as 01 → 02 → 03 without a progress bar having to say so. Nothing is
+ * pinned, nothing is scrubbed, and the mobile layout is the same composition
+ * with the staircase flattened. The only motion is one arrival per card.
  */
 export function Toolbox() {
   const root = useRef(null);
@@ -26,53 +30,40 @@ export function Toolbox() {
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
-      const acts = gsap.utils.toArray('.tool-act', element);
 
-      mm.add(MOTION_OK_DESKTOP, () => {
-        gsap.set(acts, { autoAlpha: 0 });
-        gsap.set(acts[0], { autoAlpha: 1 });
+      mm.add(MOTION_OK, () => {
+        gsap.utils.toArray('.tool-card', element).forEach((card) => {
+          // One trigger per card, so each arrives on its own terms whether the
+          // row is side by side or stacked.
+          const onArrival = { trigger: card, start: 'top 86%', once: true };
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: '.tool-stage',
-            start: 'top top+=80',
-            // One extra viewport of scroll per act after the first.
-            end: () => `+=${window.innerHeight * (acts.length - 1)}`,
-            pin: '.tool-stage',
-            scrub: 0.6,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        acts.forEach((act, index) => {
-          if (index === 0) return;
-          tl.to(acts[index - 1], { autoAlpha: 0, yPercent: -8, duration: 0.4 })
-            .fromTo(act, { autoAlpha: 0, yPercent: 8 }, { autoAlpha: 1, yPercent: 0, duration: 0.4 }, '<')
-            .to('.tool-progress-bar', { scaleX: (index + 1) / acts.length, duration: 0.8 }, '<');
-        });
-
-        return () => tl.kill();
-      });
-
-      // Narrow screens (or coarse pointers): no pin, just sequential reveals.
-      mm.add(`${MOTION_OK} and (max-width: 900px)`, () => {
-        gsap.set(acts, { autoAlpha: 1 });
-        acts.forEach((act) => {
           gsap.fromTo(
-            act,
-            { opacity: 0, y: 36 },
+            card,
+            { opacity: 0, y: 44 },
+            { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out', scrollTrigger: onArrival },
+          );
+
+          gsap.fromTo(
+            card.querySelector('.tool-card-rule'),
+            { '--rule-scale': 0 },
+            { '--rule-scale': 1, duration: 0.9, delay: 0.15, ease: 'expo.out', scrollTrigger: onArrival },
+          );
+
+          gsap.fromTo(
+            card.querySelectorAll('.tag-row li'),
+            { opacity: 0, y: 12 },
             {
               opacity: 1,
               y: 0,
-              duration: 0.8,
-              ease: 'expo.out',
-              scrollTrigger: { trigger: act, start: 'top 88%', once: true },
+              duration: 0.5,
+              delay: 0.25,
+              stagger: 0.04,
+              ease: 'power3.out',
+              scrollTrigger: onArrival,
             },
           );
         });
       });
-
     }, root);
 
     return () => ctx.revert();
@@ -84,32 +75,28 @@ export function Toolbox() {
 
       <StackIcons />
 
-      <div className="tool-stage">
-        <div className="tool-progress" aria-hidden="true">
-          <span className="tool-progress-bar" />
-        </div>
+      <ol className="tool-grid">
+        {toolGroups.map((group) => (
+          <li className="tool-card" key={group.number}>
+            <div className="tool-card-head">
+              <span className="tool-card-number" aria-hidden="true">
+                {group.number}
+              </span>
+              <span className="tool-card-caption">{group.caption}</span>
+            </div>
 
-        <div className="tool-acts">
-          {toolGroups.map((group) => (
-            <article className="tool-act" key={group.number}>
-              <div className="tool-act-head">
-                <span className="tool-act-number" aria-hidden="true">
-                  {group.number}
-                </span>
-                <div>
-                  <h3>{group.label}</h3>
-                  <p className="eyebrow">{group.caption}</p>
-                </div>
-              </div>
-              <ul className="tag-row is-large">
-                {group.tools.map((tool) => (
-                  <li key={tool}>{tool}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </div>
+            <span className="tool-card-rule" aria-hidden="true" />
+
+            <h3>{group.label}</h3>
+
+            <ul className="tag-row is-large">
+              {group.tools.map((tool) => (
+                <li key={tool}>{tool}</li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
