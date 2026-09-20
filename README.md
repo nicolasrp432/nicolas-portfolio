@@ -35,12 +35,14 @@ la sección (`theme` en `navLinks`).
 ```
 src/
 ├─ data/          Contenido y enlaces — única fuente de verdad, sin URLs sueltas
-├─ hooks/         useGsapScope, useGithubProjects, useMediaQuery, useScrollLock
+├─ hooks/         useGsapScope · useActiveSection · useFocusTrap · useGithubProjects
+│                 useMediaQuery · useScrollLock
 ├─ lib/gsap.js    Registro de plugins, defaults y el interruptor de movimiento
 ├─ components/
 │  ├─ motion/     SplitHeadline · Reveal · Marquee · Magnetic · Parallax
-│  ├─ chrome/     Preloader · Cursor · SectionRail · Navbar · Footer · GrainOverlay
-│  ├─ ui/         BrandMark · ArrowLink · SectionHeading · CopyEmail
+│  ├─ chrome/     Navbar · Cursor · SectionRail · Footer · GrainOverlay
+│  ├─ ui/         BrandMark · ArrowLink · SectionHeading · CopyEmail · StackIcons
+│                 Asterisk
 │  └─ sections/   Hero · Ticker · Projects · Profile · Toolbox · Roadmap · Contact
 └─ styles/        tokens → base → components → chrome → sections (orden obligatorio)
 ```
@@ -64,6 +66,33 @@ Una sección que quiera dispararse con sus propios límites debe usar el nodo qu
 recibe `useGsapScope(setup)`, no un selector con su propia clase — este último no
 encuentra nada y GSAP solo lo avisa por consola. Hay un test que lo vigila.
 
+### Navegación
+
+La página **no tiene cortina de entrada**: pinta directamente y el timeline del
+hero es su animación de apertura.
+
+La masthead no se esconde al bajar, se **condensa**. Una barra que se oculta en
+scroll descendente desaparece justo cuando un salto de ancla la necesita. La
+orientación la dan tres señales: una cápsula que se desliza al capítulo activo
+(`useActiveSection`, con un `IntersectionObserver` colapsado a una banda de altura
+cero, así solo un enlace puede estar activo), `aria-current` para tecnología
+asistiva, y una regla de progreso que sustituye al rail lateral en pantallas
+estrechas.
+
+⚠️ El panel móvil se renderiza como **hermano** de `<header>`, nunca dentro. La
+masthead lleva `backdrop-filter`, que la convierte en bloque contenedor de sus
+descendientes `fixed`: un panel anidado resuelve su `inset` contra una barra de
+86 px en lugar del viewport y colapsa a nada. Hay un test que lo vigila.
+
+### Scroll horizontal
+
+Regla del `sections.css`: en el bloque responsive **nada puede fijar una altura
+en píxeles ni un ancho mayor que 100%** a un elemento en flujo. Además, los hijos
+de grid y flex llevan `min-width: 0` en `base.css` — su valor por defecto (`auto`)
+deja que un solo token largo sin puntos de corte, como el slug de un repo o una
+dirección de correo, ensanche su pista por encima del viewport. Es invisible en
+escritorio y es la causa habitual del scroll lateral en móvil.
+
 ### Proyectos
 
 `useGithubProjects` lee la API pública de GitHub, ordena por estrellas y
@@ -85,8 +114,11 @@ Si la petición falla, se renderiza la selección curada.
 
 ## Rendimiento
 
-El retrato pesaba 2,2 MB (un PNG en base64 dentro de un SVG). Ahora son 102 KB en
-WebP con `<picture>`, variante de 640 px para móvil y PNG de respaldo.
+El retrato es `public/nicolasrp-Photoroom.png`, el recorte sin fondo tal cual. Se
+sirve como WebP de 76 KB (32 KB en móvil) mediante `<picture>`, con el PNG de
+1,7 MB solo como respaldo para navegadores sin WebP. Las derivadas son
+**reencodings, no recortes**: mismo encuadre, y el CSS lo dibuja con
+`object-fit: contain` sobre una caja `aspect-ratio`, sin altura fija que lo corte.
 
 Build actual: **~94 KB gzip** de aplicación + **27 KB gzip** de GSAP en su propio
 chunk. El grano de la página es un filtro SVG en línea de ~300 bytes, no un bitmap.

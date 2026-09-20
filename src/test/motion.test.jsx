@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from '../App';
 
 /**
@@ -38,7 +39,6 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
-  sessionStorage.clear();
 });
 
 describe('with animations enabled', () => {
@@ -50,10 +50,6 @@ describe('with animations enabled', () => {
     render(<App />);
     await screen.findByRole('heading', { name: /portfolio editorial/i });
 
-    // The preloader owns the viewport and says so to assistive tech.
-    expect(screen.getByText(/cargando el portfolio/i)).toBeInTheDocument();
-    expect(document.body.dataset.scrollLocked).toBe('true');
-
     // GSAP reports an unmatched selector as "Element not found" rather than
     // throwing, so a broken trigger is otherwise completely silent. This
     // caught three sections whose ScrollTrigger pointed at their own scope
@@ -64,22 +60,21 @@ describe('with animations enabled', () => {
     error.mockRestore();
   });
 
+  it('shows the page immediately, with no curtain holding the scroll', async () => {
+    render(<App />);
+    await screen.findByRole('heading', { name: /portfolio editorial/i });
+
+    expect(screen.queryByText(/cargando/i)).not.toBeInTheDocument();
+    expect(document.body.dataset.scrollLocked).toBeUndefined();
+    expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+  });
+
   it('tears every animation down cleanly on unmount', async () => {
     const { unmount } = render(<App />);
     await screen.findByRole('heading', { name: /portfolio editorial/i });
 
     expect(() => unmount()).not.toThrow();
-    // The scroll lock must not outlive the component that set it.
     expect(document.body.dataset.scrollLocked).toBeUndefined();
-  });
-
-  it('skips the intro on a second visit in the same tab', async () => {
-    sessionStorage.setItem('nr:intro-seen', '1');
-
-    render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
-
-    expect(screen.queryByText(/cargando el portfolio/i)).not.toBeInTheDocument();
   });
 
   it('mounts the custom cursor only where a fine pointer exists', async () => {
@@ -97,19 +92,42 @@ describe('with animations enabled', () => {
   });
 });
 
-describe('the intro curtain', () => {
-  it('lifts on its own and hands the page back to the reader', async () => {
+describe('the mobile menu', () => {
+  it('renders its panel outside the masthead so `inset` resolves to the viewport', async () => {
+    const { container } = render(<App />);
+    await screen.findByRole('heading', { name: /portfolio editorial/i });
+
+    await userEvent.click(screen.getByRole('button', { name: /abrir navegación/i }));
+
+    const panel = await screen.findByRole('dialog', { name: /navegación/i });
+    expect(panel).toBeInTheDocument();
+    // The regression this guards: the masthead carries `backdrop-filter`, which
+    // makes it a containing block for fixed children. A panel nested inside it
+    // is sized against an 86px bar and collapses to nothing on a phone.
+    expect(container.querySelector('.masthead')).not.toContainElement(panel);
+  });
+
+  it('locks the page while open and releases it on close', async () => {
     render(<App />);
+    await screen.findByRole('heading', { name: /portfolio editorial/i });
 
-    expect(screen.getByText(/cargando el portfolio/i)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /abrir navegación/i }));
+    expect(document.body.dataset.scrollLocked).toBe('true');
 
-    // GSAP is driven by requestAnimationFrame, which fake timers do not
-    // advance, so this waits in real time for the ~1.7s timeline to finish.
-    await waitFor(() => expect(screen.queryByText(/cargando el portfolio/i)).toBeNull(), {
-      timeout: 6000,
-    });
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() => expect(document.body.dataset.scrollLocked).toBeUndefined());
+  });
 
-    expect(document.body.dataset.scrollLocked).toBeUndefined();
-    expect(sessionStorage.getItem('nr:intro-seen')).toBe('1');
-  }, 10000);
+  it('offers a close control inside the panel, where focus is trapped', async () => {
+    render(<App />);
+    await screen.findByRole('heading', { name: /portfolio editorial/i });
+
+    await userEvent.click(screen.getByRole('button', { name: /abrir navegación/i }));
+    const panel = await screen.findByRole('dialog', { name: /navegación/i });
+
+    const close = within(panel).getByRole('button', { name: /cerrar navegación/i });
+    await userEvent.click(close);
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
 });

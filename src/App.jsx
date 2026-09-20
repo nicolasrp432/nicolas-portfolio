@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ScrollTrigger, prefersReducedMotion } from './lib/gsap';
+import { useEffect } from 'react';
+import { ScrollTrigger } from './lib/gsap';
 import { useHasPointer, useReducedMotion } from './hooks/useMediaQuery';
 import { navLinks } from './data/site';
 
-import { Preloader } from './components/chrome/Preloader';
 import { Cursor } from './components/chrome/Cursor';
 import { GrainOverlay } from './components/chrome/GrainOverlay';
 import { SectionRail } from './components/chrome/SectionRail';
@@ -18,39 +17,28 @@ import { Toolbox } from './components/sections/Toolbox';
 import { Roadmap } from './components/sections/Roadmap';
 import { Contact } from './components/sections/Contact';
 
-const INTRO_SEEN_KEY = 'nr:intro-seen';
-
-/** Shown once per tab, and never to someone who asked for reduced motion. */
-function shouldPlayIntro() {
-  if (prefersReducedMotion()) return false;
-  try {
-    return sessionStorage.getItem(INTRO_SEEN_KEY) !== '1';
-  } catch {
-    return true;
-  }
-}
-
 export default function App() {
-  const [introPlaying, setIntroPlaying] = useState(shouldPlayIntro);
   const hasPointer = useHasPointer();
   const reducedMotion = useReducedMotion();
 
-  const finishIntro = useCallback(() => {
-    setIntroPlaying(false);
-    try {
-      sessionStorage.setItem(INTRO_SEEN_KEY, '1');
-    } catch {
-      /* Private mode — the intro simply plays again next visit. */
-    }
-  }, []);
-
-  // Pinned sections measure themselves against a layout that only settles once
-  // the curtain is gone and images have loaded.
+  // The page paints immediately, so ScrollTrigger's first measurement happens
+  // against a layout whose images have not arrived yet. Re-measure once the
+  // window load event confirms they have, or the pinned toolbox and every
+  // scrubbed section start from stale offsets.
   useEffect(() => {
-    if (introPlaying) return undefined;
-    const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
-    return () => cancelAnimationFrame(raf);
-  }, [introPlaying]);
+    const refresh = () => ScrollTrigger.refresh();
+    const frame = requestAnimationFrame(refresh);
+
+    if (document.readyState === 'complete') {
+      return () => cancelAnimationFrame(frame);
+    }
+
+    window.addEventListener('load', refresh);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('load', refresh);
+    };
+  }, []);
 
   return (
     <>
@@ -58,7 +46,6 @@ export default function App() {
         Saltar al contenido
       </a>
 
-      {introPlaying && <Preloader onDone={finishIntro} />}
       {hasPointer && !reducedMotion && <Cursor />}
       <GrainOverlay />
       <SectionRail sections={navLinks} />
@@ -67,7 +54,7 @@ export default function App() {
         <Navbar />
 
         <main id="contenido">
-          <Hero ready={!introPlaying} />
+          <Hero />
           <Ticker />
           <Projects />
           <Profile />

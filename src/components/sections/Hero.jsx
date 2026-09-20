@@ -15,16 +15,17 @@ const HEADLINE = [
 /**
  * The opening spread.
  *
- * One choreographed entrance, played once when the curtain lifts: characters
- * roll up out of their line masks, the portrait wipes in from the bottom, then
- * the orbit rings and floating cards settle. After that the only motion is a
- * slow orbit rotation and the scrubbed parallax on scroll.
+ * With the intro curtain gone this timeline is the page's entrance: it starts
+ * on mount, before the first paint, so the `from` states are written to the DOM
+ * in the same frame and nothing flashes at full opacity first.
+ *
+ * The portrait is the untouched cut-out PNG, drawn with `object-fit: contain`
+ * against an aspect-ratio box — no crop box, no fixed pixel height, so the
+ * framing the image ships with is the framing that renders.
  */
-export function Hero({ ready }) {
+export function Hero() {
   const scope = useGsapScope(
     (root) => {
-      if (!ready) return undefined;
-
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
 
       tl.fromTo('.hero-kicker', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 })
@@ -38,7 +39,7 @@ export function Hero({ ready }) {
         .fromTo('.hero-actions > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, '-=0.55')
         .fromTo(
           '.hero-portrait',
-          { clipPath: 'inset(100% 0 0 0)', scale: 1.08 },
+          { clipPath: 'inset(100% 0 0 0)', scale: 1.06 },
           { clipPath: 'inset(0% 0 0 0)', scale: 1, duration: 1.2 },
           '-=1',
         )
@@ -59,7 +60,7 @@ export function Hero({ ready }) {
       // `root` is the <section> itself — a '.hero' selector would resolve
       // against its descendants and match nothing.
       const onHeroScroll = { trigger: root, start: 'top top', end: 'bottom top', scrub: true };
-      gsap.to('.hero-visual-inner', { yPercent: 14, ease: 'none', scrollTrigger: onHeroScroll });
+      gsap.to('.hero-visual-inner', { yPercent: 10, ease: 'none', scrollTrigger: onHeroScroll });
       gsap.to('.hero-copy', {
         yPercent: -8,
         opacity: 0.35,
@@ -69,7 +70,7 @@ export function Hero({ ready }) {
 
       return () => tl.kill();
     },
-    [ready],
+    [],
     MOTION_OK,
   );
 
@@ -111,13 +112,13 @@ export function Hero({ ready }) {
             <span className="hero-orbit hero-orbit-b" aria-hidden="true" />
 
             <picture className="hero-portrait">
-              <source srcSet="/portrait-640.webp" type="image/webp" media="(max-width: 700px)" />
-              <source srcSet="/portrait-1200.webp" type="image/webp" />
+              <source srcSet="/nicolasrp-640.webp" type="image/webp" media="(max-width: 700px)" />
+              <source srcSet="/nicolasrp-1122.webp" type="image/webp" />
               <img
-                src="/portrait-1200.png"
-                alt="Nicolás Rodríguez trabajando con su portátil"
-                width="960"
-                height="1200"
+                src="/nicolasrp-Photoroom.png"
+                alt="Retrato de Nicolás Rodríguez"
+                width="1122"
+                height="1402"
                 fetchPriority="high"
                 decoding="async"
               />
@@ -138,12 +139,16 @@ export function Hero({ ready }) {
               </span>
             </span>
 
-            <span className="hero-caption" aria-hidden="true">
-              Curiosidad
-              <br />
-              en movimiento ↗
-            </span>
           </div>
+
+          {/* Outside `.hero-visual-inner` on purpose: that box is now exactly
+              the portrait's width, so a caption inside it would sit on top of
+              the image instead of beside it. */}
+          <span className="hero-caption" aria-hidden="true">
+            Curiosidad
+            <br />
+            en movimiento ↗
+          </span>
         </div>
       </div>
 

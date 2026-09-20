@@ -1,23 +1,12 @@
 import { useRef } from 'react';
-import { SiClaude, SiFigma, SiGithub, SiJavascript, SiOpenai, SiReact, SiVite } from 'react-icons/si';
-import { RiGeminiFill } from 'react-icons/ri';
 import { gsap, MOTION_OK, MOTION_OK_DESKTOP } from '../../lib/gsap';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { toolGroups } from '../../data/content';
 import { SectionHeading } from '../ui/SectionHeading';
+import { StackIcons } from '../ui/StackIcons';
 
 const HEADING = [[{ text: 'El stack cambia.' }], [{ text: 'El ' }, { text: 'criterio', accent: true }, { text: ' queda.' }]];
 
-const STACK_ICONS = [
-  { Icon: SiReact, label: 'React' },
-  { Icon: SiJavascript, label: 'JavaScript' },
-  { Icon: SiVite, label: 'Vite' },
-  { Icon: SiOpenai, label: 'ChatGPT' },
-  { Icon: SiClaude, label: 'Claude' },
-  { Icon: RiGeminiFill, label: 'Gemini' },
-  { Icon: SiFigma, label: 'Figma' },
-  { Icon: SiGithub, label: 'GitHub' },
-];
 
 /**
  * The toolbox, presented as a pinned three-act sequence.
@@ -84,20 +73,6 @@ export function Toolbox() {
         });
       });
 
-      mm.add(MOTION_OK, () => {
-        gsap.fromTo(
-          '.stack-icons li',
-          { opacity: 0, y: 14 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            stagger: 0.05,
-            ease: 'back.out(2)',
-            scrollTrigger: { trigger: '.stack-icons', start: 'top 92%', once: true },
-          },
-        );
-      });
     }, root);
 
     return () => ctx.revert();
@@ -107,14 +82,7 @@ export function Toolbox() {
     <section className="section toolbox" id="herramientas" ref={root}>
       <SectionHeading eyebrow="Mi caja de herramientas" lines={HEADING} compact />
 
-      <ul className="stack-icons" aria-label="Tecnologías principales">
-        {STACK_ICONS.map(({ Icon, label }) => (
-          <li key={label}>
-            <Icon aria-hidden="true" />
-            <span className="visually-hidden">{label}</span>
-          </li>
-        ))}
-      </ul>
+      <StackIcons />
 
       <div className="tool-stage">
         <div className="tool-progress" aria-hidden="true">

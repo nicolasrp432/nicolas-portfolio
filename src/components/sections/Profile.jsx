@@ -3,6 +3,7 @@ import { useGsapScope } from '../../hooks/useGsapScope';
 import { principles, profileParagraphs } from '../../data/content';
 import { SplitHeadline } from '../motion/SplitHeadline';
 import { Reveal } from '../motion/Reveal';
+import { Asterisk } from '../ui/Asterisk';
 
 const HEADING = [[{ text: 'Entre el código y' }], [{ text: 'la ' }, { text: 'curiosidad.', accent: true }]];
 
@@ -12,7 +13,8 @@ const HEADING = [[{ text: 'Entre el código y' }], [{ text: 'la ' }, { text: 'cu
  *
  * The oversized asterisk is the section's anchor — it turns with the scroll,
  * which is the only ornamental motion on the page and is kept to exactly one
- * element for that reason.
+ * element for that reason. It is drawn as an SVG, not typed as a character:
+ * see `Asterisk` for why.
  */
 export function Profile() {
   const scope = useGsapScope((root) => {
@@ -55,7 +57,7 @@ export function Profile() {
       <aside className="profile-aside">
         <span className="eyebrow">Manifiesto personal</span>
         <span className="profile-asterisk" aria-hidden="true">
-          ✳
+          <Asterisk />
         </span>
         <blockquote>
           <p>“No me interesa solo hacer cosas que funcionen, sino entender por qué funcionan.”</p>
