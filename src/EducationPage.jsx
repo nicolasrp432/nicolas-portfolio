@@ -16,6 +16,7 @@ import { ArrowLink } from './components/ui/ArrowLink';
 import { ProjectCard } from './components/ui/ProjectCard';
 import { ProjectRow } from './components/ui/ProjectRow';
 import { Certificates } from './components/sections/Certificates';
+import { WhatsAppButton } from './components/ui/WhatsAppButton';
 
 import { GITHUB_USER } from './data/site';
 
@@ -171,6 +172,7 @@ export default function EducationPage() {
         </main>
 
         <Footer homeHref="/" topHref="#educacion" />
+        <WhatsAppButton />
       </div>
     </>
   );

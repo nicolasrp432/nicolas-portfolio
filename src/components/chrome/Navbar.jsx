@@ -80,7 +80,7 @@ export function Navbar({ currentPage = 'home' }) {
       setOpen(false);
 
       requestAnimationFrame(() => {
-        target.scrollIntoView({
+        target.scrollIntoView?.({
           behavior: prefersReducedMotion() ? 'auto' : 'smooth',
           block: 'start',
         });

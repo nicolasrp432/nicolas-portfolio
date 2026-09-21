@@ -16,6 +16,7 @@ import { Profile } from './components/sections/Profile';
 import { Toolbox } from './components/sections/Toolbox';
 import { Roadmap } from './components/sections/Roadmap';
 import { Contact } from './components/sections/Contact';
+import { WhatsAppButton } from './components/ui/WhatsAppButton';
 
 export default function App() {
   const hasPointer = useHasPointer();
@@ -64,6 +65,7 @@ export default function App() {
         </main>
 
         <Footer />
+        <WhatsAppButton />
       </div>
     </>
   );
