@@ -1,5 +1,7 @@
 import { useRef } from 'react';
-import { SiClaude, SiFigma, SiGithub, SiJavascript, SiOpenai, SiReact, SiVite } from 'react-icons/si';
+import {
+  SiClaude, SiFigma, SiGithub, SiJavascript, SiOpenai, SiReact, SiThreedotjs, SiVite,
+} from 'react-icons/si';
 import { RiGeminiFill } from 'react-icons/ri';
 import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
@@ -8,6 +10,7 @@ const STACK = [
   { Icon: SiReact, label: 'React' },
   { Icon: SiJavascript, label: 'JavaScript' },
   { Icon: SiVite, label: 'Vite' },
+  { Icon: SiThreedotjs, label: 'Three.js' },
   { Icon: SiOpenai, label: 'ChatGPT' },
   { Icon: SiClaude, label: 'Claude' },
   { Icon: RiGeminiFill, label: 'Gemini' },

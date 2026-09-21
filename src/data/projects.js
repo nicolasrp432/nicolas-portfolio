@@ -125,6 +125,34 @@ export const curatedProjects = [
 
   /* --- Index rows ------------------------------------------------------- */
   {
+    slug: 'cnc-lathe-visualizer',
+    title: 'Torno CNC en 3D',
+    kind: 'Visualización 3D · Three.js',
+    summary:
+      'Visualizador interactivo de un torno de la Serie TA de CMZ, modelado con geometrías procedurales —cajas, cilindros y conos— sin ningún modelo CAD ni .glb externo. Se orbita, se hace zoom y cada pieza es clicable para abrir su ficha técnica. React Three Fiber sobre Three.js.',
+    tags: ['Three.js', 'React Three Fiber', 'TypeScript'],
+    year: '2026',
+  },
+  {
+    slug: 'nicolas-portfolio3D',
+    title: 'Silicon Gambit',
+    kind: 'Experimento 3D · Shaders',
+    summary:
+      'Un portfolio inmersivo cuya navegación es una partida de ajedrez sobre un die de CPU: sin menú ni secciones, el scroll hace avanzar la partida. React Three Fiber con shaders GLSL propios, postprocesado y el estado de la partida en Zustand.',
+    tags: ['Three.js', 'GLSL', 'React Three Fiber'],
+    year: '2026',
+  },
+  {
+    slug: 'cnc-machine-monito',
+    title: 'CNC Machine Monitor',
+    kind: 'Panel industrial · MES',
+    summary:
+      'Prototipo de interfaz de operario para un sistema MES: el panel que se vería junto a un torno CNC en planta, legible a dos o tres metros. Estado de máquina, telemetría de husillo, KPIs de turno frente a objetivo y registro de alertas, con los datos simulados en el navegador.',
+    tags: ['React', 'TypeScript', 'Recharts'],
+    liveUrl: 'https://cnc-machine-monito.vercel.app',
+    year: '2026',
+  },
+  {
     slug: 'aura-glass-studio',
     title: 'Aura Glass Studio',
     kind: 'Salón de uñas · cliente',
