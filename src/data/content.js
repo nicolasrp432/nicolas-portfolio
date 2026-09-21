@@ -5,7 +5,7 @@ export const toolGroups = [
     number: '01',
     label: 'Construyo',
     caption: 'La base técnica',
-    tools: ['React', 'JavaScript', 'HTML & CSS', 'Vite', 'GSAP', 'Git & GitHub'],
+    tools: ['React', 'JavaScript', 'HTML & CSS', 'Vite', 'GSAP', 'Three.js', 'Git & GitHub'],
   },
   {
     number: '02',
