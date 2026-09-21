@@ -10,10 +10,8 @@ export const site = {
   shortName: 'Nicolás',
   role: 'Frontend · Producto digital · IA',
   email: 'nicolasrp432@gmail.com',
-  // WhatsApp de contacto: reemplazar por tu número real con prefijo internacional
-  // (ej. para España: 34 seguido de 9 dígitos, sin signos + ni espacios).
-  whatsapp: '34600000000',
-  whatsappDisplay: 'Chat directo',
+  whatsapp: '34665015804',
+  whatsappDisplay: '+34 665 015 804',
   whatsappMessage: 'Hola Nicolás, vi tu portfolio y me gustaría hablar sobre un proyecto.',
   location: 'España — remoto',
   availability: 'Disponible para colaborar',
@@ -22,17 +20,50 @@ export const site = {
     'Portfolio de Nicolás Rodríguez, desarrollador frontend y constructor de producto digital. React, interfaces con criterio y soluciones apoyadas en IA.',
 };
 
+/** Predefined conversation starters for client convenience. */
+export const whatsappPresets = [
+  {
+    id: 'project',
+    title: 'Nuevo proyecto o desarrollo web',
+    subtitle: 'Presupuesto, plazos y requerimientos',
+    badge: 'Proyecto',
+    text: 'Hola Nicolás, vi tu portfolio y tengo un proyecto web en mente. Me gustaría conocer tu disponibilidad y tarifas.',
+  },
+  {
+    id: 'ai',
+    title: 'Soluciones de IA y automatización',
+    subtitle: 'Flujos de trabajo, agentes e interfaces',
+    badge: 'IA & Sistemas',
+    text: 'Hola Nicolás, me interesa explorar soluciones de IA y automatización para optimizar mi producto.',
+  },
+  {
+    id: 'collab',
+    title: 'Colaboración o propuesta de trabajo',
+    subtitle: 'Freelance, equipo o contratación',
+    badge: 'Colaboración',
+    text: 'Hola Nicolás, me gustaría hablar contigo sobre una oportunidad de colaboración profesional.',
+  },
+  {
+    id: 'quick',
+    title: 'Consulta rápida o saludo',
+    subtitle: 'Iniciar conversación directa',
+    badge: 'Directo',
+    text: 'Hola Nicolás, te escribo desde tu portfolio para hacerte una consulta.',
+  },
+];
+
 /** Generates the direct WhatsApp chat link with an optional prefilled greeting. */
-export const getWhatsappUrl = () => {
+export const getWhatsappUrl = (customMessage) => {
   const cleanNumber = (site.whatsapp || '').replace(/\D/g, '');
-  const text = site.whatsappMessage ? encodeURIComponent(site.whatsappMessage) : '';
+  const message = customMessage !== undefined ? customMessage : site.whatsappMessage;
+  const text = message ? encodeURIComponent(message) : '';
   return cleanNumber ? `https://wa.me/${cleanNumber}${text ? `?text=${text}` : ''}` : 'https://wa.me/';
 };
 
 export const socials = [
   { id: 'github', label: 'GitHub', handle: `@${GITHUB_USER}`, url: `https://github.com/${GITHUB_USER}` },
   { id: 'linkedin', label: 'LinkedIn', handle: '/in/nicolas-rodrigu3z', url: 'https://www.linkedin.com/in/nicolas-rodrigu3z/' },
-  { id: 'whatsapp', label: 'WhatsApp', handle: site.whatsappDisplay || 'Chat directo', url: getWhatsappUrl() },
+  { id: 'whatsapp', label: 'WhatsApp', handle: site.whatsappDisplay || '+34 665 015 804', url: getWhatsappUrl() },
   { id: 'email', label: 'Email', handle: site.email, url: `mailto:${site.email}` },
 ];
 
