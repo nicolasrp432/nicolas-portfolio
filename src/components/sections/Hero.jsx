@@ -115,13 +115,13 @@ export function Hero() {
             <span className="hero-orbit hero-orbit-b" aria-hidden="true" />
 
             <picture className="hero-portrait">
-              <source srcSet="/hero-640.webp" type="image/webp" media="(max-width: 700px)" />
-              <source srcSet="/hero-1122.webp" type="image/webp" />
+              <source srcSet="/img/portraits/hero-retrato.png" type="image/png" media="(max-width: 700px)" />
+              <source srcSet="/img/portraits/hero-retrato.png" type="image/png" />
               <img
-                src="/nicoalsrphero.png"
+                src="/img/portraits/hero-retrato.png"
                 alt="Retrato de Nicolás Rodríguez"
-                width="1122"
-                height="1402"
+                width="900"
+                height="1200"
                 fetchPriority="high"
                 decoding="async"
               />

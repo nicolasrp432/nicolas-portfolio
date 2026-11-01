@@ -12,6 +12,8 @@ import { Footer } from './components/chrome/Footer';
 import { Hero } from './components/sections/Hero';
 import { Ticker } from './components/sections/Ticker';
 import { Projects } from './components/sections/Projects';
+import { Content } from './components/sections/Content';
+import { Certificates } from './components/sections/Certificates';
 import { Profile } from './components/sections/Profile';
 import { Toolbox } from './components/sections/Toolbox';
 import { Roadmap } from './components/sections/Roadmap';
@@ -58,6 +60,8 @@ export default function App() {
           <Hero />
           <Ticker />
           <Projects />
+          <Content />
+          <Certificates />
           <Profile />
           <Toolbox />
           <Roadmap />

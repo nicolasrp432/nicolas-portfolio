@@ -58,3 +58,51 @@ export const roadmap = [
     text: 'Añadir métricas, aprendizajes y testimonios con contexto verificable.',
   },
 ];
+
+export const contentPieces = [
+  {
+    id: 'video-ordenador-cuantico',
+    kind: 'video',
+    title: 'Visita al ordenador cuántico',
+    subtitle: 'Telefónica Bizkaia · mayo 2026',
+    thumbnail: '/img/portraits/hero-retrato.png',
+    url: '/certificados/visita-ordenador-cuantico-telefonica-bizkaia.pdf',
+    label: 'Documento',
+  },
+  {
+    id: 'video-platzi-certificado',
+    kind: 'video',
+    title: 'Certificado de formación Platzi',
+    subtitle: 'Desarrollo Frontend con React · junio 2026',
+    thumbnail: '/img/content/content-chatgpt.png',
+    url: '/certificados/platzi-certificado-formacion.pdf',
+    label: 'Documento',
+  },
+  {
+    id: 'cliente-suly',
+    kind: 'client',
+    title: 'Suly Pretty Nails',
+    subtitle: 'Salón de belleza · reservas online',
+    thumbnail: '/img/portraits/portrait-elevado.png',
+    url: 'https://suly-web.vercel.app',
+    label: 'Ver sitio',
+  },
+  {
+    id: 'cliente-aura',
+    kind: 'client',
+    title: 'Aura Glass Studio',
+    subtitle: 'Salón de uñas · identidad web',
+    thumbnail: '/img/portraits/portrait-cenital.png',
+    url: 'https://aura-glass-studio.vercel.app',
+    label: 'Ver sitio',
+  },
+  {
+    id: 'cliente-unamunzaga',
+    kind: 'client',
+    title: 'Unamunzaga',
+    subtitle: 'Constructora · sitio corporativo',
+    thumbnail: '/img/content/content-chatgpt.png',
+    url: 'https://unamunzaga-web.vercel.app',
+    label: 'Ver sitio',
+  },
+];

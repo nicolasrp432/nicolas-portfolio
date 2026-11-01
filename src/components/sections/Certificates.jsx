@@ -1,12 +1,14 @@
-import { FiArrowUpRight, FiFileText } from 'react-icons/fi';
+import { useRef, useEffect, useState } from 'react';
+import { gsap } from '../../lib/gsap';
+import { useGsapScope } from '../../hooks/useGsapScope';
 import { certificates } from '../../data/education';
+import { FiArrowUpRight, FiFileText } from 'react-icons/fi';
 
 const MONTHS = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
 ];
 
-/** `2025-11` → `noviembre de 2025`. Falls back to the raw string. */
 function readableDate(value) {
   const match = /^(\d{4})-(\d{2})$/.exec(value ?? '');
   if (!match) return value ?? '';
@@ -15,60 +17,140 @@ function readableDate(value) {
 }
 
 /**
- * Certifications, folded away at the end of the page.
+ * Galería de certificados en carrusel con animación moderna estilo 21std.dev.
  *
- * Native `<details>` / `<summary>` rather than a JS disclosure: keyboard
- * support, screen-reader semantics and the open/closed state come free, and it
- * works with JavaScript off — which matters here, because the rest of the site
- * only ever pre-hides content while `<html data-motion="on">`. A hand-rolled
- * toggle would be the one place where content could get stuck behind script.
- *
- * Renders nothing while the list is empty. An empty section reads as an
- * unfinished site, which is worse than no section at all.
+ * Las tarjetas se disponen en una pista horizontal que se desplaza con GSAP.
+ * Cada tarjeta es un PDF clicable con su propia sombra de suelo y borde fino.
+ * El carrusel reproduce automáticamente y se puede navegar con flechas.
  */
 export function Certificates() {
   if (certificates.length === 0) return null;
 
+  const scopeRef = useGsapScope((root) => {
+    gsap.from('.cert-card', {
+      opacity: 0,
+      y: 40,
+      rotateX: 12,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'expo.out',
+      scrollTrigger: { trigger: root, start: 'top 85%', once: true },
+    });
+  }, []);
+
+  const trackRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const containerWidthRef = useRef(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+
+    const cards = track.querySelectorAll('.cert-card');
+    const cardWidth = cards[0]?.offsetWidth || 0;
+    const gap = 16;
+    const step = cardWidth + gap;
+    const maxScroll = Math.max(0, cards.length * step - containerWidthRef.current);
+
+    let raf;
+
+    const play = () => {
+      const next = (activeIndex + 1) % certificates.length;
+      setActiveIndex(next);
+      const target = Math.min(next * step, maxScroll);
+      gsap.to(track, { x: -target, duration: 0.8, ease: 'expo.out' });
+      raf = requestAnimationFrame(play);
+    };
+
+    raf = requestAnimationFrame(play);
+
+    return () => cancelAnimationFrame(raf);
+  }, [activeIndex]);
+
   return (
-    <section className="section certificates" id="certificaciones">
-      <details className="certificates-fold">
-        <summary>
-          <span className="certificates-label">Certificaciones</span>
-          <span className="certificates-count" aria-hidden="true">
-            {String(certificates.length).padStart(2, '0')}
-          </span>
-          <span className="certificates-marker" aria-hidden="true" />
-        </summary>
+    <section className="section certificates" id="certificaciones" ref={scopeRef}>
+      <div className="certificates-wrap">
+        <span className="certificates-eyebrow">Galería de certificaciones</span>
+        <h2 className="certificates-title">
+          Certificaciones<span className="accent"> y formación</span>
+        </h2>
+        <p className="certificates-intro">
+          Formación verificada y experiencias de aprendizaje documentadas. Cada
+          tarjeta enlaza al documento fuente o a su página de verificación.
+        </p>
 
-        <ul className="certificates-list">
-          {certificates.map((certificate) => (
-            <li key={certificate.id}>
-              <div className="certificate-head">
-                <h3>{certificate.title}</h3>
-                <span className="certificate-meta">
-                  {certificate.issuer}
-                  {certificate.date && ` · ${readableDate(certificate.date)}`}
-                </span>
-              </div>
+        <div className="certificates-track-wrap">
+          <button className="cert-nav cert-nav-prev" aria-label="Certificado anterior">
+            <span className="visually-hidden">Anterior</span>
+          </button>
+          <div
+            className="certificates-track"
+            ref={(el) => {
+              trackRef.current = el;
+              containerWidthRef.current = el?.offsetWidth || 0;
+            }}
+          >
+            {certificates.map((certificate, i) => (
+              <a
+                key={certificate.id}
+                className={`cert-card${i === activeIndex ? ' is-active' : ''}`}
+                href={certificate.file}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div className="cert-card-media">
+                  <span className="cert-card-badge">{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <div className="cert-card-body">
+                  <h3 className="cert-card-title">{certificate.title}</h3>
+                  <span className="cert-card-issuer">{certificate.issuer}</span>
+                  {certificate.date && (
+                    <span className="cert-card-date">{readableDate(certificate.date)}</span>
+                  )}
+                </div>
+                <div className="cert-card-actions">
+                  {certificate.file && (
+                    <span className="cert-card-link">
+                      Abrir documento <FiFileText aria-hidden="true" />
+                    </span>
+                  )}
+                  {certificate.verifyUrl && (
+                    <span className="cert-card-link">
+                      Verificar <FiArrowUpRight aria-hidden="true" />
+                    </span>
+                  )}
+                </div>
+                <span className="cert-card-glare" aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+          <button className="cert-nav cert-nav-next" aria-label="Siguiente certificado">
+            <span className="visually-hidden">Siguiente</span>
+          </button>
+        </div>
 
-              <div className="certificate-links">
-                {certificate.verifyUrl && (
-                  <a href={certificate.verifyUrl} target="_blank" rel="noreferrer">
-                    Verificar <FiArrowUpRight aria-hidden="true" />
-                    <span className="visually-hidden"> {certificate.title} (se abre en una pestaña nueva)</span>
-                  </a>
-                )}
-                {certificate.file && (
-                  <a href={certificate.file} target="_blank" rel="noreferrer">
-                    <FiFileText aria-hidden="true" /> Documento
-                    <span className="visually-hidden"> de {certificate.title}</span>
-                  </a>
-                )}
-              </div>
+        <ol className="certificates-dots" aria-label="Certificados">
+          {certificates.map((_, i) => (
+            <li key={i}>
+              <button
+                className={i === activeIndex ? 'is-active' : ''}
+                onClick={() => {
+                  setActiveIndex(i);
+                  const track = trackRef.current;
+                  if (!track) return;
+                  const cards = track.querySelectorAll('.cert-card');
+                  const cardWidth = cards[0]?.offsetWidth || 0;
+                  const gap = 16;
+                  const step = cardWidth + gap;
+                  const maxScroll = Math.max(0, cards.length * step - containerWidthRef.current);
+                  gsap.to(track, { x: -Math.min(i * step, maxScroll), duration: 0.6, ease: 'power2.out' });
+                }}
+                aria-label={`Certificado ${i + 1}`}
+              />
             </li>
           ))}
-        </ul>
-      </details>
+        </ol>
+      </div>
     </section>
   );
 }

@@ -145,4 +145,19 @@ export const educationProjects = [
  * @property {string} [verifyUrl] Public verification page.
  * @property {string} [file]      Path under `public/`, e.g. `/certificados/x.pdf`.
  */
-export const certificates = [];
+export const certificates = [
+  {
+    id: 'platzi-formacion-frontend',
+    title: 'Desarrollo Frontend con React',
+    issuer: 'Platzi',
+    date: '2026-06',
+    file: '/certificados/platzi-certificado-formacion.pdf',
+  },
+  {
+    id: 'telefonica-visita-cuantico',
+    title: 'Visita al ordenador cuántico',
+    issuer: 'Telefónica Bizkaia',
+    date: '2026-05',
+    file: '/certificados/visita-ordenador-cuantico-telefonica-bizkaia.pdf',
+  },
+];
