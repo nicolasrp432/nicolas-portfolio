@@ -1,8 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
-import { gsap } from '../../lib/gsap';
+import { gsap, ScrollTrigger, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { certificates } from '../../data/education';
-import { FiArrowUpRight, FiFileText } from 'react-icons/fi';
+import { FiArrowUpRight, FiFileText, FiAward, FiEye } from 'react-icons/fi';
 
 const MONTHS = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -17,139 +16,221 @@ function readableDate(value) {
 }
 
 /**
- * Galería de certificados en carrusel con animación moderna estilo 21std.dev.
+ * Galería de certificados en carrusel infinito con GSAP y ScrollTrigger.
  *
- * Las tarjetas se disponen en una pista horizontal que se desplaza con GSAP.
- * Cada tarjeta es un PDF clicable con su propia sombra de suelo y borde fino.
- * El carrusel reproduce automáticamente y se puede navegar con flechas.
+ * Muestra directamente la imagen JPG de cada diploma o certificación
+ * en la tarjeta, permitiendo ver las credenciales a primera vista.
+ * Se desplaza en bucle sin fin de 0% a -50% y reacciona al scroll vertical.
+ * Se pausa al posar el cursor o enfocar con teclado.
  */
 export function Certificates() {
   if (certificates.length === 0) return null;
 
-  const scopeRef = useGsapScope((root) => {
-    gsap.from('.cert-card', {
-      opacity: 0,
-      y: 40,
-      rotateX: 12,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'expo.out',
-      scrollTrigger: { trigger: root, start: 'top 85%', once: true },
-    });
-  }, []);
+  const scopeRef = useGsapScope(
+    (root) => {
+      const track = root.querySelector('.cert-track');
+      if (!track) return;
 
-  const trackRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerWidthRef = useRef(0);
+      // 1. Desplazamiento continuo infinito de 0% a -50%
+      const loop = gsap.to(track, {
+        xPercent: -50,
+        duration: 32,
+        ease: 'none',
+        repeat: -1,
+      });
 
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return undefined;
+      // 2. Respuesta dinámica y fluida al scroll vertical
+      const skewTo = gsap.quickTo(track, 'skewX', { duration: 0.5, ease: 'power3.out' });
+      let direction = 1;
 
-    const cards = track.querySelectorAll('.cert-card');
-    const cardWidth = cards[0]?.offsetWidth || 0;
-    const gap = 16;
-    const step = cardWidth + gap;
-    const maxScroll = Math.max(0, cards.length * step - containerWidthRef.current);
+      const settle = gsap.delayedCall(0.4, () => {
+        skewTo(0);
+        gsap.to(loop, { timeScale: direction, duration: 0.6, ease: 'power2.out' });
+      }).pause();
 
-    let raf;
+      const trigger = ScrollTrigger.create({
+        trigger: root,
+        start: 'top bottom',
+        end: 'bottom top',
+        onUpdate: (self) => {
+          if (self.direction !== 0 && self.direction !== direction) {
+            direction = self.direction;
+          }
+          const velocity = self.getVelocity();
+          const boost = Math.min(Math.abs(velocity) / 140, 5);
+          const targetScale = direction * (1 + boost);
 
-    const play = () => {
-      const next = (activeIndex + 1) % certificates.length;
-      setActiveIndex(next);
-      const target = Math.min(next * step, maxScroll);
-      gsap.to(track, { x: -target, duration: 0.8, ease: 'expo.out' });
-      raf = requestAnimationFrame(play);
-    };
+          gsap.to(loop, {
+            timeScale: targetScale,
+            duration: 0.25,
+            overwrite: 'auto',
+          });
 
-    raf = requestAnimationFrame(play);
+          skewTo(-gsap.utils.clamp(-6, 6, velocity / 320));
+          settle.restart(true);
+        },
+      });
 
-    return () => cancelAnimationFrame(raf);
-  }, [activeIndex]);
+      // 3. Pausar en hover o focus para máxima accesibilidad y usabilidad
+      const pause = () => loop.pause();
+      const resume = () => loop.play();
+
+      track.addEventListener('mouseenter', pause);
+      track.addEventListener('mouseleave', resume);
+      track.addEventListener('focusin', pause);
+      track.addEventListener('focusout', resume);
+
+      return () => {
+        track.removeEventListener('mouseenter', pause);
+        track.removeEventListener('mouseleave', resume);
+        track.removeEventListener('focusin', pause);
+        track.removeEventListener('focusout', resume);
+        trigger.kill();
+        settle.kill();
+      };
+    },
+    [certificates],
+    MOTION_OK,
+  );
 
   return (
     <section className="section certificates" id="certificaciones" ref={scopeRef}>
       <div className="certificates-wrap">
-        <span className="certificates-eyebrow">Galería de certificaciones</span>
+        <span className="certificates-eyebrow">
+          <FiAward aria-hidden="true" />
+          Galería de certificaciones
+        </span>
         <h2 className="certificates-title">
           Certificaciones<span className="accent"> y formación</span>
         </h2>
         <p className="certificates-intro">
-          Formación verificada y experiencias de aprendizaje documentadas. Cada
-          tarjeta enlaza al documento fuente o a su página de verificación.
+          Formación verificada y experiencias documentadas. Las imágenes de las credenciales
+          son visibles a primera vista y enlazan a su documento fuente o página de verificación.
         </p>
 
-        <div className="certificates-track-wrap">
-          <button className="cert-nav cert-nav-prev" aria-label="Certificado anterior">
-            <span className="visually-hidden">Anterior</span>
-          </button>
-          <div
-            className="certificates-track"
-            ref={(el) => {
-              trackRef.current = el;
-              containerWidthRef.current = el?.offsetWidth || 0;
-            }}
-          >
-            {certificates.map((certificate, i) => (
-              <a
-                key={certificate.id}
-                className={`cert-card${i === activeIndex ? ' is-active' : ''}`}
-                href={certificate.file}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="cert-card-media">
-                  <span className="cert-card-badge">{String(i + 1).padStart(2, '0')}</span>
-                </div>
-                <div className="cert-card-body">
-                  <h3 className="cert-card-title">{certificate.title}</h3>
-                  <span className="cert-card-issuer">{certificate.issuer}</span>
-                  {certificate.date && (
-                    <span className="cert-card-date">{readableDate(certificate.date)}</span>
-                  )}
-                </div>
-                <div className="cert-card-actions">
-                  {certificate.file && (
-                    <span className="cert-card-link">
-                      Abrir documento <FiFileText aria-hidden="true" />
+        <div className="certificates-track-wrap" aria-label="Carrusel de certificaciones">
+          <div className="cert-track">
+            {/* Juego principal: accesible para teclado y lectores de pantalla */}
+            {certificates.map((certificate, i) => {
+              const imageSrc = certificate.image || (certificate.file ? certificate.file.replace(/\.pdf$/, '.jpg') : null);
+              return (
+                <a
+                  key={`cert-${certificate.id}-${i}`}
+                  className="cert-card"
+                  href={certificate.file || certificate.verifyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <div className="cert-card-media">
+                    {imageSrc ? (
+                      <img
+                        src={imageSrc}
+                        alt={`Certificado: ${certificate.title} emitido por ${certificate.issuer}`}
+                        className="cert-card-img"
+                        loading="lazy"
+                        width="480"
+                        height="320"
+                      />
+                    ) : (
+                      <div className="cert-card-fallback">
+                        <FiAward className="cert-card-watermark" aria-hidden="true" />
+                      </div>
+                    )}
+                    <span className="cert-card-badge">
+                      {String(i + 1).padStart(2, '0')}
                     </span>
-                  )}
-                  {certificate.verifyUrl && (
-                    <span className="cert-card-link">
-                      Verificar <FiArrowUpRight aria-hidden="true" />
+                    <span className="cert-card-zoom-hint" aria-hidden="true">
+                      <FiEye /> Ver completo
                     </span>
-                  )}
-                </div>
-                <span className="cert-card-glare" aria-hidden="true" />
-              </a>
-            ))}
+                  </div>
+                  <div className="cert-card-body">
+                    <span className="cert-card-issuer">{certificate.issuer}</span>
+                    <h3 className="cert-card-title">{certificate.title}</h3>
+                    {certificate.date && (
+                      <span className="cert-card-date">{readableDate(certificate.date)}</span>
+                    )}
+                  </div>
+                  <div className="cert-card-actions">
+                    {certificate.file && (
+                      <span className="cert-card-link">
+                        Abrir documento <FiFileText aria-hidden="true" />
+                      </span>
+                    )}
+                    {certificate.verifyUrl && (
+                      <span className="cert-card-link">
+                        Verificar <FiArrowUpRight aria-hidden="true" />
+                      </span>
+                    )}
+                  </div>
+                  <span className="cert-card-glare" aria-hidden="true" />
+                </a>
+              );
+            })}
+
+            {/* Juego duplicado: clon visual para el bucle continuo sin fin */}
+            {certificates.map((certificate, i) => {
+              const imageSrc = certificate.image || (certificate.file ? certificate.file.replace(/\.pdf$/, '.jpg') : null);
+              return (
+                <a
+                  key={`cert-clone-${certificate.id}-${i}`}
+                  className="cert-card"
+                  href={certificate.file || certificate.verifyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                >
+                  <div className="cert-card-media">
+                    {imageSrc ? (
+                      <img
+                        src={imageSrc}
+                        alt={`Certificado: ${certificate.title} emitido por ${certificate.issuer}`}
+                        className="cert-card-img"
+                        loading="lazy"
+                        width="480"
+                        height="320"
+                      />
+                    ) : (
+                      <div className="cert-card-fallback">
+                        <FiAward className="cert-card-watermark" aria-hidden="true" />
+                      </div>
+                    )}
+                    <span className="cert-card-badge">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="cert-card-zoom-hint" aria-hidden="true">
+                      <FiEye /> Ver completo
+                    </span>
+                  </div>
+                  <div className="cert-card-body">
+                    <span className="cert-card-issuer">{certificate.issuer}</span>
+                    <h3 className="cert-card-title">{certificate.title}</h3>
+                    {certificate.date && (
+                      <span className="cert-card-date">{readableDate(certificate.date)}</span>
+                    )}
+                  </div>
+                  <div className="cert-card-actions">
+                    {certificate.file && (
+                      <span className="cert-card-link">
+                        Abrir documento <FiFileText aria-hidden="true" />
+                      </span>
+                    )}
+                    {certificate.verifyUrl && (
+                      <span className="cert-card-link">
+                        Verificar <FiArrowUpRight aria-hidden="true" />
+                      </span>
+                    )}
+                  </div>
+                  <span className="cert-card-glare" aria-hidden="true" />
+                </a>
+              );
+            })}
           </div>
-          <button className="cert-nav cert-nav-next" aria-label="Siguiente certificado">
-            <span className="visually-hidden">Siguiente</span>
-          </button>
         </div>
 
-        <ol className="certificates-dots" aria-label="Certificados">
-          {certificates.map((_, i) => (
-            <li key={i}>
-              <button
-                className={i === activeIndex ? 'is-active' : ''}
-                onClick={() => {
-                  setActiveIndex(i);
-                  const track = trackRef.current;
-                  if (!track) return;
-                  const cards = track.querySelectorAll('.cert-card');
-                  const cardWidth = cards[0]?.offsetWidth || 0;
-                  const gap = 16;
-                  const step = cardWidth + gap;
-                  const maxScroll = Math.max(0, cards.length * step - containerWidthRef.current);
-                  gsap.to(track, { x: -Math.min(i * step, maxScroll), duration: 0.6, ease: 'power2.out' });
-                }}
-                aria-label={`Certificado ${i + 1}`}
-              />
-            </li>
-          ))}
-        </ol>
+        <p className="certificates-hint">
+          Desplázate por la página o sitúa el cursor encima para explorar las credenciales.
+        </p>
       </div>
     </section>
   );

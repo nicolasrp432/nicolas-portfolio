@@ -152,6 +152,7 @@ export const certificates = [
     issuer: 'Platzi',
     date: '2026-06',
     file: '/certificados/platzi-certificado-formacion.pdf',
+    image: '/certificados/platzi-certificado-formacion.jpg',
   },
   {
     id: 'telefonica-visita-cuantico',
@@ -159,5 +160,7 @@ export const certificates = [
     issuer: 'Telefónica Bizkaia',
     date: '2026-05',
     file: '/certificados/visita-ordenador-cuantico-telefonica-bizkaia.pdf',
+    image: '/certificados/visita-ordenador-cuantico-telefonica-bizkaia.jpg',
   },
 ];
+

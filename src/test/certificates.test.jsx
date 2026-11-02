@@ -1,9 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
-// The real list ships empty, so the populated state has to be simulated. The
-// mock is module-wide, which is why these tests live in their own file.
+// The mock is module-wide, so these tests live in their own file.
 vi.mock('../data/education', async (importOriginal) => ({
   ...(await importOriginal()),
   certificates: [
@@ -27,32 +25,13 @@ vi.mock('../data/education', async (importOriginal) => ({
 const { Certificates } = await import('../components/sections/Certificates');
 
 describe('Certificates', () => {
-  it('starts folded', () => {
+  it('renders the certificates gallery section with track and cards', () => {
     const { container } = render(<Certificates />);
 
-    const fold = container.querySelector('details');
-    expect(fold).toBeInTheDocument();
-    expect(fold.open).toBe(false);
-    expect(screen.getByText('02')).toBeInTheDocument();
-  });
-
-  it('is reachable by keyboard and opens on activation', async () => {
-    const { container } = render(<Certificates />);
-    const fold = container.querySelector('details');
-    const summary = container.querySelector('summary');
-
-    // Tab reaches it without a tabindex: that is the native element earning
-    // its keep. jsdom implements click activation on <summary> but not Enter
-    // or Space, so the activation itself is asserted with a click — the key
-    // handling is the browser's, which is precisely why it is not hand-rolled.
-    await userEvent.tab();
-    expect(summary).toHaveFocus();
-
-    await userEvent.click(summary);
-    expect(fold.open).toBe(true);
-
-    await userEvent.click(summary);
-    expect(fold.open).toBe(false);
+    const section = container.querySelector('section#certificaciones');
+    expect(section).toBeInTheDocument();
+    expect(container.querySelector('.cert-track')).toBeInTheDocument();
+    expect(screen.getAllByRole('link')).toHaveLength(2);
   });
 
   it('shows whichever proof each certificate has', () => {
@@ -72,7 +51,13 @@ describe('Certificates', () => {
 
   it('writes the date in words', () => {
     render(<Certificates />);
-    expect(screen.getByText(/noviembre de 2025/i)).toBeInTheDocument();
-    expect(screen.getByText(/marzo de 2026/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/noviembre de 2025/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/marzo de 2026/i).length).toBeGreaterThan(0);
+  });
+
+  it('provides a duplicate set for the seamless infinite loop with aria-hidden', () => {
+    const { container } = render(<Certificates />);
+    const clones = container.querySelectorAll('.cert-card[aria-hidden="true"]');
+    expect(clones.length).toBe(2);
   });
 });

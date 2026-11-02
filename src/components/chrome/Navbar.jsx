@@ -131,7 +131,9 @@ export function Navbar({ currentPage = 'home' }) {
 
     const place = () => {
       if (cancelled) return;
-      const target = active ? nav.querySelector(`[data-section="${active}"]`) : null;
+      const target =
+        nav.querySelector("[aria-current='true']") ||
+        (active ? nav.querySelector(`[data-section="${active}"]`) : null);
 
       if (!target) {
         gsap.to(pill, { autoAlpha: 0, duration: 0.2, overwrite: true });
@@ -162,7 +164,7 @@ export function Navbar({ currentPage = 'home' }) {
       cancelled = true;
       window.removeEventListener('resize', place);
     };
-  }, [active]);
+  }, [active, currentPage, isHome]);
 
   // Panel entrance: the ink sheet wipes down, then the entries roll up.
   useIsomorphicLayoutEffect(() => {

@@ -71,6 +71,21 @@ export function Hero() {
         scrollTrigger: onHeroScroll,
       });
 
+      // Entrada del símbolo React 3D flotante: sube ligeramente, rota sutil y flota en bucle.
+      gsap.fromTo(
+        '.hero-float img',
+        { opacity: 0, y: 28, scale: 0.85, rotate: -6 },
+        { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 1.2, ease: 'expo.out', delay: 0.4 },
+      );
+      gsap.to('.hero-float img', {
+        y: -14,
+        rotate: 3,
+        duration: 3.5,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+      });
+
       return () => tl.kill();
     },
     [],
@@ -115,10 +130,10 @@ export function Hero() {
             <span className="hero-orbit hero-orbit-b" aria-hidden="true" />
 
             <picture className="hero-portrait">
-              <source srcSet="/img/portraits/hero-retrato.png" type="image/png" media="(max-width: 700px)" />
-              <source srcSet="/img/portraits/hero-retrato.png" type="image/png" />
+              <source srcSet="/img/portraits/portrait-elevado.png" type="image/png" media="(max-width: 700px)" />
+              <source srcSet="/img/portraits/portrait-elevado.png" type="image/png" />
               <img
-                src="/img/portraits/hero-retrato.png"
+                src="/img/portraits/portrait-elevado.png"
                 alt="Retrato de Nicolás Rodríguez"
                 width="900"
                 height="1200"
@@ -126,6 +141,18 @@ export function Hero() {
                 decoding="async"
               />
             </picture>
+
+            {/* Símbolo representativo de frontend: Logo 3D de React flotante */}
+            <span className="hero-float hero-float-react" aria-hidden="true">
+              <img
+                src="/img/hero-react-3d.png"
+                alt="Logo 3D de React"
+                width="320"
+                height="320"
+                decoding="async"
+                loading="eager"
+              />
+            </span>
 
             <span className="hero-chip chip-code" aria-hidden="true">
               <FiCode />

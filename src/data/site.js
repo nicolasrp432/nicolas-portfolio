@@ -82,12 +82,10 @@ export const socials = [
 export const navLinks = [
   { id: 'proyectos', label: 'Proyectos', index: '01', theme: 'ink' },
   { id: 'educacion', label: 'Educación', href: '/educacion/' },
-  { id: 'contenido', label: 'Contenido', index: '02', theme: 'paper' },
-  { id: 'certificados', label: 'Certificados', index: '03', theme: 'coral' },
-  { id: 'perfil', label: 'Perfil', index: '04', theme: 'paper' },
-  { id: 'herramientas', label: 'Herramientas', index: '05', theme: 'paper' },
-  { id: 'ruta', label: 'Ruta', index: '06', theme: 'coral' },
-  { id: 'contacto', label: 'Contacto', index: '07', theme: 'ink' },
+  { id: 'perfil', label: 'Perfil', index: '02', theme: 'paper' },
+  { id: 'herramientas', label: 'Herramientas', index: '03', theme: 'paper' },
+  { id: 'ruta', label: 'Ruta', index: '04', theme: 'coral' },
+  { id: 'contacto', label: 'Contacto', index: '05', theme: 'ink' },
 ];
 
 /** Only what lives on the home page. The rail and the scroll spy use this. */

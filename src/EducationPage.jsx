@@ -113,6 +113,35 @@ export default function EducationPage() {
         },
       );
     });
+    // Entrada y levitación de elementos visuales del hero de educación
+    gsap.fromTo(
+      '.education-portrait-cutout',
+      { opacity: 0, y: 36, scale: 0.94 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'expo.out', delay: 0.15 },
+    );
+    gsap.fromTo(
+      '.education-3d-item img',
+      { opacity: 0, y: 24, scale: 0.8 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.2, stagger: 0.15, ease: 'expo.out', delay: 0.35 },
+    );
+
+    gsap.to('.item-terminal img', {
+      y: -12,
+      rotate: 3,
+      duration: 3.6,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+    gsap.to('.item-cap img', {
+      y: -14,
+      rotate: -4,
+      duration: 4.2,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      delay: 0.5,
+    });
   }, [], MOTION_OK);
 
   useEffect(() => {
@@ -143,18 +172,71 @@ export default function EducationPage() {
 
         <main id="contenido" ref={scope}>
           <header className="section education-intro" id="educacion">
-            <p className="eyebrow">Educación · trabajo de escuela</p>
-            <SplitHeadline lines={HEADING} className="education-title" />
-            <Reveal as="p" delay={0.1} className="education-standfirst">
-              Ejercicios, teoría y currículo. No son encargos ni entregables para nadie: son el
-              proceso, y lo comparto porque el proceso también cuenta. Aquí van los repositorios de
-              la escuela 42 y de mi formación en frontend, según los voy cerrando.
-            </Reveal>
-            <Reveal as="div" delay={0.2}>
-              <ArrowLink href="/" external={false}>
-                Volver al portfolio
-              </ArrowLink>
-            </Reveal>
+            <div className="education-intro-copy">
+              <p className="eyebrow">Educación · trabajo de escuela</p>
+              <SplitHeadline lines={HEADING} className="education-title" />
+              <Reveal as="p" delay={0.1} className="education-standfirst">
+                Ejercicios, teoría y currículo. No son encargos ni entregables para nadie: son el
+                proceso, y lo comparto porque el proceso también cuenta. Aquí van los repositorios de
+                la escuela 42 y de mi formación en frontend, según los voy cerrando.
+              </Reveal>
+              <Reveal as="div" delay={0.2}>
+                <ArrowLink href="/" external={false}>
+                  Volver al portfolio
+                </ArrowLink>
+              </Reveal>
+            </div>
+
+            <div className="education-intro-visual" aria-hidden="true">
+              <div className="education-stage">
+                <span className="education-orbit" aria-hidden="true" />
+
+                <div className="education-portrait-wrap">
+                  <img
+                    src="/img/portraits/portrait-cenital.png"
+                    alt="Nicolás Rodríguez programando y estudiando con su portátil"
+                    width="620"
+                    height="775"
+                    className="education-portrait-cutout"
+                    loading="eager"
+                  />
+                </div>
+
+                {/* Iconos 3D flotantes con fondo 100% transparente */}
+                <span className="education-3d-item item-terminal" aria-hidden="true">
+                  <img
+                    src="/img/education/3d-terminal.png"
+                    alt=""
+                    width="240"
+                    height="298"
+                    loading="eager"
+                  />
+                </span>
+
+                <span className="education-3d-item item-cap" aria-hidden="true">
+                  <img
+                    src="/img/education/3d-cap.png"
+                    alt=""
+                    width="260"
+                    height="243"
+                    loading="eager"
+                  />
+                </span>
+
+                <span className="education-chip chip-school">
+                  <span className="live-dot" />
+                  <span>
+                    42 <strong>Telefónica</strong>
+                  </span>
+                </span>
+
+                <span className="education-chip chip-track">
+                  <span>
+                    Frontend <strong>React & C</strong>
+                  </span>
+                </span>
+              </div>
+            </div>
           </header>
 
           {schools.map((school) => {
