@@ -26,6 +26,36 @@ export function Profile() {
       scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: 1 },
     });
 
+    // Entrada y levitación suave del Rey 3D — símbolo de estratega creativo
+    gsap.fromTo(
+      '.profile-king-img',
+      { opacity: 0, y: 36, scale: 0.88, rotate: -4 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotate: 0,
+        duration: 1.1,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: root, start: 'top 80%', once: true },
+      },
+    );
+
+    gsap.to('.profile-king-img', {
+      y: -10,
+      rotate: 2,
+      duration: 3.8,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+
+    gsap.to('.profile-king-totem', {
+      yPercent: 8,
+      ease: 'none',
+      scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: true },
+    });
+
     // Each principle rule draws itself left-to-right as the row arrives.
     gsap.utils.toArray('.principle').forEach((row) => {
       gsap.fromTo(
@@ -56,6 +86,26 @@ export function Profile() {
     <section className="section profile" id="perfil" ref={scope}>
       <aside className="profile-aside">
         <span className="eyebrow">Manifiesto personal</span>
+
+        <div className="profile-chess-stage" data-cursor="ESTRATEGIA">
+          <span className="profile-king-halo" aria-hidden="true" />
+          <div className="profile-king-totem">
+            <img
+              src="/img/chess/chess-king-3d.png"
+              alt="Rey de ajedrez en 3D — símbolo de estratega creativo y visión"
+              className="profile-king-img"
+              width="368"
+              height="891"
+              loading="lazy"
+              decoding="async"
+            />
+            <span className="profile-king-chip">
+              <span className="chip-dot" aria-hidden="true" />
+              Estratega Creativo
+            </span>
+          </div>
+        </div>
+
         <span className="profile-asterisk" aria-hidden="true">
           <Asterisk />
         </span>
