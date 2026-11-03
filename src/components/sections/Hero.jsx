@@ -71,19 +71,34 @@ export function Hero() {
         scrollTrigger: onHeroScroll,
       });
 
-      // Entrada del símbolo React 3D flotante: sube ligeramente, rota sutil y flota en bucle.
+      // Entrada de los iconos 3D flotantes en el hero (React a la izquierda, Rey a la derecha)
       gsap.fromTo(
-        '.hero-float img',
+        '.hero-float-react img',
         { opacity: 0, y: 28, scale: 0.85, rotate: -6 },
         { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 1.2, ease: 'expo.out', delay: 0.4 },
       );
-      gsap.to('.hero-float img', {
+      gsap.fromTo(
+        '.hero-float-king img',
+        { opacity: 0, y: 32, scale: 0.85, rotate: 6 },
+        { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 1.2, ease: 'expo.out', delay: 0.55 },
+      );
+
+      gsap.to('.hero-float-react img', {
         y: -14,
         rotate: 3,
         duration: 3.5,
         ease: 'sine.inOut',
         repeat: -1,
         yoyo: true,
+      });
+      gsap.to('.hero-float-king img', {
+        y: -16,
+        rotate: -3,
+        duration: 4.2,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        delay: 0.3,
       });
 
       return () => tl.kill();
@@ -149,6 +164,18 @@ export function Hero() {
                 alt="Logo 3D de React"
                 width="320"
                 height="320"
+                decoding="async"
+                loading="eager"
+              />
+            </span>
+
+            {/* Símbolo de estratega creativo: Rey de ajedrez 3D en el lado contrario */}
+            <span className="hero-float hero-float-king" aria-hidden="true">
+              <img
+                src="/img/chess/chess-king-3d.png"
+                alt="Rey 3D de ajedrez — símbolo de estratega creativo"
+                width="368"
+                height="891"
                 decoding="async"
                 loading="eager"
               />

@@ -119,26 +119,59 @@
 }
 @media (max-width: 900px) { .hero-caption { display: none; } }
 
-/* Símbolo representativo flotante encima del retrato: React 3D */
+/* Símbolos representativos flotantes encima del retrato: React 3D y Rey 3D */
 .hero-float {
   position: absolute;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.hero-float-react {
   top: -8%;
   left: -8%;
-  width: min(240px, 34%);
-  z-index: 2;
-  pointer-events: none;
+  width: min(230px, 33%);
   filter: drop-shadow(0 20px 30px rgb(23 22 20 / 0.18)) drop-shadow(0 0 35px rgb(88 196 220 / 0.25));
 }
+
+.hero-float-king {
+  top: -5%;
+  right: -8%;
+  width: min(155px, 23%);
+  filter: drop-shadow(0 20px 30px rgb(23 22 20 / 0.18)) drop-shadow(0 0 32px rgba(255, 87, 34, 0.28));
+}
+
 .hero-float img {
   width: 100%;
   height: auto;
   display: block;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease;
+  transform-origin: center bottom;
 }
+
+/* Efecto hover 3D: crece suavemente, se inclina y amplifica su iluminación */
+.hero-float:hover {
+  z-index: 5;
+}
+.hero-float-react:hover img {
+  transform: scale(1.16) translateY(-8px) rotate(4deg);
+  filter: drop-shadow(0 26px 38px rgb(23 22 20 / 0.26)) drop-shadow(0 0 45px rgb(88 196 220 / 0.5));
+}
+.hero-float-king:hover img {
+  transform: scale(1.18) translateY(-10px) rotate(-4deg);
+  filter: drop-shadow(0 26px 38px rgb(23 22 20 / 0.26)) drop-shadow(0 0 42px rgba(255, 87, 34, 0.5));
+}
+
 @media (max-width: 700px) {
-  .hero-float {
-    width: min(160px, 36%);
+  .hero-float-react {
+    width: min(150px, 34%);
     top: -6%;
     left: -4%;
+  }
+  .hero-float-king {
+    width: min(100px, 23%);
+    top: -4%;
+    right: -4%;
   }
 }
 
@@ -186,40 +219,112 @@
   cursor: default;
 }
 
-.profile-king-totem {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  user-select: none;
-}
-
 .profile-king-halo {
   position: absolute;
-  top: 40%;
+  top: 36%;
   left: 50%;
-  width: clamp(140px, 16vw, 220px);
-  height: clamp(140px, 16vw, 220px);
+  width: clamp(180px, 22vw, 280px);
+  height: clamp(180px, 22vw, 280px);
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, rgba(255, 87, 34, 0.16) 0%, rgba(255, 87, 34, 0) 70%);
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(24px);
+  filter: blur(28px);
 }
 
-.profile-king-img {
-  display: block;
-  width: clamp(110px, 13vw, 160px);
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 28px rgba(16, 16, 16, 0.14));
-  transform-origin: center bottom;
-  transition: transform 0.4s var(--ease-squish);
+/* Tríada de ajedrez 3D: Torre + Rey + Caballo */
+.profile-chess-triad {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: clamp(0.75rem, 1.8vw, 1.35rem);
+  width: 100%;
+  max-width: 360px;
+  perspective: 900px;
+}
+
+.profile-chess-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
   will-change: transform;
 }
 
-.profile-king-totem:hover .profile-king-img {
-  transform: scale(1.05) rotate(2deg);
+.profile-chess-img {
+  display: block;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 24px rgba(16, 16, 16, 0.14));
+  transform-origin: center bottom;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease;
+  will-change: transform, filter;
+}
+
+/* Jerarquía de tamaños: Rey central más alto, Torre y Caballo a los costados */
+.item-king .profile-chess-img {
+  width: clamp(82px, 10.5vw, 116px);
+  z-index: 2;
+}
+
+.item-rook .profile-chess-img {
+  width: clamp(70px, 9vw, 98px);
+  z-index: 1;
+}
+
+.item-knight .profile-chess-img {
+  width: clamp(72px, 9.2vw, 100px);
+  z-index: 1;
+}
+
+/* Micro etiqueta táctica debajo de cada pieza */
+.profile-chess-label {
+  margin-top: 0.5rem;
+  font: 500 0.63rem/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.label-king {
+  color: var(--coral);
+  font-weight: 600;
+}
+
+/* Efecto hover 3D interactivo premium:
+   Crece (scale 1.22 - 1.24), se inclina sutilmente en 3D, se eleva y acentúa su sombra coral */
+.profile-chess-item:hover {
+  z-index: 10;
+}
+
+.profile-chess-item:hover .profile-chess-img {
+  filter: drop-shadow(0 24px 38px rgba(16, 16, 16, 0.28)) drop-shadow(0 0 26px rgba(255, 87, 34, 0.38));
+}
+
+.item-rook:hover .profile-chess-img {
+  transform: scale(1.22) translateY(-12px) rotate(-4deg);
+}
+
+.item-king:hover .profile-chess-img {
+  transform: scale(1.24) translateY(-14px);
+}
+
+.item-knight:hover .profile-chess-img {
+  transform: scale(1.22) translateY(-12px) rotate(4deg);
+}
+
+.profile-chess-item:hover .profile-chess-label {
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+/* Foco en la pieza activa atenuando suavemente las compañeras */
+.profile-chess-triad:hover .profile-chess-item:not(:hover) {
+  opacity: 0.68;
 }
 
 .profile-king-chip {
@@ -473,7 +578,10 @@
   .profile, .roadmap { grid-template-columns: 1fr; }
   .profile-aside { min-height: 0; }
   .profile-chess-stage { align-items: flex-start; margin: var(--space-4) 0; }
-  .profile-king-img { width: clamp(90px, 22vw, 120px); }
+  .profile-chess-triad { max-width: 320px; gap: clamp(0.5rem, 3vw, 1rem); }
+  .item-king .profile-chess-img { width: clamp(70px, 16vw, 95px); }
+  .item-rook .profile-chess-img { width: clamp(58px, 13vw, 80px); }
+  .item-knight .profile-chess-img { width: clamp(60px, 13.5vw, 82px); }
   .profile-asterisk { margin: var(--space-4) 0 var(--space-4); }
 }
 

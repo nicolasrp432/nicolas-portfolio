@@ -1,20 +1,18 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { gsap } from '../../lib/gsap';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 
 /**
- * A two-part cursor: a hard coral dot that tracks the pointer exactly, and a
- * ring that lags behind it. Any element carrying `data-cursor="LABEL"` swells
- * the ring and prints that word inside it, so hovering a project card reads
- * "ABRIR" rather than relying on an icon.
+ * A sleek two-part tactile cursor:
+ * A high-precision center dot that tracks pointer movements synchronously,
+ * accompanied by a smooth trailing magnetic ring.
  *
- * Mounted only for fine pointers with motion enabled; the native cursor is
- * hidden by the same condition in CSS, so it can never be lost.
+ * Expands organically over interactive elements with zero text clutter,
+ * providing clean visual feedback.
  */
 export function Cursor() {
   const dot = useRef(null);
   const ring = useRef(null);
-  const [label, setLabel] = useState('');
 
   useIsomorphicLayoutEffect(() => {
     const dotEl = dot.current;
@@ -22,11 +20,13 @@ export function Cursor() {
     if (!dotEl || !ringEl) return undefined;
 
     const ctx = gsap.context(() => {
-      // Two different durations are what creates the trailing feel.
-      const dotX = gsap.quickTo(dotEl, 'x', { duration: 0.12, ease: 'power3.out' });
-      const dotY = gsap.quickTo(dotEl, 'y', { duration: 0.12, ease: 'power3.out' });
-      const ringX = gsap.quickTo(ringEl, 'x', { duration: 0.5, ease: 'power3.out' });
-      const ringY = gsap.quickTo(ringEl, 'y', { duration: 0.5, ease: 'power3.out' });
+      let isHovered = false;
+
+      // Trailing latency creates organic fluid inertia
+      const dotX = gsap.quickTo(dotEl, 'x', { duration: 0.08, ease: 'power3.out' });
+      const dotY = gsap.quickTo(dotEl, 'y', { duration: 0.08, ease: 'power3.out' });
+      const ringX = gsap.quickTo(ringEl, 'x', { duration: 0.38, ease: 'power3.out' });
+      const ringY = gsap.quickTo(ringEl, 'y', { duration: 0.38, ease: 'power3.out' });
 
       const onMove = (event) => {
         dotX(event.clientX);
@@ -35,17 +35,33 @@ export function Cursor() {
         ringY(event.clientY);
       };
 
+      const interactiveSelector = 'a, button, [role="button"], input, textarea, select, .hero-float, .profile-chess-piece, .project-card, .certificate-card, [data-cursor]';
+
       const onOver = (event) => {
-        const target = event.target.closest?.('[data-cursor]');
-        setLabel(target ? target.dataset.cursor : '');
-        // Only the scale is animated. Colour is left to CSS: the layer is
-        // painted with `mix-blend-mode: difference`, which inverts it against
-        // both the paper and the ink sections — GSAP cannot tween a `var()`.
-        gsap.to(ringEl, { scale: target ? 2.6 : 1, duration: 0.35, ease: 'power3.out' });
+        const target = event.target.closest?.(interactiveSelector);
+        isHovered = Boolean(target);
+
+        if (isHovered) {
+          ringEl.classList.add('is-hovering');
+          gsap.to(ringEl, { scale: 1.75, duration: 0.3, ease: 'power3.out' });
+          gsap.to(dotEl, { scale: 0.6, duration: 0.25, ease: 'power3.out' });
+        } else {
+          ringEl.classList.remove('is-hovering');
+          gsap.to(ringEl, { scale: 1, duration: 0.35, ease: 'power3.out' });
+          gsap.to(dotEl, { scale: 1, duration: 0.25, ease: 'power3.out' });
+        }
       };
 
-      const onDown = () => gsap.to(ringEl, { scale: 0.85, duration: 0.2 });
-      const onUp = () => gsap.to(ringEl, { scale: 1, duration: 0.3 });
+      const onDown = () => {
+        gsap.to(ringEl, { scale: 0.82, duration: 0.15, ease: 'power2.out' });
+        gsap.to(dotEl, { scale: 1.4, duration: 0.15, ease: 'power2.out' });
+      };
+
+      const onUp = () => {
+        gsap.to(ringEl, { scale: isHovered ? 1.75 : 1, duration: 0.25, ease: 'back.out(2)' });
+        gsap.to(dotEl, { scale: isHovered ? 0.6 : 1, duration: 0.25, ease: 'back.out(2)' });
+      };
+
       const onLeave = () => gsap.to([dotEl, ringEl], { opacity: 0, duration: 0.2 });
       const onEnter = () => gsap.to([dotEl, ringEl], { opacity: 1, duration: 0.2 });
 
@@ -72,9 +88,7 @@ export function Cursor() {
   return (
     <div className="cursor-layer" aria-hidden="true">
       <span className="cursor-dot" ref={dot} />
-      <span className={`cursor-ring${label ? ' is-labelled' : ''}`} ref={ring}>
-        <span className="cursor-label">{label}</span>
-      </span>
+      <span className="cursor-ring" ref={ring} />
     </div>
   );
 }

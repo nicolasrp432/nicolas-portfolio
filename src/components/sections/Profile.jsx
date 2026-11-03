@@ -26,32 +26,52 @@ export function Profile() {
       scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: 1 },
     });
 
-    // Entrada y levitación suave del Rey 3D — símbolo de estratega creativo
+    // Entrada escalonada y levitación suave de la tríada de ajedrez 3D (Torre, Rey, Caballo)
     gsap.fromTo(
-      '.profile-king-img',
-      { opacity: 0, y: 36, scale: 0.88, rotate: -4 },
+      '.profile-chess-item',
+      { opacity: 0, y: 32, scale: 0.86 },
       {
         opacity: 1,
         y: 0,
         scale: 1,
-        rotate: 0,
-        duration: 1.1,
+        duration: 1,
+        stagger: 0.1,
         ease: 'expo.out',
         scrollTrigger: { trigger: root, start: 'top 80%', once: true },
       },
     );
 
-    gsap.to('.profile-king-img', {
-      y: -10,
-      rotate: 2,
-      duration: 3.8,
+    gsap.to('.item-rook img', {
+      y: -8,
+      rotate: -1.5,
+      duration: 3.4,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
     });
 
-    gsap.to('.profile-king-totem', {
-      yPercent: 8,
+    gsap.to('.item-king img', {
+      y: -12,
+      rotate: 1.5,
+      duration: 4.0,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      delay: 0.2,
+    });
+
+    gsap.to('.item-knight img', {
+      y: -9,
+      rotate: -2,
+      duration: 3.6,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      delay: 0.4,
+    });
+
+    gsap.to('.profile-chess-triad', {
+      yPercent: 7,
       ease: 'none',
       scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: true },
     });
@@ -87,23 +107,57 @@ export function Profile() {
       <aside className="profile-aside">
         <span className="eyebrow">Manifiesto personal</span>
 
-        <div className="profile-chess-stage" data-cursor="ESTRATEGIA">
+        <div className="profile-chess-stage">
           <span className="profile-king-halo" aria-hidden="true" />
-          <div className="profile-king-totem">
-            <img
-              src="/img/chess/chess-king-3d.png"
-              alt="Rey de ajedrez en 3D — símbolo de estratega creativo y visión"
-              className="profile-king-img"
-              width="368"
-              height="891"
-              loading="lazy"
-              decoding="async"
-            />
-            <span className="profile-king-chip">
-              <span className="chip-dot" aria-hidden="true" />
-              Estratega Creativo
-            </span>
+
+          <div className="profile-chess-triad">
+            {/* Torre a la izquierda: Estructura & Solidez */}
+            <div className="profile-chess-item item-rook">
+              <img
+                src="/img/chess/chess-rook-3d.png"
+                alt="Torre de ajedrez en 3D — Estructura"
+                className="profile-chess-img img-rook"
+                width="444"
+                height="806"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="profile-chess-label">Estructura</span>
+            </div>
+
+            {/* Rey en el centro: Estrategia & Visión (Protagonista) */}
+            <div className="profile-chess-item item-king">
+              <img
+                src="/img/chess/chess-king-3d.png"
+                alt="Rey de ajedrez en 3D — Estrategia"
+                className="profile-chess-img img-king"
+                width="368"
+                height="891"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="profile-chess-label label-king">Estrategia</span>
+            </div>
+
+            {/* Caballo a la derecha: Creatividad & Táctica */}
+            <div className="profile-chess-item item-knight">
+              <img
+                src="/img/chess/chess-knight-3d.png"
+                alt="Caballo de ajedrez en 3D — Táctica"
+                className="profile-chess-img img-knight"
+                width="450"
+                height="836"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="profile-chess-label">Táctica</span>
+            </div>
           </div>
+
+          <span className="profile-king-chip">
+            <span className="chip-dot" aria-hidden="true" />
+            Estratega Creativo
+          </span>
         </div>
 
         <span className="profile-asterisk" aria-hidden="true">
