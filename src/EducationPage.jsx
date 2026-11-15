@@ -196,7 +196,10 @@ export default function EducationPage() {
 
                 <div className="education-portrait-wrap">
                   <img
-                    src="/img/portraits/portrait-cenital.png"
+                    src="/img/portraits/portrait-cenital-960.webp"
+                    srcSet="/img/portraits/portrait-cenital-480.webp 480w, /img/portraits/portrait-cenital-960.webp 960w"
+                    sizes="(max-width: 900px) 280px, 480px"
+                    decoding="async"
                     alt="Nicolás Rodríguez programando y estudiando con su portátil"
                     width="620"
                     height="775"
@@ -208,7 +211,7 @@ export default function EducationPage() {
                 {/* Iconos 3D flotantes con fondo 100% transparente */}
                 <span className="education-3d-item item-terminal" aria-hidden="true">
                   <img
-                    src="/img/hero-glass/web.webp"
+                    src="/img/hero-glass/optimized/web.webp"
                     alt=""
                     width="240"
                     height="298"
@@ -218,7 +221,7 @@ export default function EducationPage() {
 
                 <span className="education-3d-item item-cap" aria-hidden="true">
                   <img
-                    src="/img/hero-glass/3d.webp"
+                    src="/img/hero-glass/optimized/3d.webp"
                     alt=""
                     width="260"
                     height="243"
@@ -247,10 +250,10 @@ export default function EducationPage() {
               href={`#escuela-${school.id}`} eyebrow={`0${index + 1} / Itinerario`}
               title={school.name} description={school.note}
               meta={`${cards.filter(card => card.school === school.id).length} proyectos documentados`}
-              image={index === 0 ? '/img/hero-glass/3d.webp' : '/img/hero-glass/web.webp'} />)}
+              image={index === 0 ? '/img/hero-glass/optimized/3d.webp' : '/img/hero-glass/optimized/web.webp'} />)}
             <GlassLinkCard href="#certificaciones" eyebrow="03 / Evidencias" title="Credenciales"
               description="Formación y experiencias que puedes explorar y consultar."
-              meta={`${certificates.length} documentos disponibles`} image="/img/hero-glass/strategy-chess.webp" />
+              meta={`${certificates.length} documentos disponibles`} image="/img/hero-glass/optimized/strategy-chess.webp" />
           </nav>
 
           {schools.map((school) => {

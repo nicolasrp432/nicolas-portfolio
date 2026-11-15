@@ -18,7 +18,7 @@ export function Hero() {
       <div className="hero-tunnel-stage">
         <div className="hero-logo-intro"><LiquidGlassLogo /></div>
         <div className="hero-portrait-depth">
-          <img src="/img/portraits/portrait-elevado.png" alt="Nicolás Rodríguez, desarrollador y creativo digital" width="1122" height="1402" fetchPriority="high" />
+          <img src="/img/portraits/portrait-elevado-960.webp" srcSet="/img/portraits/portrait-elevado-480.webp 480w, /img/portraits/portrait-elevado-960.webp 960w" sizes="(max-width: 900px) 280px, 480px" decoding="async" alt="Nicolás Rodríguez, desarrollador y creativo digital" width="1122" height="1402" fetchPriority="high" />
         </div>
         <div className="hero-tunnel-copy">
           <p className="hero-kicker">{site.name} <span aria-hidden="true">↗</span></p>

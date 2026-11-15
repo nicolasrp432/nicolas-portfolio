@@ -3,7 +3,7 @@ import { toolGroups } from './content';
 /** Service copy uses the existing stack; no invented software or metrics. */
 export const services = [
   {
-    id: 'web', title: 'Desarrollo', emphasis: 'con propósito.', label: 'Web & producto', image: '/img/hero-glass/web.webp',
+    id: 'web', title: 'Desarrollo', emphasis: 'con propósito.', label: 'Web & producto', image: '/img/hero-glass/optimized/web.webp',
     caption: 'De la idea a una interfaz que se usa',
     description: 'Sitios web y productos digitales que conectan una necesidad real con una experiencia clara, adaptable y bien construida.',
     deliverables: ['Webs para negocios', 'Interfaces de producto', 'Aplicaciones y prototipos'],
@@ -12,7 +12,7 @@ export const services = [
     href: '#proyectos', cta: 'Ver proyectos',
   },
   {
-    id: 'design', title: 'Diseño', emphasis: 'con criterio.', label: 'Diseño gráfico & UI', image: '/img/hero-glass/design.webp',
+    id: 'design', title: 'Diseño', emphasis: 'con criterio.', label: 'Diseño gráfico & UI', image: '/img/hero-glass/optimized/design.webp',
     caption: 'La forma también comunica',
     description: 'Diseño gráfico, interfaces y sistemas visuales para que una marca se reconozca y su mensaje se entienda desde el primer vistazo.',
     deliverables: ['Diseño de interfaces', 'Sistemas visuales', 'Piezas gráficas digitales'],
@@ -21,7 +21,7 @@ export const services = [
     href: '#contacto', cta: 'Hablemos de diseño',
   },
   {
-    id: 'motion', title: 'Imagen', emphasis: 'en movimiento.', label: 'Motion, vídeo & 3D', image: '/img/hero-glass/motion.webp',
+    id: 'motion', title: 'Imagen', emphasis: 'en movimiento.', label: 'Motion, vídeo & 3D', image: '/img/hero-glass/optimized/motion.webp',
     caption: 'Ritmo, narrativa y profundidad',
     description: 'Motion graphics, edición de vídeo y experiencias 3D que dan vida a una idea y guían la atención con intención.',
     deliverables: ['Animación y motion graphics', 'Montaje de vídeo', 'Escenas 3D interactivas'],
@@ -30,7 +30,7 @@ export const services = [
     href: '#perfil', cta: 'Conocer mi enfoque',
   },
   {
-    id: 'marketing', title: 'Estrategia', emphasis: 'que conecta.', label: 'Estrategia digital', image: '/img/hero-glass/strategy-chess.webp',
+    id: 'marketing', title: 'Estrategia', emphasis: 'que conecta.', label: 'Estrategia digital', image: '/img/hero-glass/optimized/strategy-chess.webp',
     caption: 'Del mensaje al punto de contacto',
     description: 'Marketing digital y contenido que conectan la identidad de una marca con su público, desde una landing hasta sus piezas de comunicación.',
     deliverables: ['Landings de campaña', 'Contenido para marcas', 'Comunicación visual'],
@@ -39,7 +39,7 @@ export const services = [
     href: '#contacto', cta: 'Hablemos de tu marca',
   },
   {
-    id: 'ai', title: 'Ideas', emphasis: 'amplificadas.', label: 'IA & automatización', image: '/img/hero-glass/3d.webp',
+    id: 'ai', title: 'Ideas', emphasis: 'amplificadas.', label: 'IA & automatización', image: '/img/hero-glass/optimized/3d.webp',
     caption: 'El multiplicador del proceso',
     description: 'Uso inteligencia artificial y automatización para explorar posibilidades, conectar herramientas y agilizar tareas con revisión y criterio humano.',
     deliverables: ['Flujos de automatización', 'Agentes de IA', 'Prototipado asistido'],

@@ -718,6 +718,7 @@ export function startEngine(wrap, live) {
   let outro = 0;
   let dirty = true;
   let visible = false;
+  let paintable = !document.hidden;
   let lost = false;
   let raf = 0;
   let last = 0;
@@ -767,10 +768,10 @@ export function startEngine(wrap, live) {
       dirty = false;
       wrap.dataset.ready = "true";
     }
-    if (visible && playing && logo && !lost) raf = requestAnimationFrame(tick);
+    if (visible && paintable && playing && logo && !lost) raf = requestAnimationFrame(tick);
   }
   function kick() {
-    if (raf || !visible || lost) return;
+    if (raf || !visible || !paintable || lost) return;
     last = performance.now();
     raf = requestAnimationFrame(tick);
   }
@@ -783,6 +784,18 @@ export function startEngine(wrap, live) {
     }
   });
   io.observe(wrap);
+  // Scroll hides the intro long before the whole hero leaves the viewport.
+  // Stop its WebGL loop then, and resume when scrolling back to the logo.
+  const visibilityHost = wrap.closest('.hero-logo-intro') || wrap;
+  const syncVisibility = () => {
+    paintable = !document.hidden && getComputedStyle(visibilityHost).visibility !== 'hidden';
+    if (paintable) kick();
+    else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+  };
+  const visibilityObserver = new MutationObserver(syncVisibility);
+  visibilityObserver.observe(visibilityHost, { attributes: true, attributeFilter: ['style', 'class'] });
+  document.addEventListener('visibilitychange', syncVisibility);
+  syncVisibility();
   const ro = new ResizeObserver(() => {
     dirty = true;
     kick();
@@ -835,6 +848,8 @@ export function startEngine(wrap, live) {
     dispose() {
       if (raf) cancelAnimationFrame(raf);
       io.disconnect();
+      visibilityObserver.disconnect();
+      document.removeEventListener('visibilitychange', syncVisibility);
       ro.disconnect();
       canvas.removeEventListener("webglcontextlost", onLost);
       canvas.removeEventListener("webglcontextrestored", onRestored);
