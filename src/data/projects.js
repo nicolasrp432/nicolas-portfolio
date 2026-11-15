@@ -1,6 +1,44 @@
 import { GITHUB_USER } from './site';
 
 /**
+ * The folders that organise the work index.
+ *
+ * Every project names exactly one of these in `folder`. The grouping is by who
+ * the work was for, not by technology: a visitor looking for "have you built
+ * something like mine" finds it faster than by scanning stack tags.
+ *
+ * `art` is the recipe for the folder's back panel. Its colours are token
+ * names, resolved from `tokens.css` when the picture is painted — the palette
+ * never leaves that file.
+ */
+export const projectFolders = [
+  {
+    id: 'producto',
+    label: 'Producto',
+    art: { style: 'marble', colors: ['--ink', '--ink-raised', '--coral-deep', '--coral', '--paper-warm'], scale: 0.62, warp: 3.2, angle: -0.5, gloss: 0.5, veins: 0.5 },
+    seed: 11,
+  },
+  {
+    id: 'clientes',
+    label: 'Clientes',
+    art: { style: 'streak', colors: ['--paper-warm', '--paper-deep', '--coral', '--ink', '--ink-soft', '--paper'], scale: 0.7, warp: 1.4, angle: -0.62, gloss: 0.18 },
+    seed: 3,
+  },
+  {
+    id: 'propios',
+    label: 'Propios y 3D',
+    art: { style: 'marble', colors: ['--ink', '--ink-soft', '--ink-raised', '--acid', '--paper-warm'], scale: 0.7, warp: 3.4, angle: 2.1, gloss: 0.5, veins: 0.5 },
+    seed: 7,
+  },
+  {
+    id: 'eventos',
+    label: 'Landings y eventos',
+    art: { style: 'streak', colors: ['--coral-deep', '--coral', '--paper-warm', '--ink-raised', '--ink'], scale: 0.7, warp: 1.6, angle: 0.35, gloss: 0.25 },
+    seed: 5,
+  },
+];
+
+/**
  * The work index — curated, ordered, and the single source of truth.
  *
  * This used to be inverted: the GitHub API chose the projects (top six by
@@ -24,6 +62,7 @@ import { GITHUB_USER } from './site';
 export const curatedProjects = [
   {
     slug: 'AppLectorJournal',
+    folder: 'producto',
     title: 'LectorApp',
     kind: 'App de lectura · móvil y web',
     summary:
@@ -35,6 +74,7 @@ export const curatedProjects = [
   },
   {
     slug: 'PlataformaAinara',
+    folder: 'producto',
     title: 'Mitra',
     kind: 'Plataforma educativa',
     summary:
@@ -46,6 +86,7 @@ export const curatedProjects = [
   },
   {
     slug: 'exampractice2',
+    folder: 'producto',
     title: '42 Prep',
     kind: 'Examen de 42 · estudio',
     summary:
@@ -57,6 +98,7 @@ export const curatedProjects = [
   },
   {
     slug: 'SulyWeb',
+    folder: 'clientes',
     title: 'Suly Pretty Nails',
     kind: 'Salón de belleza · reservas',
     summary:
@@ -68,6 +110,7 @@ export const curatedProjects = [
   },
   {
     slug: 'bar-zaharra',
+    folder: 'clientes',
     title: 'Bar Zaharra',
     kind: 'Carta digital · QR',
     summary:
@@ -79,6 +122,7 @@ export const curatedProjects = [
   },
   {
     slug: 'roket-agency',
+    folder: 'propios',
     title: 'Roket Agency',
     kind: 'Agencia · proyecto propio',
     summary:
@@ -90,6 +134,7 @@ export const curatedProjects = [
   },
   {
     slug: 'Unamunzaga-web',
+    folder: 'clientes',
     title: 'Unamunzaga',
     kind: 'Constructora',
     summary:
@@ -101,6 +146,7 @@ export const curatedProjects = [
   },
   {
     slug: 'playwrong',
+    folder: 'producto',
     owner: 'ionburetx',
     title: 'Playwrong',
     kind: 'Cartelera · en equipo',
@@ -113,6 +159,7 @@ export const curatedProjects = [
   },
   {
     slug: 'nicolas-portfolio',
+    folder: 'propios',
     title: 'Portfolio editorial',
     kind: 'Proyecto propio',
     summary:
@@ -126,6 +173,7 @@ export const curatedProjects = [
   /* --- Index rows ------------------------------------------------------- */
   {
     slug: 'cnc-lathe-visualizer',
+    folder: 'propios',
     title: 'Torno CNC en 3D',
     kind: 'Visualización 3D · Three.js',
     summary:
@@ -135,6 +183,7 @@ export const curatedProjects = [
   },
   {
     slug: 'nicolas-portfolio3D',
+    folder: 'propios',
     title: 'Silicon Gambit',
     kind: 'Experimento 3D · Shaders',
     summary:
@@ -144,6 +193,7 @@ export const curatedProjects = [
   },
   {
     slug: 'cnc-machine-monito',
+    folder: 'producto',
     title: 'CNC Machine Monitor',
     kind: 'Panel industrial · MES',
     summary:
@@ -154,6 +204,7 @@ export const curatedProjects = [
   },
   {
     slug: 'aura-glass-studio',
+    folder: 'clientes',
     title: 'Aura Glass Studio',
     kind: 'Salón de uñas · cliente',
     summary: 'Sitio para el salón de uñas de una clienta.',
@@ -163,6 +214,7 @@ export const curatedProjects = [
   },
   {
     slug: 'importadora-prototipo',
+    folder: 'clientes',
     title: 'Importadora',
     kind: 'Vehículos · prototipo',
     summary: 'Prototipo de sitio para una importadora de vehículos.',
@@ -172,6 +224,7 @@ export const curatedProjects = [
   },
   {
     slug: 'valentina-birthday',
+    folder: 'eventos',
     title: 'Valentina',
     kind: 'Evento · invitación',
     summary: 'Invitación digital de cumpleaños.',
@@ -181,6 +234,7 @@ export const curatedProjects = [
   },
   {
     slug: 'xs-landing-page',
+    folder: 'eventos',
     title: 'XS Landing',
     kind: 'Landing de producto',
     summary: 'Landing de una sola página para el lanzamiento de un producto.',
@@ -190,6 +244,7 @@ export const curatedProjects = [
   },
   {
     slug: 'invitacion50',
+    folder: 'eventos',
     title: 'Invitación 50',
     kind: 'Evento · confirmación',
     summary: 'Invitación de cumpleaños con formulario de confirmación de asistencia.',
@@ -199,6 +254,7 @@ export const curatedProjects = [
   },
   {
     slug: 'Costurero',
+    folder: 'clientes',
     title: 'Costurero',
     kind: 'Tienda de costura',
     summary: 'Sitio para una tienda de costura.',
@@ -231,6 +287,8 @@ export function toProjectCard(project, index, repo) {
     kind: project.kind,
     // Only education entries carry this; it is what groups them by school.
     school: project.school,
+    // Only client-work entries carry this; it is what the folder shelf filters on.
+    folder: project.folder,
     summary: project.summary,
     tags: project.tags,
     featured: project.featured === true,

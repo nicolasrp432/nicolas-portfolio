@@ -2,17 +2,12 @@ import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { roadmap } from '../../data/content';
 import { SplitHeadline } from '../motion/SplitHeadline';
+import { ArrowLink } from '../ui/ArrowLink';
 import { Reveal } from '../motion/Reveal';
 
-const HEADING = [[{ text: 'Un portfolio que' }], [{ text: 'también ' }, { text: 'evoluciona.', accent: true }]];
+const HEADING = [[{ text: 'Tu idea, un' }], [{ text: 'camino ' }, { text: 'claro.', accent: true }]];
 
-/**
- * The forward-looking chapter, on a full coral field.
- *
- * A single rule is drawn down the left of the list as the reader scrolls, and
- * each milestone's marker fills as the line passes it — the roadmap literally
- * draws itself, which is the clearest way to say "this is still being built".
- */
+/** A visible path from the first conversation to delivery. */
 export function Roadmap() {
   const scope = useGsapScope(() => {
     gsap.fromTo(
@@ -59,12 +54,13 @@ export function Roadmap() {
   return (
     <section className="section roadmap" id="ruta" ref={scope}>
       <div className="roadmap-intro">
-        <span className="eyebrow">Plan visual · Próximas iteraciones</span>
+        <span className="eyebrow">Cómo trabajamos · De la conversación a la entrega</span>
         <SplitHeadline as="h2" lines={HEADING} className="section-title" />
         <Reveal as="p" delay={0.1}>
-          La base ya prioriza trabajo real, narrativa y una identidad propia. Estos son los
-          siguientes pasos de diseño para mantenerlo vivo.
+          Si quieres colaborar, este es el recorrido. Con decisiones compartidas, avances visibles
+          y expectativas claras desde el principio.
         </Reveal>
+        <ArrowLink href="#contacto" external={false}>Hablemos de tu proyecto</ArrowLink>
       </div>
 
       <ol className="roadmap-list">

@@ -26,6 +26,23 @@
   --line-invert:  rgb(241 238 231 / 0.16);
   --paper-on-ink: #b4afa6;
 
+  /* --- Colour: glass -------------------------------------
+     The one material that is not paper or ink. It is warm paper seen through
+     a lens, never a blue-white "frosted UI" panel. */
+  --glass-body:      rgb(250 248 244 / 0.44);
+  --glass-body-frost: rgb(250 248 244 / 0.72);
+  --glass-rim:       rgb(255 255 255 / 0.75);
+  --glass-rim-low:   rgb(255 255 255 / 0.22);
+  --glass-edge:      rgb(23 22 20 / 0.16);
+  --glass-cast:      rgb(23 22 20 / 0.16);
+  --glass-halo:      rgb(255 90 54 / 0.28);
+  /* Milk glass, for the folder fronts: clear at the lip, paper at the foot. */
+  --glass-milk-clear: rgb(250 248 244 / 0.14);
+  --glass-milk-mid:   rgb(250 248 244 / 0.52);
+  --glass-milk-solid: rgb(250 248 244 / 0.94);
+  --glass-shine:      rgb(255 255 255 / 0.5);
+  --glass-shine-off:  rgb(255 255 255 / 0);
+
   /* --- Typography ---------------------------------------- */
   --font-sans:    'Manrope', ui-sans-serif, system-ui, sans-serif;
   --font-serif:   'Playfair Display', ui-serif, Georgia, serif;

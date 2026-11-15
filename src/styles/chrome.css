@@ -352,3 +352,57 @@
   .colophon { flex-direction: column; align-items: flex-start; }
   .colophon p { margin-right: 0; }
 }
+
+/* Waterline, adapted to the portfolio's paper / ink / coral material. */
+.masthead-nav.nimbus-nav {
+  padding: 5px;
+  font-family: var(--font-sans);
+  --n-tint: var(--glass-body-frost);
+  --n-fg: var(--ink);
+  --n-fg-soft: var(--ink-soft);
+  --n-rim: var(--glass-rim);
+}
+.masthead-nav .nimbus-glass {
+  background: var(--glass-body-frost);
+  box-shadow: inset 0 1px 1px var(--glass-rim), inset 0 0 0 1px var(--glass-edge), 0 6px 20px -12px var(--glass-cast);
+}
+.masthead-nav .nimbus-item {
+  height: 40px;
+  padding-inline: 0.85em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.masthead-nav a[aria-current='true'] { color: var(--ink); }
+.masthead-nav a[aria-current='true'] i { color: var(--coral-deep); opacity: 1; }
+.masthead-nav .nimbus-item:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 2px; }
+.masthead-nav .nimbus-drop {
+  background: radial-gradient(120% 140% at 30% 0%, var(--glass-rim), transparent 55%), var(--glass-body);
+  box-shadow: inset 0 1px 1px var(--glass-rim), inset 0 -2px 6px var(--glass-halo), inset 0 0 0 1px var(--glass-rim-low);
+}
+.masthead-nav[data-active='false'] .nimbus-water,
+.masthead-nav[data-active='false'] .nimbus-drop { visibility: hidden; }
+@supports not (backdrop-filter: blur(1px)) {
+  .masthead-nav .nimbus-glass { background: var(--paper-warm); }
+}
+@media (max-width: 900px) {
+  .masthead-nav.nimbus-nav { display: none; }
+  .masthead .menu-toggle {
+    margin-right: 0;
+    border-radius: var(--radius-pill);
+    background: var(--glass-body-frost);
+    box-shadow: inset 0 1px 1px var(--glass-rim), inset 0 0 0 1px var(--glass-edge);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.masthead-brand:focus-visible { outline: 2px solid var(--coral-deep); outline-offset: 5px; border-radius: 16px; }
+@media (max-width: 900px) {
+  .masthead-brand { gap: 0.7rem; }
+  .masthead-wordmark { display: flex; gap: 5px; }
+  .masthead-wordmark strong { font-size: 0.76rem; }
+  .masthead-wordmark small { font-size: 0.43rem; letter-spacing: 0.06em; }
+}
+@media (max-width: 360px) { .masthead-wordmark small { display: none; } }
+@media (prefers-reduced-motion: reduce) { .liquid-brand canvas { transition: none; } }

@@ -1,30 +1,54 @@
-import { gsap, MOTION_OK } from '../../lib/gsap';
+import { useEffect, useRef, useState } from 'react';
+import { gsap, ScrollTrigger, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { useGithubProjects } from '../../hooks/useGithubProjects';
 import { GITHUB_USER } from '../../data/site';
+import { projectFolders } from '../../data/projects';
+import { GlassFolder } from '../ui/GlassFolder';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ArrowLink } from '../ui/ArrowLink';
 import { ProjectCard } from '../ui/ProjectCard';
+import { ProjectWarpGallery } from '../ui/project-warp-gallery';
 import { ProjectRow } from '../ui/ProjectRow';
 
 const HEADING = [[{ text: 'Proyectos reales,' }], [{ text: 'ideas con ' }, { text: 'propósito.', accent: true }]];
 
-/**
- * The work index, rendered on ink, in two registers.
- *
- * The featured projects get a full card with a generated colour plate; the
- * rest render as compact index rows. Sixteen plates in a row would be a wall
- * nobody scrolls to the end of; as rows they stay scannable and the section
- * still shows everything rather than hiding work behind a button.
- *
- * Both registers live in `ui/ProjectCard` and `ui/ProjectRow`, because the
- * education page renders the same two shapes.
- */
+/** Folder filters feed both views from the same curated data. The optical
+ * gallery is the default; the original cards and rows remain available via
+ * “Lista completa” and continue to be shared with the education page. */
 export function Projects() {
   const { projects, status } = useGithubProjects();
 
-  const featured = projects.filter((project) => project.featured);
-  const indexed = projects.filter((project) => !project.featured);
+  const [active, setActive] = useState(null);
+  const [view, setView] = useState('carousel');
+
+  const shown = active ? projects.filter((project) => project.folder === active) : projects;
+  const featured = shown.filter((project) => project.featured);
+  const indexed = shown.filter((project) => !project.featured);
+  const activeFolder = projectFolders.find((folder) => folder.id === active);
+
+  // Filtering changes the height of the page: every trigger below this
+  // section was measured against the old one.
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (mounted.current) ScrollTrigger.refresh();
+    mounted.current = true;
+  }, [active, view]);
+
+  const shelf = useGsapScope((root) => {
+    gsap.fromTo(
+      root.querySelectorAll('.gf-root'),
+      { y: 48, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: 'expo.out',
+        stagger: 0.09,
+        scrollTrigger: { trigger: root, start: 'top 85%', once: true },
+      },
+    );
+  }, []);
 
   const scope = useGsapScope(
     () => {
@@ -70,7 +94,8 @@ export function Projects() {
         );
       }
     },
-    [projects.length],
+    // Re-run on a filter change: the cards are new nodes and need their triggers.
+    [projects.length, active, view],
     MOTION_OK,
   );
 
@@ -82,15 +107,53 @@ export function Projects() {
         standfirst="Sitios para clientes, encargos propios y experimentos. Cada pieza une una necesidad concreta, decisiones visuales y una implementación lista para evolucionar."
       />
 
-      <ul className="project-grid">
-        {featured.map((project, index) => (
-          <ProjectCard key={project.id} project={project} tone={index} />
-        ))}
-      </ul>
+      <div className="folder-shelf" role="group" aria-label="Filtrar proyectos por carpeta" ref={shelf}>
+        {projectFolders.map((folder, index) => {
+          const files = projects.filter((project) => project.folder === folder.id);
+          return (
+            <GlassFolder
+              key={folder.id}
+              label={folder.label}
+              numeral={String(index + 1).padStart(2, '0')}
+              files={files.map((project) => ({ name: project.title, meta: project.year }))}
+              art={folder.art}
+              seed={folder.seed}
+              open={active === folder.id}
+              onToggle={() => setActive(active === folder.id ? null : folder.id)}
+            />
+          );
+        })}
+      </div>
+
+      <div className="folder-status">
+        <p aria-live="polite">
+          <span className="folder-status-name">{activeFolder ? activeFolder.label : 'Todo el trabajo'}</span>
+          {' · '}
+          {String(shown.length).padStart(2, '0')} proyectos
+        </p>
+        {active && (
+          <button type="button" className="folder-reset" onClick={() => setActive(null)}>
+            Ver todo
+          </button>
+        )}
+      </div>
+
+      <div className="project-view-switch" role="group" aria-label="Vista de proyectos">
+        <button type="button" aria-pressed={view === 'carousel'} onClick={() => setView('carousel')}>Carrusel</button>
+        <button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>Lista completa</button>
+      </div>
+      {view === 'carousel' ? <ProjectWarpGallery key={active || 'all'} projects={shown} /> : <>
+      {featured.length > 0 && (
+        <ul className="project-grid">
+          {featured.map((project, index) => (
+            <ProjectCard key={project.id} project={project} tone={index} />
+          ))}
+        </ul>
+      )}
 
       {indexed.length > 0 && (
         <>
-          <h3 className="project-index-title">Más trabajo</h3>
+          {featured.length > 0 && <h3 className="project-index-title">Más trabajo</h3>}
 
           <ol className="project-index">
             {indexed.map((project) => (
@@ -99,6 +162,8 @@ export function Projects() {
           </ol>
         </>
       )}
+
+      </>}
 
       <div className="projects-foot">
         <ArrowLink href={`https://github.com/${GITHUB_USER}?tab=repositories`}>

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import App from '../App';
 import { CopyEmail } from '../components/ui/CopyEmail';
 import { SplitHeadline } from '../components/motion/SplitHeadline';
-import { curatedProjects, toProjectCard } from '../data/projects';
+import { curatedProjects, projectFolders, toProjectCard } from '../data/projects';
 
 beforeEach(() => {
   // Keep the GitHub call off the network; the page itself needs no priming.
@@ -20,7 +20,7 @@ afterEach(() => {
  *  from warning about a state update outside `act()`. */
 const renderSettled = async () => {
   const utils = render(<App />);
-  await screen.findByRole('heading', { name: /portfolio editorial/i });
+  await screen.findByRole('heading', { name: 'LectorApp', exact: true });
   return utils;
 };
 
@@ -29,6 +29,11 @@ describe('App', () => {
     await renderSettled();
 
     expect(screen.getByRole('main')).toBeInTheDocument();
+    expect(document.getElementById('laboratorio')).not.toBeInTheDocument();
+    expect(document.querySelectorAll('#perfil .manifesto-piece')).toHaveLength(5);
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      expect(document.getElementById(link.hash.slice(1)), link.hash).toBeTruthy();
+    });
     ['proyectos', 'perfil', 'herramientas', 'ruta', 'contacto'].forEach((id) => {
       expect(document.getElementById(id)).toBeInTheDocument();
     });
@@ -38,7 +43,7 @@ describe('App', () => {
     await renderSettled();
 
     expect(
-      screen.getByRole('heading', { level: 1, name: 'Construyo ideas que se sienten claras.' }),
+      screen.getByRole('heading', { level: 1, name: 'De la idea a un producto, una experiencia, una marca.' }),
     ).toBeInTheDocument();
   });
 
@@ -62,8 +67,9 @@ describe('App', () => {
     });
   });
 
-  it('splits the list into featured cards and index rows', async () => {
+  it('preserves featured cards and index rows in the complete list view', async () => {
     await renderSettled();
+    await userEvent.click(screen.getByRole('button', { name: 'Lista completa' }));
 
     const section = document.getElementById('proyectos');
     const featured = curatedProjects.filter((project) => project.featured);
@@ -72,6 +78,45 @@ describe('App', () => {
     expect(section.querySelectorAll('.project-row')).toHaveLength(
       curatedProjects.length - featured.length,
     );
+  });
+});
+
+describe('the project folders', () => {
+  it('files every project in exactly one known folder', () => {
+    const ids = projectFolders.map((folder) => folder.id);
+    curatedProjects.forEach((project) => {
+      expect(ids, `${project.slug}: folder`).toContain(project.folder);
+    });
+    // An empty folder would be a button that filters to nothing.
+    ids.forEach((id) => {
+      expect(curatedProjects.some((project) => project.folder === id), id).toBe(true);
+    });
+  });
+
+  it('narrows the index to the open folder and restores it on close', async () => {
+    await renderSettled();
+
+    const section = document.getElementById('proyectos');
+    const count = () => within(section).getByRole('group', { name: 'Elegir proyecto' }).querySelectorAll('button').length;
+    const folder = projectFolders[1];
+    const inside = curatedProjects.filter((project) => project.folder === folder.id);
+    const toggle = within(section).getByRole('button', { name: new RegExp(`^${folder.label},`) });
+
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    expect(count()).toBe(curatedProjects.length);
+
+    await userEvent.click(within(section).getByRole('button', { name: 'Costurero', exact: true }));
+    await userEvent.click(toggle);
+    expect(within(section).getByRole('article', { name: 'Proyecto seleccionado' })).toHaveTextContent(inside[0].title);
+    expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    expect(count()).toBe(inside.length);
+    await userEvent.click(within(section).getByRole('button', { name: 'Lista completa' }));
+    expect(section.querySelectorAll('.project-card, .project-row')).toHaveLength(inside.length);
+    await userEvent.click(within(section).getByRole('button', { name: 'Carrusel' }));
+
+    await userEvent.click(within(section).getByRole('button', { name: 'Ver todo' }));
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    expect(count()).toBe(curatedProjects.length);
   });
 });
 

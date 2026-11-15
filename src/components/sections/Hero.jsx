@@ -1,219 +1,50 @@
-import { FiArrowDownRight, FiCode } from 'react-icons/fi';
-import { RiRobot2Line } from 'react-icons/ri';
-import { gsap, MOTION_OK } from '../../lib/gsap';
-import { useGsapScope } from '../../hooks/useGsapScope';
-import { GITHUB_USER, heroFacts } from '../../data/site';
-import { SplitHeadline } from '../motion/SplitHeadline';
+import { FiArrowDownRight } from 'react-icons/fi';
+import { site } from '../../data/site';
+import { heroIdentity, heroObjects } from '../../data/hero';
 import { Magnetic } from '../motion/Magnetic';
 import { ArrowLink } from '../ui/ArrowLink';
+import { LiquidGlassLogo } from '../ui/liquid-glass-logo-reveal';
+import { PerspectiveTunnelHero } from '../ui/perspective-tunnel-hero';
 
-// Three short lines rather than two long ones: each one now fits its column
-// on a single row at every width the hero is laid out at.
-const HEADLINE = [
-  [{ text: 'Construyo ideas' }],
-  [{ text: 'que se sienten' }],
-  [{ text: 'claras.', accent: true }],
-];
-
-/**
- * The opening spread.
- *
- * With the intro curtain gone this timeline is the page's entrance: it starts
- * on mount, before the first paint, so the `from` states are written to the DOM
- * in the same frame and nothing flashes at full opacity first.
- *
- * The portrait is the untouched cut-out PNG, drawn with `object-fit: contain`
- * against an aspect-ratio box — no crop box, no fixed pixel height, so the
- * framing the image ships with is the framing that renders.
- */
 export function Hero() {
-  const scope = useGsapScope(
-    (root) => {
-      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-
-      tl.fromTo('.hero-kicker', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 })
-        .fromTo(
-          '.hero-headline .split-char',
-          { yPercent: 110 },
-          { yPercent: 0, duration: 1.1, stagger: { each: 0.015 } },
-          '-=0.45',
-        )
-        .fromTo('.hero-intro', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.7')
-        .fromTo('.hero-actions > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, '-=0.55')
-        .fromTo(
-          '.hero-portrait',
-          { clipPath: 'inset(100% 0 0 0)', scale: 1.06 },
-          { clipPath: 'inset(0% 0 0 0)', scale: 1, duration: 1.2 },
-          '-=1',
-        )
-        .fromTo('.hero-orbit', { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.1, stagger: 0.1 }, '-=0.9')
-        .fromTo(
-          '.hero-chip',
-          { opacity: 0, scale: 0.8, rotate: 0 },
-          { opacity: 1, scale: 1, rotate: (i) => (i === 0 ? -5 : 5), duration: 0.6, stagger: 0.1 },
-          '-=0.7',
-        )
-        .fromTo('.hero-facts > *', { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.08 }, '-=0.4');
-
-      // Ambient: the rings keep turning, at opposite speeds.
-      gsap.to('.hero-orbit-a', { rotate: 360, duration: 60, ease: 'none', repeat: -1 });
-      gsap.to('.hero-orbit-b', { rotate: -360, duration: 90, ease: 'none', repeat: -1 });
-
-      // Scrubbed depth: the portrait lags the rings as the page moves away.
-      // `root` is the <section> itself — a '.hero' selector would resolve
-      // against its descendants and match nothing.
-      const onHeroScroll = { trigger: root, start: 'top top', end: 'bottom top', scrub: true };
-      gsap.to('.hero-visual-inner', { yPercent: 10, ease: 'none', scrollTrigger: onHeroScroll });
-      gsap.to('.hero-copy', {
-        yPercent: -8,
-        opacity: 0.35,
-        ease: 'none',
-        scrollTrigger: onHeroScroll,
-      });
-
-      // Entrada de los iconos 3D flotantes en el hero (React a la izquierda, Rey a la derecha)
-      gsap.fromTo(
-        '.hero-float-react img',
-        { opacity: 0, y: 28, scale: 0.85, rotate: -6 },
-        { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 1.2, ease: 'expo.out', delay: 0.4 },
-      );
-      gsap.fromTo(
-        '.hero-float-king img',
-        { opacity: 0, y: 32, scale: 0.85, rotate: 6 },
-        { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 1.2, ease: 'expo.out', delay: 0.55 },
-      );
-
-      gsap.to('.hero-float-react img', {
-        y: -14,
-        rotate: 3,
-        duration: 3.5,
-        ease: 'sine.inOut',
-        repeat: -1,
-        yoyo: true,
-      });
-      gsap.to('.hero-float-king img', {
-        y: -16,
-        rotate: -3,
-        duration: 4.2,
-        ease: 'sine.inOut',
-        repeat: -1,
-        yoyo: true,
-        delay: 0.3,
-      });
-
-      return () => tl.kill();
-    },
-    [],
-    MOTION_OK,
-  );
-
   return (
-    <section className="hero" id="inicio" ref={scope}>
-      <p className="hero-kicker">
-        <span className="hero-pulse" aria-hidden="true" />
-        Frontend × productos digitales × IA
-      </p>
-
-      <div className="hero-grid">
-        <div className="hero-copy">
-          <SplitHeadline lines={HEADLINE} className="hero-headline" autoAnimate={false} />
-
-          <p className="hero-intro">
-            Soy Nicolás, desarrollador frontend y constructor de soluciones digitales. Convierto
-            problemas en productos útiles, visuales y bien pensados.
-          </p>
-
+    <section className="hero-scroll-track" id="inicio">
+      <div className="hero hero-tunnel">
+      <div className="hero-atmosphere" aria-hidden="true" />
+      <div className="hero-mastline">
+        <span>00 / Universo creativo</span>
+        <span className="hero-availability"><span className="hero-pulse" aria-hidden="true" />{site.availability}</span>
+      </div>
+      <div className="hero-tunnel-stage">
+        <div className="hero-logo-intro"><LiquidGlassLogo /></div>
+        <div className="hero-portrait-depth">
+          <img src="/img/portraits/portrait-elevado.png" alt="Nicolás Rodríguez, desarrollador y creativo digital" width="1122" height="1402" fetchPriority="high" />
+        </div>
+        <div className="hero-tunnel-copy">
+          <p className="hero-kicker">{site.name} <span aria-hidden="true">↗</span></p>
+          <p className="hero-role">{heroIdentity.eyebrow}</p>
+          <h1 className="hero-headline" aria-label="De la idea a un producto, una experiencia, una marca.">
+            <span className="hero-hook-intro" aria-hidden="true">De la idea a</span>
+            <span className="hero-hook-words" aria-hidden="true">
+              <span className="hero-hook-word">un producto.</span>
+              <span className="hero-hook-word">una experiencia.</span>
+              <span className="hero-hook-word">una marca.</span>
+            </span>
+          </h1>
+          <p className="hero-intro">{heroIdentity.intro}</p>
           <div className="hero-actions">
             <Magnetic>
               <a className="button-slab" href="#proyectos" data-cursor="VER">
-                Explorar proyectos
-                <FiArrowDownRight aria-hidden="true" />
+                Explorar proyectos <FiArrowDownRight aria-hidden="true" />
               </a>
             </Magnetic>
-            <ArrowLink
-              href={`https://github.com/${GITHUB_USER}`}
-              label="Perfil de GitHub (se abre en una pestaña nueva)"
-            >
-              github/{GITHUB_USER}
-            </ArrowLink>
+            <ArrowLink href="#contacto" external={false}>Hablemos de tu idea</ArrowLink>
           </div>
         </div>
-
-        <div className="hero-visual">
-          <div className="hero-visual-inner">
-            <span className="hero-orbit hero-orbit-a" aria-hidden="true" />
-            <span className="hero-orbit hero-orbit-b" aria-hidden="true" />
-
-            <picture className="hero-portrait">
-              <source srcSet="/img/portraits/portrait-elevado.png" type="image/png" media="(max-width: 700px)" />
-              <source srcSet="/img/portraits/portrait-elevado.png" type="image/png" />
-              <img
-                src="/img/portraits/portrait-elevado.png"
-                alt="Retrato de Nicolás Rodríguez"
-                width="900"
-                height="1200"
-                fetchPriority="high"
-                decoding="async"
-              />
-            </picture>
-
-            {/* Símbolo representativo de frontend: Logo 3D de React flotante */}
-            <span className="hero-float hero-float-react" aria-hidden="true">
-              <img
-                src="/img/hero-react-3d.png"
-                alt="Logo 3D de React"
-                width="320"
-                height="320"
-                decoding="async"
-                loading="eager"
-              />
-            </span>
-
-            {/* Símbolo de estratega creativo: Rey de ajedrez 3D en el lado contrario */}
-            <span className="hero-float hero-float-king" aria-hidden="true">
-              <img
-                src="/img/chess/chess-king-3d.png"
-                alt="Rey 3D de ajedrez — símbolo de estratega creativo"
-                width="368"
-                height="891"
-                decoding="async"
-                loading="eager"
-              />
-            </span>
-
-            <span className="hero-chip chip-code" aria-hidden="true">
-              <FiCode />
-              <span>
-                build
-                <strong>with intent</strong>
-              </span>
-            </span>
-            <span className="hero-chip chip-ai" aria-hidden="true">
-              <RiRobot2Line />
-              <span>
-                AI
-                <strong>as a system</strong>
-              </span>
-            </span>
-
-          </div>
-
-          {/* Outside `.hero-visual-inner` on purpose: that box is now exactly
-              the portrait's width, so a caption inside it would sit on top of
-              the image instead of beside it. */}
-          <span className="hero-caption" aria-hidden="true">
-            Curiosidad
-            <br />
-            en movimiento ↗
-          </span>
-        </div>
+        <PerspectiveTunnelHero items={heroObjects} />
       </div>
-
-      <ul className="hero-facts">
-        {heroFacts.map((fact) => (
-          <li key={fact}>{fact}</li>
-        ))}
-      </ul>
+      <span className="hero-depth-progress hero-depth-progress--quiet" aria-hidden="true"><i /></span>
+      </div>
     </section>
   );
 }

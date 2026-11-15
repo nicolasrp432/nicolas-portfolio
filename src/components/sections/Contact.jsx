@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { TiltedGridHero } from '../ui/tilted-grid-hero';
+import { closingImages } from '../../data/manifesto';
 import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { site, socials } from '../../data/site';
@@ -11,11 +14,11 @@ const HEADING = [[{ text: 'Hagámoslo' }], [{ text: 'real.', accent: true }]];
 /**
  * The closing call to action.
  *
- * The coral disc behind the headline scales and rotates on scrub, so the
- * section resolves as the reader arrives rather than sitting static — it is
- * the last thing they see and the only place the monogram appears at scale.
+ * The CTA leads into a curved artwork ribbon, followed by the contact channels.
+ * The coral disc behind the headline still scales and rotates on scroll.
  */
 export function Contact() {
+  const [paused, setPaused] = useState(false);
   const scope = useGsapScope((root) => {
     gsap.fromTo(
       '.contact-orb',
@@ -44,7 +47,7 @@ export function Contact() {
   }, [], MOTION_OK);
 
   return (
-    <section className="section contact on-ink ink-surface" id="contacto" ref={scope}>
+    <section className="section contact contact--ribbon on-ink ink-surface" id="contacto" ref={scope}>
       <span className="contact-orb" aria-hidden="true">
         <BrandMark />
       </span>
@@ -52,6 +55,14 @@ export function Contact() {
       <div className="contact-inner">
         <p className="eyebrow">¿Tienes una idea, un problema o algo por mejorar?</p>
         <SplitHeadline as="h2" lines={HEADING} className="contact-title" />
+
+      <div className="contact-gallery">
+        <TiltedGridHero images={closingImages} className="contact-film" liquid paused={paused} />
+        <button type="button" className="contact-film-toggle" onClick={() => setPaused((value) => !value)}
+          aria-label={paused ? 'Reanudar cinta visual' : 'Pausar cinta visual'} aria-pressed={paused}>
+          <span aria-hidden="true">{paused ? '▷' : 'Ⅱ'}</span> {paused ? 'Reanudar' : 'Pausar'}
+        </button>
+      </div>
 
         <div className="contact-channels">
           <CopyEmail email={site.email} />

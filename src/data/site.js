@@ -8,7 +8,7 @@ export const GITHUB_USER = 'nicolasrp432';
 export const site = {
   name: 'Nicolás Rodríguez',
   shortName: 'Nicolás',
-  role: 'Frontend · Producto digital · IA',
+  role: 'Frontend · Motion · 3D · IA',
   email: 'nicolasrp432@gmail.com',
   whatsapp: '34665015804',
   whatsappDisplay: '+34 665 015 804',
@@ -17,7 +17,7 @@ export const site = {
   availability: 'Disponible para colaborar',
   url: 'https://nicolas-portfolio-eight.vercel.app/',
   description:
-    'Portfolio de Nicolás Rodríguez, desarrollador frontend y constructor de producto digital. React, interfaces con criterio y soluciones apoyadas en IA.',
+    'Portfolio de Nicolás Rodríguez, desarrollador frontend y creativo digital. React, motion graphics, vídeo, 3D y soluciones apoyadas en IA.',
 };
 
 /** Predefined conversation starters for client convenience. */
@@ -84,7 +84,7 @@ export const navLinks = [
   { id: 'educacion', label: 'Educación', href: '/educacion/' },
   { id: 'perfil', label: 'Perfil', index: '02', theme: 'paper' },
   { id: 'herramientas', label: 'Herramientas', index: '03', theme: 'paper' },
-  { id: 'ruta', label: 'Ruta', index: '04', theme: 'coral' },
+  { id: 'ruta', label: 'Colaborar', index: '04', theme: 'coral' },
   { id: 'contacto', label: 'Contacto', index: '05', theme: 'ink' },
 ];
 
@@ -93,12 +93,25 @@ export const chapters = navLinks.filter((link) => link.index);
 
 export const heroFacts = [
   site.availability,
-  'Frontend · Automatización · IA',
+  'Frontend · Motion · 3D · IA',
   'Aprendiendo siempre',
+];
+
+/**
+ * What the glass dock on the hero portrait walks through, in the order the
+ * skills were added. `id` picks the icon in `DisciplineDock`.
+ */
+export const heroDisciplines = [
+  { id: 'code', label: 'Frontend' },
+  { id: 'motion', label: 'Motion graphics' },
+  { id: 'video', label: 'Edición de vídeo' },
+  { id: '3d', label: '3D' },
+  { id: 'ai', label: 'IA' },
 ];
 
 /** Words cycled through the ticker band under the hero. */
 export const tickerWords = [
-  'React', 'Interfaces con criterio', 'Sistemas de diseño', 'Automatización',
-  'Agentes de IA', 'Producto digital', 'Motion', 'Accesibilidad',
+  'Desarrollo web', 'React', 'Interfaces con criterio', 'Sistemas de diseño', 'Automatización',
+  'Agentes de IA', 'Producto digital', 'Motion graphics', 'Edición de vídeo', '3D',
+  'Diseño gráfico', 'Estrategia digital', 'Accesibilidad',
 ];

@@ -6,6 +6,7 @@ import { useActiveSection } from '../../hooks/useActiveSection';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { navLinks, chapters, socials, site, GITHUB_USER } from '../../data/site';
 import { BrandMark } from '../ui/BrandMark';
+import { LiquidNavbar } from '../ui/liquid-glass-navbar';
 import { ArrowLink } from '../ui/ArrowLink';
 
 /** Only in-page chapters can ever be "active": a page link is elsewhere. */
@@ -36,8 +37,6 @@ const SECTION_IDS = ['inicio', ...chapters.map((link) => link.id)];
  */
 export function Navbar({ currentPage = 'home' }) {
   const isHome = currentPage === 'home';
-  const navRef = useRef(null);
-  const pillRef = useRef(null);
   const progressRef = useRef(null);
   const panelRef = useRef(null);
 
@@ -120,52 +119,6 @@ export function Navbar({ currentPage = 'home' }) {
     };
   }, []);
 
-  // The capsule tracks the active link's measured box, so it stays correct
-  // through font swaps and window resizes without hardcoded widths.
-  useIsomorphicLayoutEffect(() => {
-    const nav = navRef.current;
-    const pill = pillRef.current;
-    if (!nav || !pill) return undefined;
-
-    let cancelled = false;
-
-    const place = () => {
-      if (cancelled) return;
-      const target =
-        nav.querySelector("[aria-current='true']") ||
-        (active ? nav.querySelector(`[data-section="${active}"]`) : null);
-
-      if (!target) {
-        gsap.to(pill, { autoAlpha: 0, duration: 0.2, overwrite: true });
-        return;
-      }
-
-      const bounds = nav.getBoundingClientRect();
-      const box = target.getBoundingClientRect();
-
-      gsap.to(pill, {
-        autoAlpha: 1,
-        x: box.left - bounds.left,
-        width: box.width,
-        duration: prefersReducedMotion() ? 0 : 0.55,
-        ease: 'expo.out',
-        overwrite: true,
-      });
-    };
-
-    place();
-    window.addEventListener('resize', place);
-    // The first measurement happens against the fallback face. Manrope is
-    // narrower, so without this the capsule sits a few pixels off until the
-    // next resize — which on a phone never comes.
-    document.fonts?.ready.then(place).catch(() => {});
-
-    return () => {
-      cancelled = true;
-      window.removeEventListener('resize', place);
-    };
-  }, [active, currentPage, isHome]);
-
   // Panel entrance: the ink sheet wipes down, then the entries roll up.
   useIsomorphicLayoutEffect(() => {
     const panel = panelRef.current;
@@ -235,25 +188,18 @@ export function Navbar({ currentPage = 'home' }) {
             </span>
           </a>
 
-          <nav className="masthead-nav" aria-label="Navegación principal" ref={navRef}>
-            <span className="nav-pill" ref={pillRef} aria-hidden="true" />
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={hrefFor(link)}
-                data-section={link.id}
-                aria-current={
-                  (link.href ? currentPage === link.id : active === link.id) ? 'true' : undefined
-                }
-                onClick={(event) => goTo(event, link)}
-              >
-                {/* A page link has no chapter numeral; the outbound glyph says
-                    it leaves this document instead. */}
-                <i aria-hidden="true">{link.index ?? '↗'}</i>
-                <span>{link.label}</span>
-              </a>
-            ))}
-          </nav>
+          <LiquidNavbar
+            className="masthead-nav"
+            compact={false}
+            active={navLinks.findIndex((link) => link.href ? currentPage === link.id : isHome && active === link.id)}
+            items={navLinks.map((link) => ({
+              ...link,
+              href: hrefFor(link),
+              icon: <i aria-hidden="true">{link.index ?? '↗'}</i>,
+              fx: 'none',
+            }))}
+            onNavigate={(event, item) => goTo(event, navLinks.find((link) => link.id === item.id))}
+          />
 
           <div className="masthead-end">
             <ArrowLink

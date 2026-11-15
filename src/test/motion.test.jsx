@@ -49,7 +49,7 @@ describe('with animations enabled', () => {
     const error = vi.spyOn(console, 'error').mockImplementation((...args) => noise.push(args.join(' ')));
 
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     // GSAP reports an unmatched selector as "Element not found" rather than
     // throwing, so a broken trigger is otherwise completely silent. This
@@ -63,7 +63,7 @@ describe('with animations enabled', () => {
 
   it('shows the page immediately, with no curtain holding the scroll', async () => {
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     expect(screen.queryByText(/cargando/i)).not.toBeInTheDocument();
     expect(document.body.dataset.scrollLocked).toBeUndefined();
@@ -72,7 +72,7 @@ describe('with animations enabled', () => {
 
   it('tears every animation down cleanly on unmount', async () => {
     const { unmount } = render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     expect(() => unmount()).not.toThrow();
     expect(document.body.dataset.scrollLocked).toBeUndefined();
@@ -80,7 +80,7 @@ describe('with animations enabled', () => {
 
   it('takes no scroll hostage — nothing on the page is pinned', async () => {
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     // The toolbox used to pin itself for two extra viewports while its three
     // acts cross-faded in place, which meant the groups could never be
@@ -94,7 +94,7 @@ describe('with animations enabled', () => {
 
   it('mounts the custom cursor only where a fine pointer exists', async () => {
     const { container, unmount } = render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
     expect(container.querySelector('.cursor-layer')).toBeInTheDocument();
     unmount();
 
@@ -102,7 +102,7 @@ describe('with animations enabled', () => {
     stubMatchMedia((query) => query.includes('no-preference'));
 
     const touch = render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
     expect(touch.container.querySelector('.cursor-layer')).not.toBeInTheDocument();
   });
 });
@@ -110,7 +110,7 @@ describe('with animations enabled', () => {
 describe('the mobile menu', () => {
   it('renders its panel outside the masthead so `inset` resolves to the viewport', async () => {
     const { container } = render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     await userEvent.click(screen.getByRole('button', { name: /abrir navegación/i }));
 
@@ -124,7 +124,7 @@ describe('the mobile menu', () => {
 
   it('locks the page while open and releases it on close', async () => {
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     await userEvent.click(screen.getByRole('button', { name: /abrir navegación/i }));
     expect(document.body.dataset.scrollLocked).toBe('true');
@@ -135,7 +135,7 @@ describe('the mobile menu', () => {
 
   it('offers a close control inside the panel, where focus is trapped', async () => {
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     await userEvent.click(screen.getByRole('button', { name: /abrir navegación/i }));
     const panel = await screen.findByRole('dialog', { name: /navegación/i });

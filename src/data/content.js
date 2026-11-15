@@ -5,16 +5,22 @@ export const toolGroups = [
     number: '01',
     label: 'Construyo',
     caption: 'La base técnica',
-    tools: ['React', 'JavaScript', 'HTML & CSS', 'Vite', 'GSAP', 'Three.js', 'Git & GitHub'],
+    tools: ['React', 'JavaScript', 'HTML & CSS', 'Vite', 'Git & GitHub'],
   },
   {
     number: '02',
     label: 'Pienso y diseño',
     caption: 'La capa de criterio',
-    tools: ['Figma', 'Diseño UI', 'Sistemas visuales', 'Edición de vídeo', 'Contenido digital'],
+    tools: ['Figma', 'Diseño UI', 'Sistemas visuales', 'Contenido digital'],
   },
   {
     number: '03',
+    label: 'Muevo y modelo',
+    caption: 'La capa en movimiento',
+    tools: ['Motion graphics', 'Edición de vídeo', '3D', 'GSAP', 'Three.js', 'GLSL'],
+  },
+  {
+    number: '04',
     label: 'Amplifico con IA',
     caption: 'El multiplicador',
     tools: ['Claude', 'Gemini', 'ChatGPT', 'Higgsfield', 'Agentes de IA', 'Automatización'],
@@ -43,19 +49,24 @@ export const profileParagraphs = [
 
 export const roadmap = [
   {
-    stage: 'Ahora',
-    title: 'Casos de estudio',
-    text: 'Documentar reto, proceso, decisiones y resultado de los proyectos clave.',
+    stage: '01 / Primera conversación',
+    title: 'Cuéntame qué quieres conseguir',
+    text: 'Hablamos de tu idea, a quién va dirigida y qué necesitas mejorar. Si tienes referencias, una fecha objetivo o un presupuesto orientativo, tráelos: no hace falta llegar con todo resuelto.',
   },
   {
-    stage: 'Siguiente',
-    title: 'Laboratorio visual',
-    text: 'Experimentos breves con IA, motion, automatización y prototipos.',
+    stage: '02 / Propuesta y dirección',
+    title: 'Acordamos un plan claro',
+    text: 'Definimos alcance, entregables, tiempos y presupuesto antes de empezar. Sabrás qué vamos a crear, qué necesito de tu parte y cómo revisaremos los avances.',
   },
   {
-    stage: 'Después',
-    title: 'Prueba de impacto',
-    text: 'Añadir métricas, aprendizajes y testimonios con contexto verificable.',
+    stage: '03 / Creación y revisión',
+    title: 'Construimos con tu feedback',
+    text: 'Te comparto avances en los puntos acordados para validar diseño, contenido y funcionamiento. Ajustamos con un objetivo común y hablamos de cualquier cambio de alcance antes de hacerlo.',
+  },
+  {
+    stage: '04 / Entrega y siguientes pasos',
+    title: 'Lo dejamos listo para usar',
+    text: 'Revisamos el resultado, preparo la entrega y te explico cómo utilizarlo. Si necesitas publicación, mantenimiento o nuevas mejoras, definimos juntos ese siguiente paso.',
   },
 ];
 

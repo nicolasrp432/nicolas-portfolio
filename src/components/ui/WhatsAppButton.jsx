@@ -5,6 +5,7 @@ import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { LiquidGlass } from './LiquidGlass';
 import { Magnetic } from '../motion/Magnetic';
 import { site, whatsappPresets, getWhatsappUrl } from '../../data/site';
 
@@ -164,7 +165,7 @@ export function WhatsAppButton() {
         )}
 
         <Magnetic strength={0.35}>
-          <button
+          <LiquidGlass as="button" radius={999} scale={28} bevelDepth={10} aberration={1.3} frost={0.6}
             type="button"
             className="whatsapp-float"
             onClick={toggleOpen}
@@ -187,7 +188,7 @@ export function WhatsAppButton() {
             <span className="whatsapp-float-label">
               {isOpen ? 'Cerrar' : 'WhatsApp'}
             </span>
-          </button>
+          </LiquidGlass>
         </Magnetic>
       </div>
     </div>

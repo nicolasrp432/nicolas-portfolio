@@ -1,0 +1,14 @@
+# Manifiesto — imágenes originales
+
+Generadas con la herramienta integrada de generación de imágenes. Originales PNG en esta carpeta; versiones JPEG de 1200 px para la web en `public/img/manifesto/`.
+
+## Strategy glass
+Prompt: Create a premium editorial 3D artwork for a Spanish multidisciplinary creative developer's personal manifesto. Wide cinematic 3:2 composition. One monumental translucent clear glass chess knight standing on a warm ivory sculptural surface with subtle concentric ripples impressed in it, metaphor for leaving a lasting mark. A floating thin smoked glass rectangular interface frame and one coral-orange glass ribbon curving through scene subtly represent digital creation and motion. Sophisticated art direction, warm off-white #f2eee5, burnt coral #e0431f, charcoal shadows, natural studio light, crisp optical caustics, tactile plaster and transparent glass. Objects bold and legible on a small moving gallery tile. No people, no lettering, no logos, no watermark, no collage, no border. Photorealistic polished CGI. This is an original artwork to use as a website asset.
+
+## Creation glass
+Prompt: Premium editorial CGI artwork, landscape 3:2. A sculptural translucent coral-orange glass ribbon flows through a floating smoky clear glass browser-window frame with no symbols or text, above a warm ivory stone surface. The ribbon casts beautiful optical caustics and leaves a delicate circular impression in the surface: metaphor for creative digital work leaving a mark. One small charcoal glass sphere gives balance. Tight composed still life, warm ivory #f2eee5, burnt coral #e0431f and charcoal, soft side daylight, fine grain and tactile materials, sophisticated photographic art direction, visually bold at small gallery size. No typography, no logos, no borders, no people. Matches a personal portfolio about development, design, motion, strategy and experimentation.
+
+## Clarity glass — cierre
+Original: `clarity-glass.png`. Web: `public/img/manifesto/clarity-glass.jpg`. Sustituye el retrato en la cinta curva del cierre.
+
+Prompt: Premium editorial CGI still life for the dark footer of a multidisciplinary creative developer portfolio. Landscape 3:2 composition. A large clear glass optical prism splitting a warm beam into a flowing burnt-coral glass wave, beside a small smoked glass sphere and a precise translucent circular lens. Metaphor: clarity, experimentation and turning an idea into something tangible. Dark near-black charcoal #171614 backdrop and matching dark tactile stone surface, warm soft side light, exquisite caustics, glass refraction, sculptural simple forms, refined gallery photography. Coral orange #e0431f accents. Subjects fill most of frame with breathing room. No text, no typography, no people, no logos, no watermarks, no collage, no border. Make image visually cohesive with editorial glass chess knight and glass ribbon artworks; this is the third piece in that series.

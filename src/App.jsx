@@ -1,3 +1,4 @@
+import { useInitialAnchor } from './hooks/useInitialAnchor';
 import { useEffect } from 'react';
 import { ScrollTrigger } from './lib/gsap';
 import { useHasPointer, useReducedMotion } from './hooks/useMediaQuery';
@@ -19,6 +20,7 @@ import { Contact } from './components/sections/Contact';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
 
 export default function App() {
+  useInitialAnchor();
   const hasPointer = useHasPointer();
   const reducedMotion = useReducedMotion();
 

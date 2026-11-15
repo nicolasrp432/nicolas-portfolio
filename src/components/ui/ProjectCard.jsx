@@ -1,3 +1,4 @@
+import { projectArtwork, projectTone } from '../../lib/projectArtwork';
 import { FiArrowUpRight, FiGithub, FiStar } from 'react-icons/fi';
 
 /**
@@ -12,7 +13,7 @@ import { FiArrowUpRight, FiGithub, FiStar } from 'react-icons/fi';
  * @param {object} props.project A card from `toProjectCard`.
  * @param {number} props.tone    Position used to pick the plate colour.
  */
-export function ProjectCard({ project, tone }) {
+export function ProjectCard({ project }) {
   return (
     <li className="project-card">
       <a
@@ -23,7 +24,8 @@ export function ProjectCard({ project, tone }) {
         data-cursor="ABRIR"
         aria-label={`Abrir ${project.title}${project.liveUrl ? '' : ' en GitHub'} (se abre en una pestaña nueva)`}
       >
-        <span className={`project-plate-inner tone-${tone % 4}`} aria-hidden="true">
+        <span className={`project-plate-inner tone-${projectTone(project)}`} aria-hidden="true">
+          <img className="project-artwork" src={projectArtwork(project)} alt="" width="800" height="600" loading="lazy" />
           <span className="plate-chrome">
             <i />
             <i />
@@ -33,7 +35,6 @@ export function ProjectCard({ project, tone }) {
           <small>
             {project.language} · {project.index}
           </small>
-          <span className="plate-shape" />
         </span>
         <span className="project-number" aria-hidden="true">
           {project.index}

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import EducationPage from '../EducationPage';
@@ -34,9 +34,20 @@ async function clickAndReport(element) {
 }
 
 describe('cross-page navigation', () => {
+  it('restores an incoming section anchor after the React document mounts', async () => {
+    window.history.replaceState(null, '', '/#perfil');
+    try {
+      render(<App />);
+      const target = document.getElementById('perfil');
+      target.scrollIntoView = vi.fn();
+      await waitFor(() => expect(target.scrollIntoView).toHaveBeenCalledWith({ behavior: 'instant', block: 'start' }));
+      await screen.findByRole('heading', { name: 'LectorApp', exact: true });
+    } finally { window.history.replaceState(null, '', '/'); }
+  });
+
   it('lets the education link actually navigate', async () => {
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     const nav = screen.getByRole('navigation', { name: /navegación principal/i });
     const link = within(nav).getByRole('link', { name: /educación/i });
@@ -50,7 +61,7 @@ describe('cross-page navigation', () => {
 
   it('still intercepts in-page chapter links', async () => {
     render(<App />);
-    await screen.findByRole('heading', { name: /portfolio editorial/i });
+    await screen.findByRole('heading', { name: 'LectorApp', exact: true });
 
     const nav = screen.getByRole('navigation', { name: /navegación principal/i });
     const link = within(nav).getByRole('link', { name: /proyectos/i });
@@ -83,6 +94,14 @@ describe('cross-page navigation', () => {
 });
 
 describe('the education page', () => {
+  it('links each learning path to its existing section and preserves document access', () => {
+    render(<EducationPage />);
+    const paths = within(screen.getByRole('navigation', { name: 'Explorar mi formación' })).getAllByRole('link');
+    expect(paths).toHaveLength(schools.length + 1);
+    paths.forEach(link => expect(document.getElementById(link.hash.slice(1))).toBeInTheDocument());
+    expect(paths.at(-1)).toHaveAttribute('href', '#certificaciones');
+  });
+
   it('renders every project, grouped under its school', () => {
     render(<EducationPage />);
 

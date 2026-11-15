@@ -75,9 +75,8 @@ su columna se rompe **dentro** de una palabra. Por eso cada palabra va envuelta
 en `.split-word` (`inline-block; white-space: nowrap`), que deja los espacios
 como único punto de corte.
 
-Los techos de `--step-hero` y `--step-display` los fija la columna más estrecha
-en la que viven, no lo que luce en un monitor ancho. `--step-hero` comparte fila
-con el retrato; `--step-display`, con el standfirst.
+El hero tiene su escala centrada propia; `--step-display` se ajusta a la columna
+que comparte con el standfirst. Los titulares conservan palabras completas.
 
 ⚠️ `gsap.context` resuelve los selectores contra los **descendientes** del scope.
 Una sección que quiera dispararse con sus propios límites debe usar el nodo que
@@ -132,6 +131,37 @@ posición sin sustituir.
 Los `featured` llevan tarjeta con plancha de color; el resto son filas de índice
 compactas. Trece planchas serían un muro de 3.500 px.
 
+Sobre las dos listas hay un **estante de carpetas de vidrio** (`GlassFolder`,
+portado de «Glass Folder Cards» de 21st.dev). Cada proyecto declara una `folder`
+en `projects.js` y `projectFolders` define las carpetas. Sin ninguna abierta se
+ve el índice entero, igual que antes; abrir una lo acota a esa carpeta. Las
+carpetas **filtran, no guardan**: las hojas que asoman son decoración
+(`aria-hidden`) y la carpeta es un único botón con `aria-pressed`, porque a ese
+tamaño una hoja mide ~20 px de alto y no sirve como enlace. El arte del fondo se
+genera con ruido (`lib/folderArt.js`, chunk propio pedido por `import()`) y su
+receta nombra tokens, no colores. Las etiquetas se dividen por `--gf-k` para
+seguir siendo legibles cuando la carpeta se encoge en móvil.
+
+### Vidrio y manifiesto
+
+El vidrio es el único material que no es papel ni tinta, y sus colores viven en
+`tokens.css` como papel cálido visto a través de un lente. `LiquidGlass` (portado
+de 21st.dev, de Tailwind a CSS plano) refracta de verdad solo en Chromium; Safari
+y Firefox reciben vidrio esmerilado y `prefers-reduced-transparency`, una placa
+opaca. Dos reglas:
+
+- **Solo sobre imagen o color.** Sobre papel liso no hay nada que doblar y queda
+  un rectángulo gris. Los objetos del hero son renders con transparencia real;
+  Waterline dibuja su propia lente. El botón de WhatsApp conserva su contraste.
+- **Tamaño fijo.** El mapa de desplazamiento es un PNG generado al medir la
+  caja: animar su ancho o alto regenera uno por fotograma.
+
+Las tres piezas del manifiesto usan `LiquidSculpture`, con el motor WebGL2 de
+«Liquid Sculpture Hero» de 21st.dev (`lib/liquidEngine.js`). Se carga al acercarse
+al viewport y reacciona al puntero o al tacto. El fondo coincide con el papel del
+manifiesto. Fuera de pantalla se pausa; con movimiento reducido o sin WebGL queda
+la imagen original. Lab ya no es una sección ni un destino de navegación.
+
 ### Educación
 
 `/educacion/` es **un segundo documento**, no una ruta de cliente. El proyecto no
@@ -153,7 +183,7 @@ que el click **no** queda cancelado.
 
 En `navLinks`, la ausencia de `index` es la señal de que una entrada vive fuera
 de la home: el rail y el espía de scroll solo ven `chapters`, la numeración
-01–05 sigue contigua, y el navbar marca esa entrada con `↗` en vez de numeral.
+01–06 sigue contigua, y el navbar marca esa entrada con `↗` en vez de numeral.
 
 Las certificaciones usan `<details>` / `<summary>` nativos —teclado, semántica y
 estado sin JS— y el bloque no se renderiza mientras la lista esté vacía: una
@@ -173,14 +203,65 @@ sección vacía se lee como un sitio a medio hacer. Cada certificado exige
 
 ## Rendimiento
 
-El retrato es `public/nicoalsrphero.png`, el recorte sin fondo tal cual. Se
-sirve como WebP de 94 KB (37 KB en móvil) mediante `<picture>`, con el PNG de
-1,35 MB solo como respaldo para navegadores sin WebP. Las derivadas son
-**reencodings, no recortes**: mismo encuadre, y el CSS lo dibuja con
-`object-fit: contain` sobre una caja `aspect-ratio` de 1122/1402, sin altura fija
-que lo corte. Al sustituir el retrato hay que regenerar `hero-1122.webp`,
-`hero-640.webp` y `og-image.jpg`, y ajustar el `aspect-ratio` si cambia la
-proporción del original.
+El hero usa cinco objetos de vidrio generados para representar web/producto,
+diseño, motion/vídeo, estrategia digital (caballo de ajedrez) y 3D. Los WebP en `public/img/hero-glass/`
+conservan transparencia RGBA y el encuadre original.
+Los prompts y el método de generación están en `docs/hero-glass-prompts.md`.
+Los retratos anteriores se conservan como recursos del proyecto.
+
+### Hero: De la idea a…
+
+`src/data/hero.js` reúne el mensaje y las posiciones de
+los cinco objetos. `PerspectiveTunnelHero` adapta la profundidad del componente
+21st.dev usando GSAP, ya instalado. Tiene entrada en Z, paralaje de puntero y
+avance con el scroll nativo. En escritorio el hero permanece visible con CSS sticky
+durante 240svh; el mismo recorrido transforma el hook de producto a experiencia y
+marca. El retrato original conserva su color, con la cara separada del texto.
+Las disciplinas viven en `tickerWords`, dentro de la cinta GSAP.
+El texto y los CTA permanecen accesibles. En móvil los objetos componen una escena
+bajo el texto. Con movimiento reducido se conserva la composición estática.
+El componente vive en `src/components/ui`, con CSS en `src/styles/sections.css`.
+No necesita Framer Motion, Tailwind, TypeScript ni proveedores adicionales para
+esta adaptación al sistema React/JSX existente.
 
 Build actual: **~94 KB gzip** de aplicación + **27 KB gzip** de GSAP en su propio
 chunk. El grano de la página es un filtro SVG en línea de ~300 bytes, no un bitmap.
+
+### Navbar de vidrio (Waterline)
+
+`src/components/ui/liquid-glass-navbar.jsx` adapta Nimbus UI Waterline de
+Guglielmo Giannattasio. El indicador líquido sigue la sección activa y conserva
+los enlaces nativos entre documentos. El material usa papel cálido y coral;
+las reglas de integración viven en `src/styles/chrome.css` y los colores en
+`src/styles/tokens.css`. En móvil se conserva el menú completo con un botón de
+vidrio. Sin WebGL se muestra una cápsula CSS; movimiento reducido elimina la
+animación continua. No se activa sonido ni distorsión SVG del contenido.
+
+El portfolio usa React/JSX y CSS propio, con componentes reutilizables en
+`src/components/ui`. Esta adaptación no necesita proveedores, imágenes ni
+paquetes adicionales. El ejemplo original en TSX puede portarse a JSX como
+ aquí; una migración opcional a TypeScript/Tailwind/shadcn sería independiente:
+configurar TypeScript con JSX y alias `@/*` hacia `src/*`, integrar Tailwind con
+Vite y ejecutar el inicializador de shadcn apuntando a `src/components/ui` y a
+la hoja de estilos del proyecto, revisando sus estilos base antes de aplicarlos.
+
+
+### Warp Carousel de proyectos
+
+`ui/warp-carousel.jsx` adapta el componente de Louis Studios entregado desde
+21st.dev: conserva la geometría del anillo, shaders de distorsión y fallback 2D.
+El pintor usa títulos, numeración, tipo y tecnologías reales; elimina las métricas
+de ejemplo. `project-warp-gallery.jsx` mantiene descripción y enlaces en HTML,
+con selección directa, teclado, flechas y arrastre. El motor se importa cerca del
+viewport y no tiene autoplay; con movimiento reducido queda una placa estática.
+Las carpetas filtran ambas vistas y “Lista completa” conserva las tarjetas/filas
+originales, también usadas en Educación. No se cambian URLs ni datos curados.
+
+Se mantiene React/JSX y CSS plano: el componente es autosuficiente y no necesita
+instalar shadcn, Tailwind ni TypeScript. La ruta reusable existente es
+`src/components/ui`; los estilos están en `src/styles/sections.css`.
+
+El hero suma tres piezas glass en escritorio (ocho en total), con hover en una
+capa separada del desplazamiento GSAP. En móvil conserva los cinco objetos;
+las imágenes adicionales se sirven con `picture` condicionado al ancho.
+Se retiraron las dos leyendas inferiores del hero.

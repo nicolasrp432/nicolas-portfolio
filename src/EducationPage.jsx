@@ -1,8 +1,9 @@
+import { useInitialAnchor } from './hooks/useInitialAnchor';
 import { useEffect } from 'react';
 import { gsap, ScrollTrigger, MOTION_OK } from './lib/gsap';
 import { useGsapScope } from './hooks/useGsapScope';
 import { useHasPointer, useReducedMotion } from './hooks/useMediaQuery';
-import { schools, educationProjects } from './data/education';
+import { schools, educationProjects, certificates } from './data/education';
 import { toProjectCard } from './data/projects';
 
 import { Cursor } from './components/chrome/Cursor';
@@ -13,6 +14,8 @@ import { Footer } from './components/chrome/Footer';
 import { SplitHeadline } from './components/motion/SplitHeadline';
 import { Reveal } from './components/motion/Reveal';
 import { ArrowLink } from './components/ui/ArrowLink';
+import { GlassPanel } from './components/ui/GlassPanel';
+import { GlassLinkCard } from './components/ui/GlassLinkCard';
 import { ProjectCard } from './components/ui/ProjectCard';
 import { ProjectRow } from './components/ui/ProjectRow';
 import { Certificates } from './components/sections/Certificates';
@@ -29,13 +32,13 @@ function School({ school, projects, offset }) {
 
   return (
     <section className="section school" id={`escuela-${school.id}`}>
-      <header className="school-head">
+      <GlassPanel as="header" className="school-head">
         <h2>{school.name}</h2>
         <p className="eyebrow">{school.note}</p>
         <span className="school-count" aria-hidden="true">
           {String(projects.length).padStart(2, '0')}
         </span>
-      </header>
+      </GlassPanel>
 
       {featured.length > 0 && (
         <ul className="project-grid">
@@ -65,6 +68,7 @@ function School({ school, projects, offset }) {
  * metadata, and leaves the home page's JavaScript budget alone.
  */
 export default function EducationPage() {
+  useInitialAnchor();
   const hasPointer = useHasPointer();
   const reducedMotion = useReducedMotion();
 
@@ -170,15 +174,14 @@ export default function EducationPage() {
       <div className="shell">
         <Navbar currentPage="educacion" />
 
-        <main id="contenido" ref={scope}>
+        <main id="contenido" className="education-page" ref={scope}>
           <header className="section education-intro" id="educacion">
             <div className="education-intro-copy">
-              <p className="eyebrow">Educación · trabajo de escuela</p>
+              <p className="eyebrow">Archivo de aprendizaje · 2025—2026</p>
               <SplitHeadline lines={HEADING} className="education-title" />
               <Reveal as="p" delay={0.1} className="education-standfirst">
-                Ejercicios, teoría y currículo. No son encargos ni entregables para nadie: son el
-                proceso, y lo comparto porque el proceso también cuenta. Aquí van los repositorios de
-                la escuela 42 y de mi formación en frontend, según los voy cerrando.
+                Mi criterio también se entrena. Del primer puntero en C a una interfaz en React:
+                un archivo abierto de ejercicios, decisiones y descubrimientos que llevo a lo que construyo.
               </Reveal>
               <Reveal as="div" delay={0.2}>
                 <ArrowLink href="/" external={false}>
@@ -205,7 +208,7 @@ export default function EducationPage() {
                 {/* Iconos 3D flotantes con fondo 100% transparente */}
                 <span className="education-3d-item item-terminal" aria-hidden="true">
                   <img
-                    src="/img/education/3d-terminal.png"
+                    src="/img/hero-glass/web.webp"
                     alt=""
                     width="240"
                     height="298"
@@ -215,7 +218,7 @@ export default function EducationPage() {
 
                 <span className="education-3d-item item-cap" aria-hidden="true">
                   <img
-                    src="/img/education/3d-cap.png"
+                    src="/img/hero-glass/3d.webp"
                     alt=""
                     width="260"
                     height="243"
@@ -223,21 +226,32 @@ export default function EducationPage() {
                   />
                 </span>
 
-                <span className="education-chip chip-school">
+                <GlassPanel as="span" className="education-chip chip-school">
                   <span className="live-dot" />
                   <span>
                     42 <strong>Telefónica</strong>
                   </span>
-                </span>
+                </GlassPanel>
 
-                <span className="education-chip chip-track">
+                <GlassPanel as="span" className="education-chip chip-track">
                   <span>
                     Frontend <strong>React & C</strong>
                   </span>
-                </span>
+                </GlassPanel>
               </div>
             </div>
           </header>
+
+          <nav className="education-paths" aria-label="Explorar mi formación">
+            {schools.map((school, index) => <GlassLinkCard key={school.id}
+              href={`#escuela-${school.id}`} eyebrow={`0${index + 1} / Itinerario`}
+              title={school.name} description={school.note}
+              meta={`${cards.filter(card => card.school === school.id).length} proyectos documentados`}
+              image={index === 0 ? '/img/hero-glass/3d.webp' : '/img/hero-glass/web.webp'} />)}
+            <GlassLinkCard href="#certificaciones" eyebrow="03 / Evidencias" title="Credenciales"
+              description="Formación y experiencias que puedes explorar y consultar."
+              meta={`${certificates.length} documentos disponibles`} image="/img/hero-glass/strategy-chess.webp" />
+          </nav>
 
           {schools.map((school) => {
             const projects = cards.filter((card) => card.school === school.id);
