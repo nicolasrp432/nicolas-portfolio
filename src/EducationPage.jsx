@@ -245,6 +245,8 @@ export default function EducationPage() {
             </div>
           </header>
 
+          <Certificates />
+
           <nav className="education-paths" aria-label="Explorar mi formación">
             {schools.map((school, index) => <GlassLinkCard key={school.id}
               href={`#escuela-${school.id}`} eyebrow={`0${index + 1} / Itinerario`}
@@ -267,7 +269,6 @@ export default function EducationPage() {
             return element;
           })}
 
-          <Certificates />
         </main>
 
         <Footer homeHref="/" topHref="#educacion" />

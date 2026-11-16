@@ -1290,6 +1290,9 @@
 .project-view-switch { display: flex; justify-content: flex-end; gap: .4rem; margin-block: 1rem; }
 .project-view-switch button { min-height: 44px; padding: .65rem 1rem; border-radius: 30px; border: 1px solid var(--line); font: 500 .65rem/1.4 var(--font-mono); }
 .project-view-switch button[aria-pressed='true'] { background: var(--paper); color: var(--ink); }
+/* Filtering / changing descriptions must not anchor the viewport to a
+   disappearing card or to controls that move with the new content. */
+.projects { overflow-anchor: none; }
 .project-warp-layout { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: clamp(1.5rem, 4vw, 4rem); }
 .project-warp-stage { position: relative; height: clamp(380px, 39vw, 560px); min-width: 0; isolation: isolate; }
 .project-warp-static { position: absolute; inset: 12% 24%; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 1.4rem; border: 1px solid rgb(255 255 255 / .16); border-radius: 12px; background: radial-gradient(ellipse at 85% 10%, #df8a65, transparent 80%), linear-gradient(145deg, #723f30, #171614); color: var(--paper); pointer-events: none; }

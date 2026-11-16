@@ -94,6 +94,11 @@ describe('cross-page navigation', () => {
 });
 
 describe('the education page', () => {
+  it('places the certificates immediately after the education hero', () => {
+    render(<EducationPage />);
+    expect(document.getElementById('educacion').nextElementSibling).toBe(document.getElementById('certificaciones'));
+  });
+
   it('links each learning path to its existing section and preserves document access', () => {
     render(<EducationPage />);
     const paths = within(screen.getByRole('navigation', { name: 'Explorar mi formación' })).getAllByRole('link');

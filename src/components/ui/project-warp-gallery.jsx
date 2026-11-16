@@ -1,7 +1,6 @@
 import { projectArtwork, projectTone, PROJECT_PALETTES } from '../../lib/projectArtwork';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { FiArrowLeft, FiArrowRight, FiArrowUpRight, FiGithub } from 'react-icons/fi';
-import { ScrollTrigger } from '../../lib/gsap';
 import { useReducedMotion } from '../../hooks/useMediaQuery';
 
 const WarpCarousel = lazy(() => import('./warp-carousel'));
@@ -33,11 +32,6 @@ export function ProjectWarpGallery({ projects }) {
     observer.observe(root.current);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => ScrollTrigger.refresh());
-    return () => cancelAnimationFrame(frame);
-  }, [index, projects]);
 
   const select = (next) => setIndex((next + projects.length) % projects.length);
   const onKeyDown = (event) => {

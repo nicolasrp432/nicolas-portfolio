@@ -1185,14 +1185,14 @@ a:focus-visible > .brand-mark { box-shadow: 8px 8px 0 var(--coral); transform: t
 .three-d-carousel { --carousel-card-width: 360px; position: relative; }
 .three-d-carousel-stage {
   --carousel-radius: calc(var(--carousel-card-width) * var(--carousel-radius-factor));
-  position: relative; height: 480px; overflow: hidden; perspective: 1100px;
+  position: relative; height: 550px; overflow: hidden; perspective: 1100px;
   touch-action: pan-y; cursor: grab; user-select: none;
   mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
 .three-d-carousel-stage[data-dragging] { cursor: grabbing; }
 .three-d-carousel-ring {
   position: absolute; left: calc(50% - var(--carousel-card-width) / 2); top: 44px;
-  width: var(--carousel-card-width); height: 370px; transform-style: preserve-3d;
+  width: var(--carousel-card-width); height: 450px; transform-style: preserve-3d;
   transform: translateZ(calc(-1 * var(--carousel-radius))) rotateY(var(--carousel-turn));
   transition: transform .8s cubic-bezier(.22,.8,.22,1);
 }
@@ -1211,12 +1211,14 @@ a:focus-visible > .brand-mark { box-shadow: 8px 8px 0 var(--coral); transform: t
   border: 1px solid rgb(255 255 255 / .85); box-shadow: inset 0 1px 0 #fff, 0 14px 40px rgb(40 32 24 / .1);
 }
 .three-d-carousel .cert-card:hover { transform: none; box-shadow: inset 0 1px 0 #fff, 0 18px 42px rgb(40 32 24 / .15); border-color: var(--coral); }
-.three-d-carousel .cert-card-media { padding: 16px; border: 0; border-bottom: 1px solid var(--line); height: 230px; flex-shrink: 0; cursor: zoom-in; background: rgb(255 255 255 / .45); }
+.three-d-carousel .cert-card-media { padding: 32px 24px 24px; border: 0; border-bottom: 1px solid var(--line); height: 240px; flex-shrink: 0; cursor: zoom-in; background: rgb(255 255 255 / .45); }
 .three-d-carousel .cert-card-media:disabled { cursor: default; }
 .three-d-carousel .cert-card-img { object-fit: contain; }
 .three-d-carousel .cert-card:hover .cert-card-img { transform: scale(1.015); }
-.three-d-carousel .cert-card-body { padding: 18px 22px 0; }
+.three-d-carousel .cert-card-body { padding: 24px 24px 8px; }
 .three-d-carousel .cert-card-title { font-size: 1.05rem; }
+.three-d-carousel .cert-card-actions { padding: 0 24px 24px; gap: 8px 16px; flex-shrink: 0; }
+.three-d-carousel .cert-card-link { display: inline-flex; align-items: center; min-height: 32px; line-height: 1.4; }
 .cert-card-actions { display: flex; flex-wrap: wrap; gap: 16px; }
 .cert-card-media:focus-visible { outline: 2px solid var(--coral); outline-offset: -4px; }
 .cert-card-media:focus-visible .cert-card-zoom-hint { opacity: 1; transform: none; }
@@ -1240,10 +1242,11 @@ a:focus-visible > .brand-mark { box-shadow: 8px 8px 0 var(--coral); transform: t
 @keyframes certificate-reveal { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
 @media(max-width: 600px) {
   .three-d-carousel { --carousel-card-width: min(74vw,310px); }
-  .three-d-carousel-stage { height: 410px; perspective: 800px; margin-inline: -12px; }
-  .three-d-carousel-ring { top: 24px; height: 350px; }
-  .three-d-carousel .cert-card-media { height: 205px; padding: 12px; }
-  .three-d-carousel .cert-card-body { padding: 16px 18px 0; }
+  .three-d-carousel-stage { height: 490px; perspective: 800px; margin-inline: -12px; }
+  .three-d-carousel-ring { top: 24px; height: 430px; }
+  .three-d-carousel .cert-card-media { height: 210px; padding: 32px 20px 24px; }
+  .three-d-carousel .cert-card-body { padding: 22px 20px 8px; }
+  .three-d-carousel .cert-card-actions { padding: 0 20px 20px; }
   .three-d-carousel .cert-card-title { font-size: .95rem; }
   .certificates-hint { line-height: 1.7; max-width: 30ch; margin-inline: auto; }
   .certificate-preview-backdrop { padding: 12px; }

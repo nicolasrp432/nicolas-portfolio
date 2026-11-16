@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { gsap, ScrollTrigger, MOTION_OK } from '../../lib/gsap';
+import { useState } from 'react';
+import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
+import { useSectionLayoutRefresh } from '../../hooks/useSectionLayoutRefresh';
 import { useGithubProjects } from '../../hooks/useGithubProjects';
 import { GITHUB_USER } from '../../data/site';
 import { projectFolders } from '../../data/projects';
@@ -26,14 +27,6 @@ export function Projects() {
   const featured = shown.filter((project) => project.featured);
   const indexed = shown.filter((project) => !project.featured);
   const activeFolder = projectFolders.find((folder) => folder.id === active);
-
-  // Filtering changes the height of the page: every trigger below this
-  // section was measured against the old one.
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (mounted.current) ScrollTrigger.refresh();
-    mounted.current = true;
-  }, [active, view]);
 
   const shelf = useGsapScope((root) => {
     gsap.fromTo(
@@ -98,6 +91,8 @@ export function Projects() {
     [projects.length, active, view],
     MOTION_OK,
   );
+
+  useSectionLayoutRefresh(scope);
 
   return (
     <section className="section projects on-ink ink-surface" id="proyectos" ref={scope}>
