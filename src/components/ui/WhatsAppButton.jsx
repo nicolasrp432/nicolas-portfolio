@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FaWhatsapp } from 'react-icons/fa6';
-import { FiX, FiArrowUpRight, FiMessageSquare } from 'react-icons/fi';
+import { FiX, FiArrowUpRight } from 'react-icons/fi';
 import { gsap, MOTION_OK } from '../../lib/gsap';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
@@ -106,7 +106,7 @@ export function WhatsAppButton() {
               <div className="whatsapp-modal-title-group">
                 <span className="whatsapp-modal-title">
                   <FaWhatsapp aria-hidden="true" />
-                  Chat con {site.shortName}
+                  Hablemos, soy {site.shortName}
                 </span>
                 <span className="whatsapp-modal-status">
                   <span className="live-dot" aria-hidden="true" />
@@ -124,7 +124,7 @@ export function WhatsAppButton() {
               </button>
             </div>
 
-            <p className="whatsapp-modal-intro">Selecciona un tema para iniciar la conversación:</p>
+            <p className="whatsapp-modal-intro">¿Qué tienes en mente? Escríbeme directamente por WhatsApp.</p>
 
             <ul className="whatsapp-presets-list" role="list">
               {whatsappPresets.map((preset) => (
@@ -138,7 +138,7 @@ export function WhatsAppButton() {
                     data-cursor="ENVIAR"
                   >
                     <div className="whatsapp-preset-top">
-                      <span className="whatsapp-preset-badge">{preset.badge}</span>
+                      <FaWhatsapp aria-hidden="true" />
                       <FiArrowUpRight className="whatsapp-preset-arrow" aria-hidden="true" />
                     </div>
                     <strong className="whatsapp-preset-title">{preset.title}</strong>
@@ -148,19 +148,7 @@ export function WhatsAppButton() {
               ))}
             </ul>
 
-            <div className="whatsapp-modal-foot">
-              <a
-                href={getWhatsappUrl('')}
-                target="_blank"
-                rel="noreferrer"
-                className="whatsapp-custom-link"
-                onClick={handlePresetClick}
-                data-cursor="CHAT"
-              >
-                <FiMessageSquare aria-hidden="true" />
-                O abrir chat en blanco directamente ↗
-              </a>
-            </div>
+            <p className="whatsapp-modal-foot">Se abrirá WhatsApp. Puedes editar el mensaje antes de enviarlo.</p>
           </div>
         )}
 

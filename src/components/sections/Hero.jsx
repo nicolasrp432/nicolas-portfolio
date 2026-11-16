@@ -5,8 +5,10 @@ import { Magnetic } from '../motion/Magnetic';
 import { ArrowLink } from '../ui/ArrowLink';
 import { LiquidGlassLogo } from '../ui/liquid-glass-logo-reveal';
 import { PerspectiveTunnelHero } from '../ui/perspective-tunnel-hero';
+import { useIsDesktop } from '../../hooks/useMediaQuery';
 
 export function Hero() {
+  const isDesktop = useIsDesktop();
   return (
     <section className="hero-scroll-track" id="inicio">
       <div className="hero hero-tunnel">
@@ -16,7 +18,7 @@ export function Hero() {
         <span className="hero-availability"><span className="hero-pulse" aria-hidden="true" />{site.availability}</span>
       </div>
       <div className="hero-tunnel-stage">
-        <div className="hero-logo-intro"><LiquidGlassLogo /></div>
+        <div className="hero-logo-intro">{isDesktop && <LiquidGlassLogo />}</div>
         <div className="hero-portrait-depth">
           <img src="/img/portraits/portrait-elevado-960.webp" srcSet="/img/portraits/portrait-elevado-480.webp 480w, /img/portraits/portrait-elevado-960.webp 960w" sizes="(max-width: 900px) 280px, 480px" decoding="async" alt="Nicolás Rodríguez, desarrollador y creativo digital" width="1122" height="1402" fetchPriority="high" />
         </div>

@@ -24,31 +24,15 @@ export const site = {
 export const whatsappPresets = [
   {
     id: 'project',
-    title: 'Nuevo proyecto o desarrollo web',
-    subtitle: 'Presupuesto, plazos y requerimientos',
-    badge: 'Proyecto',
-    text: 'Hola Nicolás, vi tu portfolio y tengo un proyecto web en mente. Me gustaría conocer tu disponibilidad y tarifas.',
-  },
-  {
-    id: 'ai',
-    title: 'Soluciones de IA y automatización',
-    subtitle: 'Flujos de trabajo, agentes e interfaces',
-    badge: 'IA & Sistemas',
-    text: 'Hola Nicolás, me interesa explorar soluciones de IA y automatización para optimizar mi producto.',
-  },
-  {
-    id: 'collab',
-    title: 'Colaboración o propuesta de trabajo',
-    subtitle: 'Freelance, equipo o contratación',
-    badge: 'Colaboración',
-    text: 'Hola Nicolás, me gustaría hablar contigo sobre una oportunidad de colaboración profesional.',
+    title: 'Hablemos de tu proyecto',
+    subtitle: 'Cuéntame tu idea y qué necesitas.',
+    text: 'Hola Nicolás, vi tu portfolio y me gustaría hablar sobre un proyecto. Mi idea es…',
   },
   {
     id: 'quick',
-    title: 'Consulta rápida o saludo',
-    subtitle: 'Iniciar conversación directa',
-    badge: 'Directo',
-    text: 'Hola Nicolás, te escribo desde tu portfolio para hacerte una consulta.',
+    title: 'Tengo una consulta',
+    subtitle: 'Una pregunta o una propuesta de colaboración.',
+    text: 'Hola Nicolás, vi tu portfolio y quería consultarte algo.',
   },
 ];
 
@@ -81,11 +65,11 @@ export const socials = [
  */
 export const navLinks = [
   { id: 'proyectos', label: 'Proyectos', index: '01', theme: 'ink' },
-  { id: 'educacion', label: 'Educación', href: '/educacion/' },
   { id: 'perfil', label: 'Perfil', index: '02', theme: 'paper' },
   { id: 'herramientas', label: 'Herramientas', index: '03', theme: 'paper' },
   { id: 'ruta', label: 'Colaborar', index: '04', theme: 'coral' },
   { id: 'contacto', label: 'Contacto', index: '05', theme: 'ink' },
+  { id: 'educacion', label: 'Educación', href: '/educacion/' },
 ];
 
 /** Only what lives on the home page. The rail and the scroll spy use this. */

@@ -325,7 +325,7 @@ function LiquidNavbar({
   }, []);
   const loop = React.useCallback(() => {
     const s = st.current;
-    if (s.raf) return;
+    if (s.raf || !s.visible || !s.ready || document.hidden) return;
     s.last = performance.now();
     const tick = (now) => {
       const dt = Math.min((now - s.last) / 1e3, 1 / 30);
@@ -333,7 +333,8 @@ function LiquidNavbar({
       step(dt, now);
       draw();
       const busy = s.moving || s.rips.length || s.sats.length || s.mouse.s > 0.01;
-      if (s.visible && !s.reduce && (busy || s.glc)) s.raf = requestAnimationFrame(tick);
+      // Keep the liquid response, but let the GPU rest once it settles.
+      if (s.visible && s.ready && !document.hidden && !s.reduce && busy) s.raf = requestAnimationFrame(tick);
       else s.raf = 0;
     };
     s.raf = requestAnimationFrame(tick);
@@ -344,6 +345,8 @@ function LiquidNavbar({
     if (!nav) return;
     if (!el) {
       st.current.ready = false;
+      cancelAnimationFrame(st.current.raf);
+      st.current.raf = 0;
       nav.dataset.active = "false";
       return;
     }
@@ -402,11 +405,12 @@ function LiquidNavbar({
     const io = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver(([e]) => {
       s.visible = e.isIntersecting;
       if (s.visible) loop();
+      else { cancelAnimationFrame(s.raf); s.raf = 0; }
     }) : null;
     if (navRef.current) io?.observe(navRef.current);
     const vis = () => {
-      s.visible = document.visibilityState === "visible";
-      if (s.visible) loop();
+      if (document.hidden) { cancelAnimationFrame(s.raf); s.raf = 0; }
+      else if (s.visible) loop();
     };
     document.addEventListener("visibilitychange", vis);
     return () => {

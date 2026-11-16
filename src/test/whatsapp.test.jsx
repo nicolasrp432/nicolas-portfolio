@@ -34,11 +34,10 @@ describe('WhatsApp configuration in site data', () => {
   });
 
   it('provides curated presets with required fields', () => {
-    expect(whatsappPresets.length).toBeGreaterThanOrEqual(3);
+    expect(whatsappPresets).toHaveLength(2);
     whatsappPresets.forEach((preset) => {
       expect(preset.id).toBeTruthy();
       expect(preset.title).toBeTruthy();
-      expect(preset.badge).toBeTruthy();
       expect(preset.text).toBeTruthy();
       expect(preset.text).toContain('Nicolás');
     });
@@ -86,9 +85,7 @@ describe('WhatsAppButton with preset message flyout', () => {
       expect(link).toHaveAttribute('target', '_blank');
     });
 
-    // Check direct blank chat link
-    const blankLink = within(dialog).getByText(/abrir chat en blanco/i);
-    expect(blankLink.closest('a')).toHaveAttribute('href', 'https://wa.me/34665015804');
+    expect(within(dialog).getAllByRole('link')).toHaveLength(2);
   });
 
   it('can be closed via close button or escape key', async () => {

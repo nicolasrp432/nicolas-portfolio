@@ -119,7 +119,7 @@ export function Navbar({ currentPage = 'home' }) {
     };
   }, []);
 
-  // Panel entrance: the ink sheet wipes down, then the entries roll up.
+  // The smoked-glass panel opens before the entries roll into view.
   useIsomorphicLayoutEffect(() => {
     const panel = panelRef.current;
     if (!panel || !open) return undefined;
@@ -256,10 +256,11 @@ export function Navbar({ currentPage = 'home' }) {
             {[{ id: 'inicio', index: '00', label: 'Inicio' }, ...navLinks].map((link) => (
               <a
                 className="menu-entry"
+                data-page={Boolean(link.href)}
                 key={link.id}
                 href={link.id === 'inicio' && !isHome ? '/' : hrefFor(link)}
                 aria-current={
-                  (link.href ? currentPage === link.id : active === link.id) ? 'true' : undefined
+                  (link.href ? currentPage === link.id : isHome && active === link.id) ? 'true' : undefined
                 }
                 onClick={(event) => goTo(event, link)}
               >

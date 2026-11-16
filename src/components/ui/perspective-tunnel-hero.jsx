@@ -12,8 +12,9 @@ export function PerspectiveTunnelHero({ items }) {
     const hero = root.closest('section');
 
     const mm = gsap.matchMedia();
-    mm.add({ immersive: '(min-height: 700px)', compact: '(max-height: 699px)' }, ({ conditions }) => {
+    mm.add({ immersive: '(min-height: 700px)', compact: '(max-height: 699px)', mobile: '(max-width: 900px)' }, ({ conditions }) => {
       const immersive = conditions.immersive;
+      const mobile = conditions.mobile;
       const stage = hero.querySelector('.hero-tunnel-stage');
       const copy = hero.querySelector('.hero-tunnel-copy');
       const portrait = hero.querySelector('.hero-portrait-depth');
@@ -26,24 +27,29 @@ export function PerspectiveTunnelHero({ items }) {
       });
       // Start with the paper / orbital background. The identity arrives first;
       // all eight objects then travel out of a single vanishing point and stay.
-      journey.fromTo(hero.querySelector('.hero-logo-intro'), { autoAlpha: 1, scale: 1 },
+      if (mobile) {
+        gsap.set([portrait, copy, hero.querySelector('.hero-mastline')], { autoAlpha: 1, y: 0, scale: 1 });
+      } else {
+      journey.fromTo(hero.querySelector('.hero-logo-intro'), { autoAlpha: 1, scale: 1, x: 0, y: 0, xPercent: -50, yPercent: -50 },
         { autoAlpha: 0, scale: 0.65, z: -500, duration: 0.16, ease: 'power2.in' }, 0);
       gsap.set([portrait, copy], { autoAlpha: 0, y: 28, scale: 0.94 });
       journey.to([portrait, copy], { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, stagger: 0.035, ease: 'power2.out' }, 0.12);
       journey.fromTo(hero.querySelector('.hero-mastline'), { autoAlpha: 0 },
         { autoAlpha: 1, duration: 0.12 }, 0.16);
+      }
       depths.forEach((depth, i) => {
         const figure = depth.closest('figure');
         // Layout positions, not transformed bounds: stable across refresh / resize.
-        const originX = () => stage.clientWidth / 2 - figure.offsetLeft;
-        const originY = () => stage.clientHeight * 0.42 - figure.offsetTop;
+        const frame = mobile ? scene : stage;
+        const originX = () => frame.clientWidth / 2 - figure.offsetLeft;
+        const originY = () => frame.clientHeight * 0.42 - figure.offsetTop;
         journey.fromTo(depth, {
           z: -2200 - i * 160, x: originX, y: originY,
           autoAlpha: 0, scale: 0.28, rotationZ: i % 2 ? -22 : 22,
         }, {
           z: 0, x: 0, y: 0, autoAlpha: 1, scale: 1, rotationZ: 0,
           duration: 0.4, ease: 'power2.out',
-        }, 0.25 + i * 0.065);
+        }, (mobile ? 0.02 : 0.25) + i * 0.065);
       });
       const words = hero.querySelectorAll('.hero-hook-word');
       words.forEach((word, index) => {
