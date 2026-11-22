@@ -11,6 +11,7 @@ import { Navbar } from './components/chrome/Navbar';
 import { Footer } from './components/chrome/Footer';
 
 import { Hero } from './components/sections/Hero';
+import { SpecialtyOverview } from './components/sections/SpecialtyOverview';
 import { Ticker } from './components/sections/Ticker';
 import { Projects } from './components/sections/Projects';
 import { Profile } from './components/sections/Profile';
@@ -64,6 +65,7 @@ export default function App() {
           <Toolbox />
           <Roadmap />
           <Contact />
+          <SpecialtyOverview />
         </main>
 
         <Footer />

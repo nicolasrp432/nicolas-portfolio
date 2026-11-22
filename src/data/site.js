@@ -15,7 +15,7 @@ export const site = {
   whatsappMessage: 'Hola Nicolás, vi tu portfolio y me gustaría hablar sobre un proyecto.',
   location: 'España — remoto',
   availability: 'Disponible para colaborar',
-  url: 'https://nicolas-portfolio-eight.vercel.app/',
+  url: 'https://www.nicodev.site/',
   description:
     'Portfolio de Nicolás Rodríguez, desarrollador frontend y creativo digital. React, motion graphics, vídeo, 3D y soluciones apoyadas en IA.',
 };

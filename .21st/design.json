@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "project": {
+    "name": "nicolas-portfolio",
+    "productType": "Personal creative portfolio",
+    "stack": [
+      "react",
+      "vite"
+    ]
+  },
+  "sources": {
+    "tokens": [
+      "src/styles/tokens.css"
+    ],
+    "components": [
+      "src/components/ui"
+    ],
+    "assets": [
+      "public/img/stories",
+      "public/img/hero-glass/optimized"
+    ],
+    "instructions": []
+  },
+  "design": {
+    "colorMode": "light editorial home; dark specialty scenes",
+    "colors": {
+      "source": "src/styles/tokens.css",
+      "identity": "warm paper, ink and coral"
+    },
+    "typography": {
+      "body": "Manrope",
+      "emphasis": "Playfair Display italic",
+      "metadata": "DM Mono"
+    },
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "editorial"
+  },
+  "components": {
+    "installed": [
+      "3d-carousel",
+      "ArrowLink",
+      "Asterisk",
+      "BrandMark",
+      "CertificateCard",
+      "CopyEmail",
+      "DimensionLab",
+      "DisciplineDock",
+      "GlassFolder",
+      "GlassLinkCard",
+      "GlassPanel",
+      "liquid-glass-logo-reveal",
+      "liquid-glass-navbar",
+      "LiquidGlass",
+      "LiquidSculpture",
+      "manifesto-conveyor",
+      "MotionStory",
+      "perspective-tunnel-hero",
+      "project-warp-gallery",
+      "ProjectCard",
+      "ProjectRow",
+      "SectionHeading",
+      "service-orbit-carousel",
+      "SpecialtyHero",
+      "SpecialtyNav",
+      "StackIcons",
+      "tilted-grid-hero",
+      "warp-carousel",
+      "WebWorkshop",
+      "WhatsAppButton",
+      "WorkCase",
+      "ThreeKing",
+      "PortraitJourney",
+      "hover-expand-gallery"
+    ],
+    "preferredPrimitives": [],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [
+      "Preserve the original home hero, ticker and all five services.",
+      "Place the new specialties gallery after Contact and immediately before Footer.",
+      "Keep paper, coral, ink, Manrope, Playfair and liquid glass identity.",
+      "Keyboard, touch, reduced motion and static WebGL fallback."
+    ],
+    "avoid": []
+  },
+  "decisions": [
+    {
+      "date": "2026-11-22",
+      "decision": "Adapt 21st Hover Expand Gallery by kedhareswer for the closing specialties section; native links remain separate from disclosure buttons."
+    }
+  ],
+  "evidence": [
+    {
+      "fact": "components.installed",
+      "source": "src/components/ui"
+    },
+    {
+      "fact": "project.stack:react",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:vite",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-11-22T12:09:13.148Z"
+}

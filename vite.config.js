@@ -9,12 +9,16 @@ export default defineConfig({
     sourcemap: false,
     cssCodeSplit: false,
     rollupOptions: {
-      // Two documents, not a client router. Paths are relative to Vite's
+      // Six documents, not a client router. Paths are relative to Vite's
       // `root`, which avoids `__dirname` (absent in an ESM config) and
       // `import.meta.dirname` (which Vite may rewrite).
       input: {
         main: 'index.html',
         educacion: 'educacion/index.html',
+        webProducto: 'web-producto/index.html',
+        motion: 'motion/index.html',
+        threeD: '3d/index.html',
+        historia: 'historia/index.html',
       },
       output: {
         // GSAP is the heaviest runtime dependency: split it so the app shell

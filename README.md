@@ -1,6 +1,6 @@
 # Portfolio — Nicolás Rodríguez
 
-Portfolio personal: frontend, producto digital e IA. React 19 + Vite 7, animado
+Portfolio personal: web y producto digital, motion y experiencias 3D. React 19 + Vite 7, animado
 con GSAP y construido sobre un sistema de diseño propio.
 
 ```bash
@@ -10,6 +10,49 @@ npm run build    # -> dist/
 npm run preview  # sirve dist/
 npm test         # vitest
 ```
+
+## Tres especialidades, una historia
+
+La home conserva su hero, cinta, archivo, manifiesto y cinco servicios originales.
+Solo incorpora, al final justo antes del Footer, el bloque de tres especialidades y su acceso a `/historia/`. El bloque adapta Hover Expand Gallery de kedhareswer (21st.dev): paneles horizontales en escritorio y acordeón táctil en móvil. Las páginas `/web-producto/`,
+`/motion/` y `/3d/` comparten `SpecialtyPage` y sus componentes, con contenido,
+casos verificables y contacto específico definidos en `src/data/specialties.js`.
+Los trabajos propios se identifican como tales; no se publican métricas,
+precios o campañas que no estén documentados.
+
+`MotionStory` narra tres momentos con una animación vectorial original en
+`public/animations/idea-to-form.json`. Lottie y el archivo se cargan cerca de la
+sección, nunca en la home. Los capítulos siguen el scroll nativo; hay selección
+directa, pausa, poster de reserva y estados estáticos con movimiento reducido.
+El reproductor se destruye al salir y pausa si se oculta la pestaña.
+
+Para incorporar trabajos de After Effects: exportar a Lottie las composiciones
+vectoriales compatibles que necesiten interacción. Para montaje, texturas,
+efectos complejos o sonido, usar vídeo con poster, controles y `preload="none"`.
+Publicar solo piezas reales aprobadas y su contexto; la muestra actual es un
+estudio propio, no un reel de clientes.
+
+`npm run build` genera seis documentos HTML completos antes de publicar,
+mediante React en el build (`src/prerender.jsx` + `scripts/prerender.mjs`).
+El texto, los casos y los enlaces no dependen de que termine de cargar
+JavaScript. Después React activa la experiencia. Los documentos tienen sus
+propios metadatos y URL canónica en `www.nicodev.site`; no se necesita cambiar
+de hosting ni añadir un router. La carpeta temporal `.prerender` se elimina
+al terminar. `dist` es el directorio de publicación.
+
+Las páginas tienen composiciones diferentes: `SpecialtyHero` presenta un taller
+con retrato sobre papel en Web, una escena fotográfica en Motion y un entorno
+de ajedrez en 3D. `WebWorkshop` demuestra estructura, identidad y una interacción
+de reserva exclusivamente local. `DimensionLab` incorpora un rey procedural real con Three.js, geometría de revolución,
+luces, vidrio, porcelana y metal. Se puede girar, seleccionar y separar sus piezas.
+El motor se carga cerca de la escena, dibuja solo cuando algo cambia y conserva
+un poster si WebGL no está disponible. La home no importa Three.js.
+Consulta [la guía para ampliar las escenas](docs/three-scenes.md).
+Las experiencias conservan controles manuales, texto en flujo y movimiento reducido.
+`HistoryPage` y `PortraitJourney` recorren cuatro ideas con retratos y ambientes
+que cambian al avanzar. Las ideas personales se basan en el contenido existente,
+sin inventar hitos biográficos. Las imágenes generadas y optimizadas viven en
+`public/img/stories`; su procedencia está en `docs/story-images.md`.
 
 ## Dirección de diseño
 

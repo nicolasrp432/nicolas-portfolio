@@ -165,7 +165,7 @@ export const curatedProjects = [
     summary:
       'Identidad, proyectos y proceso en una experiencia editorial construida con React y GSAP. Sistema de tokens propio, animación con opt-out accesible y assets optimizados.',
     tags: ['React', 'GSAP', 'Design system'],
-    liveUrl: 'https://nicolas-portfolio-eight.vercel.app',
+    liveUrl: 'https://www.nicodev.site',
     year: '2026',
     featured: true,
   },

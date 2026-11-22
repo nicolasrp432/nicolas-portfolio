@@ -15,3 +15,7 @@
 @import './components.css';
 @import './chrome.css';
 @import './sections.css';
+
+@import './specialties.css';
+
+@import "./stories.css";
