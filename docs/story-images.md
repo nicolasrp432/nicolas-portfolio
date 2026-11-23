@@ -20,3 +20,14 @@ para clientes. Se guardan variantes WebP de 768 y hasta 1440px, calidad 84, con
 transparencia donde corresponde. Los originales PNG se conservaron en la carpeta
 de imágenes generadas de Codex. Los textos, botones y experiencias son HTML/CSS/JS,
 no están incrustados en las imágenes. No se cambió ningún recurso de la landing.
+
+## 23 noviembre 2026 · recorrido biográfico
+
+- nicolas-agency: recreación conceptual en un estudio creativo, no fotografía
+  documental del trabajo en la agencia. Original exec-29c4097e-c417-48cb-966a-3cc2c285ef2c.png.
+- nicolas-passage: Nicolás atravesando puertas arquitectónicas, metáfora visual
+  de su recorrido. Original exec-1cfd166a-43f5-4376-bfce-86f9f5379439.png.
+
+Ambas usan la misma referencia de identidad y variantes WebP 768/1440. La página
+explica que las escenas son recreaciones visuales. No se reutilizan imágenes de
+Apple, Immersive Garden ni de los otros sitios consultados.

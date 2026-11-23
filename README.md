@@ -49,9 +49,12 @@ El motor se carga cerca de la escena, dibuja solo cuando algo cambia y conserva
 un poster si WebGL no está disponible. La home no importa Three.js.
 Consulta [la guía para ampliar las escenas](docs/three-scenes.md).
 Las experiencias conservan controles manuales, texto en flujo y movimiento reducido.
-`HistoryPage` y `PortraitJourney` recorren cuatro ideas con retratos y ambientes
-que cambian al avanzar. Las ideas personales se basan en el contenido existente,
-sin inventar hitos biográficos. Las imágenes generadas y optimizadas viven en
+`HistoryPage` y `PortraitJourney` presentan el recorrido biográfico de Nicolás:
+agencia de marketing en Colombia (2023–2025), diseño en Platzi, formación en curso en 42 Urduliz Bizkaia y presente en Bilbao.
+Las capas visuales responden al scroll; los textos permanecen legibles. En móvil
+cada escena precede al texto, sin superponerlo. Hay pausa y movimiento reducido.
+Los datos viven en `src/data/journey.js`; dirección y referencias en
+`docs/history-direction.md`. Las imágenes generadas y optimizadas viven en
 `public/img/stories`; su procedencia está en `docs/story-images.md`.
 
 ## Dirección de diseño

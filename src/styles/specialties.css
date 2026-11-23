@@ -142,3 +142,8 @@
 @media (max-height:600px) {
   .motion-story-sticky { position: relative; top: auto; }
 }
+/* Explicit surface: on-ink styles only the eyebrow; it never sets a background. */
+.specialty-contact { background:var(--ink); color:var(--paper); }
+.specialty-contact h2,.specialty-contact .specialty-email { color:var(--paper); }
+.work-case-plate { position:relative; isolation:isolate; }
+.work-case-plate::before { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg,#f1eee7e6,#f1eee7b8 55%,#f1eee7f0); }
