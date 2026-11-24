@@ -17,7 +17,8 @@
     ],
     "assets": [
       "public/img/stories",
-      "public/img/hero-glass/optimized"
+      "public/img/hero-glass/optimized",
+      "public/img/specialties"
     ],
     "instructions": []
   },
@@ -73,7 +74,8 @@
       "WorkCase",
       "ThreeKing",
       "PortraitJourney",
-      "hover-expand-gallery"
+      "hover-expand-gallery",
+      "ProcessTrail"
     ],
     "preferredPrimitives": [],
     "patterns": []
@@ -91,6 +93,15 @@
     {
       "date": "2026-11-22",
       "decision": "Adapt 21st Hover Expand Gallery by kedhareswer for the closing specialties section; native links remain separate from disclosure buttons."
+    },
+    {
+      "date": "2026-11-24",
+      "decision": "Use three complementary directions: Web interface assembly, Motion typographic film score, 3D material gallery. Adapt the staggered object composition from Stack Spread (daiwiikharihar, 21st #27190) and the progress-path concept from Tracing Beam (Manu Arora, #1149) to existing GSAP. No Framer runtime added. Remove generated people from specialty pages; keep original home unchanged. History evolves social → design → React → king with accumulated satellites.",
+      "references": [
+        "https://21st.dev/@daiwiikharihar/components/stack-spread",
+        "https://21st.dev/@manuarora700/components/tracing-beam"
+      ],
+      "validation": "Local production preview, desktop/mobile; native controls, reduced-motion/static fallbacks, automated regression suite."
     }
   ],
   "evidence": [

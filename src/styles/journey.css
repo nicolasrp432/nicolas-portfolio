@@ -48,8 +48,13 @@
 .journey-chapter-copy > p:not(.eyebrow) { max-width:34ch; font-size:1rem; line-height:1.8; margin-bottom:1.8rem; }
 .journey-chapter-copy .arrow-link { font-size:.65rem; border-color:currentColor; color:inherit; min-height:44px; }
 .atlas-chapter-foot { position:absolute; z-index:3; left:5%; bottom:2.5rem; right:5%; padding-top:1rem; border-top:1px solid var(--atlas-line); font:.6rem/1.8 var(--font-mono); letter-spacing:.1em; }
-.atlas-static-king { position:absolute; width:24%; right:12%; top:45%; object-fit:contain; }
-.journey-experience[data-renderer='ready']:not([data-reduced='true']) .atlas-static-king { display:none; }
+.atlas-static-symbol { position:absolute; width:24%; height:auto; right:12%; top:45%; object-fit:contain; color:var(--atlas-coral); filter:drop-shadow(8px 12px 12px var(--atlas-shadow)); }
+.atlas-static-symbol--design { left:11%; right:auto; }
+.atlas-static-symbol--react { right:3%; top:53%; width:20%; color:var(--atlas-mint); }
+.atlas-static-symbol--king { left:16%; right:auto; top:60%; }
+.atlas-symbol-tile { fill:currentColor; }
+.atlas-symbol-relief { color:var(--atlas-white); }
+.journey-experience[data-renderer='ready']:not([data-reduced='true']) .atlas-static-symbol { display:none; }
 /* 01: a campaign poster and a geographical origin, portrait at the foreground. */
 .journey-chapter--colombia .journey-chapter-copy { left:5%; top:15%; }
 .atlas-place-word { position:absolute; left:3%; top:2%; font:800 clamp(5rem,14.5vw,17rem)/1 var(--font-sans); letter-spacing:-.07em; color:var(--atlas-coral); opacity:.14; }
@@ -78,7 +83,7 @@
 .atlas-brand { position:absolute; color:var(--atlas-ink); }
 .atlas-brand--platzi { width:7%; height:7%; top:6%; right:8%; }
 .atlas-bezier { position:absolute; bottom:9%; left:1%; width:55%; height:38%; stroke:var(--atlas-coral); fill:none; stroke-width:1.3; }.atlas-bezier path:nth-child(2){stroke-dasharray:5 5;opacity:.5}
-/* 03: the structure behind the image. The king becomes a wireframe. */
+/* 03: the structure behind the image, accompanied by the React atom. */
 .journey-chapter--escuela-42 { background:var(--atlas-ink); color:var(--atlas-white); }
 .journey-chapter--escuela-42 .journey-chapter-copy { top:14%; left:34%; width:38%; text-align:center; }
 .journey-chapter--escuela-42 .journey-chapter-copy > p { margin-inline:auto; }
@@ -113,7 +118,7 @@
 .history-page--cinematic .history-closing .arrow-link { display:block; width:fit-content; margin:2rem auto; color:var(--atlas-white); }
 .history-page--cinematic .history-closing .button-slab { background:var(--atlas-copper); color:var(--atlas-ink); }
 .journey-experience[data-reduced='true'] .atlas-traveller { display:none; }
-.journey-experience[data-reduced='true'] .atlas-static-king { display:block; }
+.journey-experience[data-reduced='true'] .atlas-static-symbol { display:block; }
 @media(max-width:1000px){
  .journey-opening { min-height:800px; }.journey-opening h1{font-size:9.5vw}.journey-opening-note p {font-size:.8rem}.journey-cover-coordinate{font-size:1.8rem}
  .journey-navigation > span{display:none}.journey-navigation{top:65px}.journey-chapter{height:1000px}
@@ -128,7 +133,7 @@
  .journey-navigation{top:62px;padding:.3rem 12px;gap:0;flex-wrap:wrap}.journey-navigation > div{width:100%;justify-content:space-between;gap:.25rem}.journey-navigation a{font-size:.65rem;gap:.3rem}.journey-navigation small{font-size:.45rem}.journey-navigation button{font-size:.55rem;min-height:36px;margin-left:auto}
  .journey-chapter{height:auto;min-height:0;max-height:none;scroll-margin-top:80px;display:flex;flex-direction:column;padding-top:40px}.atlas-art{position:relative;inset:auto;order:2;height:540px;flex:none;margin-top:1rem}.journey-chapter-copy,.journey-chapter--platzi .journey-chapter-copy,.journey-chapter--escuela-42 .journey-chapter-copy,.journey-chapter--presente .journey-chapter-copy{position:relative;left:auto;right:auto;top:auto;width:auto;text-align:left;margin-inline:22px;order:1}
  .journey-chapter-copy h2{font-size:clamp(2.8rem,11.5vw,4rem);max-width:12ch;margin-bottom:1rem}.journey-chapter-copy .eyebrow{font-size:.55rem;margin-bottom:1rem}.journey-chapter-copy > p:not(.eyebrow){font-size:.85rem;max-width:36ch;line-height:1.75;margin-inline:0}.journey-chapter-copy .arrow-link{font-size:.6rem}
- .atlas-chapter-foot{position:relative;bottom:auto;left:auto;right:auto;margin:1rem 22px 1.4rem;order:3;font-size:.48rem;letter-spacing:.04em}.atlas-static-king{top:25%;right:4%;width:36%}
+ .atlas-chapter-foot{position:relative;bottom:auto;left:auto;right:auto;margin:1rem 22px 1.4rem;order:3;font-size:.48rem;letter-spacing:.04em}.atlas-static-symbol{top:25%;left:auto;right:4%;width:36%}
  .atlas-place-word{top:0;font-size:18vw}.atlas-colombia-map{width:49%;height:64%;right:1%;top:8%}.atlas-campaign{left:6%;top:7%;width:39%;height:55%;padding:1rem}.atlas-campaign strong{font-size:3.4rem}.atlas-campaign > span,.atlas-campaign > div{font-size:.4rem}.atlas-agency-portrait{left:4%;width:72%;height:82%;bottom:0}.atlas-date{right:5%;bottom:11%;font-size:2.7rem}
  .atlas-type-sheet{left:6%;top:5%;width:57%;height:61%;padding:1rem}.atlas-type-sheet strong{font-size:8.7rem}.atlas-type-sheet > span,.atlas-type-sheet > div{font-size:.45rem}.atlas-reader{width:61%;height:72%;right:-6%;bottom:0}.atlas-brand--platzi{width:11%;height:10%;top:3%;right:9%}.atlas-swatches{left:8%;width:43%;bottom:11%;padding:.7rem}.atlas-swatches i{height:45px}.atlas-swatches span{font-size:.45rem}.atlas-bezier{width:85%;bottom:12%}
  .atlas-brand--42{top:4%;left:6%;width:30%;height:24%}.atlas-code-stack{left:43%;top:17%;width:44%;height:53%}.atlas-code-layer{padding:1rem}.atlas-code-layer--back{transform:translate(18px,-20px) rotateY(-18deg) rotateX(12deg) rotateZ(5deg)}.atlas-code-layer pre{font-size:.75rem}.atlas-code-layer small{font-size:.35rem}.atlas-coder{width:61%;height:72%;bottom:0;left:-5%}.atlas-code-location{right:5%;bottom:11%;font-size:.65rem}.atlas-code-location strong{font-size:1.5rem}.atlas-code-location small{font-size:.35rem}

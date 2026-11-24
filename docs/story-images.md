@@ -40,3 +40,13 @@ Generados con la herramienta integrada de imágenes, en modo edición con transp
 - `public/img/stories/nicolas-walking-cutout-{768,1440}.webp`: extracción del hombre caminando. Prompt: “Extract ONLY the same full-body man looking back while walking. Preserve exact identity, black cap, clothes, shoes and pose. Remove arches, cubes, floating papers, floor and background. Genuine transparent alpha, head and shoes fully visible, no new props.” Original: `exec-4c0ae520-1a09-43e1-af8e-6237d454ee25.png`.
 
 Se conserva una nota visible indicando que son recreaciones visuales, no fotografías documentales de la agencia o del campus.
+
+## 24 noviembre 2026 · especialidades sin retratos
+
+Tres naturalezas muertas generadas para estas páginas, no capturas de proyectos de clientes. Los elementos interactivos y los textos siguen siendo código real. Originales PNG de 1536×1024 conservados en la carpeta de generación; derivados WebP de 768/1440 px, calidad 83. Los dos primeros conservan alfa transparente.
+
+- `interface-assembly`: planos de ventanas de navegador de vidrio esmerilado, cantos de cobre, estructura marfil y piezas de interfaz ámbar; vista isométrica, sin personas, texto ni logos. Original `exec-fd73fa84-9faa-4392-86aa-736d670f27f9.png`. Derivados 60/188 KB.
+- `motion-ribbon`: cinta de satén coral atravesando un aro de vidrio ahumado, fragmentos marfil y arco de cromo; diagonal asimétrica, sin personas ni texto. Original `exec-514afee1-ea91-4732-895e-d71226994554.png`. Derivados 53/156 KB.
+- `material-study`: toro marfil atravesado por una placa de vidrio ámbar, esfera de cobre y pedestal oscuro; luz de exposición sobre fondo de tinta, sin personas ni ajedrez. Original `exec-502d7fbb-ee66-4edc-8383-89aaa8313647.png`. Derivados 21/61 KB.
+
+La escena real de Three.js permanece en el laboratorio 3D; esta portada es dirección de arte, no se presenta como un objeto manipulable.

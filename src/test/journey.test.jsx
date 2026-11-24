@@ -25,4 +25,17 @@ describe('biographical journey',()=>{
   vi.stubGlobal('matchMedia',q=>({matches:q.includes('reduced-motion'),addEventListener(){},removeEventListener(){}}));
   render(<HistoryPage />);expect(screen.getByRole('button',{name:'Efectos pausados'})).toBeDisabled();
  });
+ it('provides a chapter-specific symbol before WebGL loads and with reduced motion',()=>{
+  vi.stubGlobal('matchMedia',q=>({matches:q.includes('reduced-motion'),addEventListener(){},removeEventListener(){}}));
+  const {container}=render(<HistoryPage />);
+  const stages=['social','design','react','king'];
+  journey.forEach((chapter,index)=>{
+   const symbol=container.querySelector(`#${chapter.id} .atlas-static-symbol`);
+   expect(symbol).toHaveAttribute('data-stage',stages[index]);
+   expect(symbol).toBeVisible();
+   if(index<3) expect(symbol.tagName.toLowerCase()).toBe('svg');
+  });
+  expect(container.querySelectorAll('img[src="/img/manifesto/icons/strategy.webp"]')).toHaveLength(1);
+  expect(container.querySelectorAll('.atlas-traveller-canvas')).toHaveLength(1);
+ });
 });

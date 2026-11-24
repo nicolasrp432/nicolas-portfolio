@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, within, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SpecialtyPage from '../SpecialtyPage';
+import { SpecialtyHero } from '../components/ui/SpecialtyHero';
 import { MotionStory } from '../components/ui/MotionStory';
 import { specialties } from '../data/specialties';
 import { curatedProjects, toProjectCard } from '../data/projects';
@@ -34,6 +35,27 @@ describe('specialty pages', () => {
       if (!project.liveUrl) expect(within(card).queryByRole('link', { name: `Explorar ${project.title}` })).toBeNull();
     });
     if (specialty.id === 'motion') expect(screen.getByText(/Un estudio original creado para este portfolio/)).toBeInTheDocument();
+  });
+});
+
+describe('specialty scene controls', () => {
+  it('pauses visual effects while preserving the reading and navigation', async () => {
+    const {container}=render(<SpecialtyHero specialty={specialties[0]} />);
+    const heading=screen.getByRole('heading',{level:1});
+    await userEvent.click(screen.getByRole('button',{name:'Pausar efectos'}));
+    expect(screen.getByRole('button',{name:'Efectos pausados'})).toHaveAttribute('aria-pressed','true');
+    expect(container.querySelector('.specialty-stage')).toHaveAttribute('data-paused','true');
+    expect(heading).toBeVisible();
+    expect(screen.getByRole('link',{name:'Prueba el producto'})).toHaveAttribute('href','#experiencia');
+    await userEvent.click(screen.getByRole('button',{name:'Efectos pausados'}));
+    expect(screen.getByRole('button',{name:'Pausar efectos'})).toHaveAttribute('aria-pressed','false');
+  });
+  it('offers a complete static scene when reduced motion is requested',()=>{
+    vi.stubGlobal('matchMedia',query=>({matches:query.includes('reduced-motion'),addEventListener(){},removeEventListener(){}}));
+    const {container}=render(<SpecialtyHero specialty={specialties[1]} />);
+    expect(screen.getByRole('button',{name:'Efectos pausados'})).toBeDisabled();
+    expect(screen.getByRole('heading',{level:1})).toBeVisible();
+    expect(container.querySelector('.stage-main-art')).toHaveAttribute('src','/img/specialties/motion-ribbon-768.webp');
   });
 });
 

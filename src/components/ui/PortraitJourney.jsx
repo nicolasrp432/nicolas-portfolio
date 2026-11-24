@@ -13,6 +13,24 @@ export function JourneyMap({ country, className = '' }) {
   return <svg className={`atlas-map ${className}`} viewBox="0 0 500 500" aria-hidden="true"><path className="atlas-map-shadow" d={map.path} /><path d={map.path} />{map.bilbao && <g><circle cx={map.bilbao[0]} cy={map.bilbao[1]} r="13" className="atlas-map-beacon" /><circle cx={map.bilbao[0]} cy={map.bilbao[1]} r="4" /><path d={`M${map.bilbao.join(',')}h60l20,-25`} className="atlas-map-leader" /></g>}</svg>;
 }
 
+function JourneySymbol({ id }) {
+  const stage = { colombia: 'social', platzi: 'design', 'escuela-42': 'react', presente: 'king' }[id];
+  const className = `atlas-static-symbol atlas-static-symbol--${stage}`;
+  if (stage === 'king') return <img className={className} data-stage={stage} src="/img/manifesto/icons/strategy.webp" alt="" width="480" height="480" loading="lazy" />;
+  return <svg className={className} data-stage={stage} viewBox="-100 -100 200 200" width="480" height="480" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="3">
+    {stage === 'social' && <>
+      <g transform="translate(-27 -29) rotate(-9)"><rect className="atlas-symbol-tile" x="-34" y="-34" width="68" height="68" rx="14" /><g className="atlas-symbol-relief"><rect x="-21" y="-21" width="42" height="42" rx="12" /><circle r="10" /><circle cx="13" cy="-13" r="2" fill="currentColor" /></g></g>
+      <g transform="translate(35 4) rotate(10)"><rect className="atlas-symbol-tile" x="-31" y="-31" width="62" height="62" rx="13" /><path className="atlas-symbol-relief" d="M-9-15 15 0-9 15Z" fill="currentColor" /></g>
+      <g transform="translate(-20 46) rotate(-5)"><rect className="atlas-symbol-tile" x="-29" y="-29" width="58" height="58" rx="12" /><path className="atlas-symbol-relief" d="M3 23V-11Q3-21 18-18M-9-2H16" strokeWidth="9" /></g>
+    </>}
+    {stage === 'design' && <>
+      <g transform="translate(-4 -17) rotate(18)"><path className="atlas-symbol-tile" d="M0-63-33-7-19 43H19L33-7Z" /><path className="atlas-symbol-relief" d="M0-63V-14" /><circle cy="-7" r="7" className="atlas-symbol-relief" /><rect x="-24" y="44" width="48" height="14" rx="3" /></g>
+      <path d="M-73 50C-44 92 48-8 73 42" /><path d="M-73 50-44 92M48-8 73 42" strokeWidth="1" /><circle cx="-44" cy="92" r="4" /><circle cx="48" cy="-8" r="4" /><path d="M-78 45h10v10h-10ZM68 37h10v10H68Z" fill="currentColor" />
+    </>}
+    {stage === 'react' && <><ellipse rx="78" ry="31" /><ellipse rx="78" ry="31" transform="rotate(60)" /><ellipse rx="78" ry="31" transform="rotate(120)" /><circle r="12" fill="currentColor" /></>}
+  </svg>;
+}
+
 function ChapterScene({ id }) {
   if (id === 'colombia') return <>
     <div className="atlas-place-word" aria-hidden="true">COLOMBIA</div>
@@ -105,7 +123,7 @@ export function PortraitJourney() {
     <div className="atlas-travel-region">
       <div className="atlas-traveller" aria-hidden="true"><div ref={host} className="atlas-traveller-canvas" /></div>
       {journey.map((chapter, i) => <section className={`journey-chapter journey-chapter--${chapter.id}`} id={chapter.id} key={chapter.id} aria-labelledby={`title-${chapter.id}`}>
-        <div className="atlas-art"><ChapterScene id={chapter.id} /><img className="atlas-static-king" src="/img/manifesto/icons/strategy.webp" alt="" width="480" height="480" loading="lazy" /></div>
+        <div className="atlas-art"><ChapterScene id={chapter.id} /><JourneySymbol id={chapter.id} /></div>
         <div className="journey-chapter-copy"><p className="eyebrow">0{i + 1} / {chapter.chapter}</p><h2 id={`title-${chapter.id}`}>{chapter.title}</h2><p>{chapter.text}</p><a className="arrow-link" href={chapter.href}>{chapter.link}</a></div>
         <span className="atlas-chapter-foot" aria-hidden="true">{chapter.turn}</span>
       </section>)}

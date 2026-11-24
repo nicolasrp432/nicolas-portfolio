@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 export function useStoryChapters() {
   const root = useRef(null);
   const manual = useRef(false);
+  const pendingFrame = useRef(0);
   const [chapter, setChapter] = useState(0);
+  useEffect(() => () => cancelAnimationFrame(pendingFrame.current), []);
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return;
     const observer = new IntersectionObserver(entries => {
@@ -31,8 +33,15 @@ export function useStoryChapters() {
   const choose = index => {
     manual.current = true;
     setChapter(index);
-    // Wait for the selected interface state before measuring the destination.
-    requestAnimationFrame(() => root.current?.querySelector(`[data-story-chapter="${index}"]`)?.scrollIntoView?.({ block: 'end', behavior: 'instant' }));
+    // A sticky desktop stage stays beside its chapter. In native mobile flow,
+    // reveal the changed stage itself instead of sending the result off-screen.
+    cancelAnimationFrame(pendingFrame.current);
+    pendingFrame.current = requestAnimationFrame(() => {
+      const stage = root.current?.querySelector('.experience-sticky, .motion-story-sticky');
+      const sticky = stage && getComputedStyle(stage).position === 'sticky';
+      const destination = sticky ? root.current?.querySelector(`[data-story-chapter="${index}"]`) : stage;
+      destination?.scrollIntoView?.({ block: sticky ? 'end' : 'start', behavior: 'instant' });
+    });
   };
   return { root, chapter, choose };
 }

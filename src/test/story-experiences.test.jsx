@@ -52,6 +52,19 @@ describe('visual storytelling',()=>{
   act(()=>report([entry]));
   expect(container.querySelector('.prototype-browser')).toHaveAttribute('data-phase','0');
  });
+ it('keeps the changed demo visible when mobile uses native document flow',()=>{
+  vi.stubGlobal('requestAnimationFrame', callback => { callback(); return 1; });
+  const {container}=render(<WebWorkshop />);
+  const stage=container.querySelector('.experience-sticky');
+  stage.style.position='relative';
+  stage.scrollIntoView=vi.fn();
+  const chapter=container.querySelector('[data-story-chapter="2"]');
+  chapter.scrollIntoView=vi.fn();
+  fireEvent.click(screen.getByRole('button',{name:'03 Interacción'}));
+  expect(stage.scrollIntoView).toHaveBeenCalledWith({block:'start',behavior:'instant'});
+  expect(chapter.scrollIntoView).not.toHaveBeenCalled();
+  expect(screen.getByRole('button',{name:'Probar reserva'})).toBeInTheDocument();
+ });
  it('connects the personal story to all three specialties and the complete portfolio',()=>{
   render(<HistoryPage />);
   expect(screen.getAllByRole('heading',{level:1})).toHaveLength(1);
