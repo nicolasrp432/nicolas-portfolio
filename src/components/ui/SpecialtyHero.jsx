@@ -4,7 +4,9 @@ import { useGsapScope } from '../../hooks/useGsapScope';
 import { gsap } from '../../lib/gsap';
 
 export function StoryImage({ name, alt = '', className = '', priority = false }) {
-  return <img className={className} src={`/img/stories/${name}-768.webp`} srcSet={`/img/stories/${name}-768.webp 768w, /img/stories/${name}-1440.webp 1440w`} sizes="(max-width: 600px) 100vw, 70vw" width={['nicolas-chess','nicolas-reading'].includes(name) ? 1122 : 1536} height={['nicolas-chess','nicolas-reading'].includes(name) ? 1402 : 1024} alt={alt} loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : undefined} />;
+  const dimensions = name === 'nicolas-agency-cutout' ? [1064, 1478] : name === 'nicolas-walking-cutout' ? [1024, 1536] : ['nicolas-chess','nicolas-reading'].includes(name) ? [1122, 1402] : [1536, 1024];
+  const portrait = dimensions[1] > dimensions[0];
+  return <img className={className} src={`/img/stories/${name}-768.webp`} srcSet={`/img/stories/${name}-768.webp 768w, /img/stories/${name}-1440.webp ${Math.min(1440, dimensions[0])}w`} sizes={portrait ? '(max-width: 700px) 85vw, 45vw' : '(max-width: 600px) 100vw, 70vw'} width={dimensions[0]} height={dimensions[1]} alt={alt} loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : undefined} />;
 }
 
 export function SpecialtyHero({ specialty: s }) {

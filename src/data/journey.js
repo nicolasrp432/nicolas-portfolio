@@ -1,31 +1,31 @@
-/** Confirmed by Nicolás. Dates, current city and ongoing campus confirmed on 23 November 2026. */
+/** Biography confirmed by Nicolás: marketing 2023–2025, current Bilbao and ongoing 42 Urduliz. */
 export const journey = [
   {
-    id: 'colombia', label: 'Colombia', chapter: 'Marketing · 2023–2025',
-    title: 'Antes del código, las ideas.',
-    text: 'Entre 2023 y 2025 trabajé en marketing en Colombia, en una agencia. Mi recorrido también viene de ahí: del mundo de las marcas, de las imágenes y de lo que queremos comunicar.',
-    turn: 'Hoy sigo empezando por esa pregunta: ¿qué queremos contar?',
+    id: 'colombia', label: 'Colombia', chapter: 'Colombia · Marketing · 2023–2025',
+    title: 'Primero, conectar.',
+    text: 'Entre 2023 y 2025 trabajé en marketing en Colombia, en una agencia. Antes de programar experiencias, trabajaba con lo que una marca quiere contar.',
+    turn: 'EL ORIGEN / COMUNICAR UNA IDEA',
     link: 'Sigue el movimiento ↗', href: '/motion/',
   },
   {
-    id: 'platzi', label: 'Platzi', chapter: 'Aprender a mirar',
-    title: 'Una idea necesita una forma.',
-    text: 'En Platzi aprendí diseño. Esa etapa forma parte de mi manera de trabajar con la composición, el color y la jerarquía: decidir qué se ve primero y qué debe quedarse contigo.',
-    turn: 'Diseñar se convirtió en una forma de dar intención a las ideas.',
+    id: 'platzi', label: 'Platzi', chapter: 'Platzi · Diseño',
+    title: 'Aprender a mirar.',
+    text: 'En Platzi aprendí diseño: composición, color y jerarquía. Darle forma a una idea también es decidir dónde empieza la mirada.',
+    turn: 'LA MIRADA / DARLE INTENCIÓN A LA FORMA',
     link: 'La curiosidad se practica ↗', href: '/educacion/',
   },
   {
     id: 'escuela-42', label: '42', chapter: '42 Urduliz Bizkaia · En curso',
     title: 'Después quise darle vida.',
-    text: 'Estudio en 42 Urduliz Bizkaia, donde aprendí a programar y sigo formándome. A la mirada visual se sumó otra manera de pensar: descomponer un problema, escribir una solución y comprobar qué ocurre al ejecutarla.',
-    turn: 'De imaginar una experiencia a poder construirla.',
+    text: 'Estudio en 42 Urduliz Bizkaia, donde aprendí a programar y sigo formándome. Ahora puedo construir lo que antes solo imaginaba.',
+    turn: 'EL CÓDIGO / ENTENDER · CONSTRUIR · PROBAR',
     link: 'Explora cómo construyo ↗', href: '/web-producto/',
   },
   {
-    id: 'presente', label: 'Bilbao', chapter: 'Mi presente',
-    title: 'Todo ese recorrido viene conmigo.',
-    text: 'Hoy vivo en Bilbao y conecto desarrollo web, motion y 3D. La experiencia en marketing, el diseño y la programación no son historias separadas: se encuentran en lo que creo.',
-    turn: 'Mi siguiente jugada es convertir esa mezcla en algo que puedas usar y sentir.',
+    id: 'presente', label: 'Bilbao', chapter: 'Bilbao · Mi presente',
+    title: 'No empiezo de cero.',
+    text: 'Hoy vivo en Bilbao. Me acompañan el marketing, el diseño y la programación: los conecto en experiencias web, motion y 3D.',
+    turn: 'LA SIGUIENTE JUGADA / TODO EL RECORRIDO VIENE CONMIGO',
     link: 'Explora mi otra dimensión ↗', href: '/3d/',
   },
 ];

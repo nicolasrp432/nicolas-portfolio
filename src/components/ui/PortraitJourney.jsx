@@ -1,64 +1,114 @@
 import { useEffect, useRef, useState } from 'react';
+import { Si42, SiPlatzi } from 'react-icons/si';
+import { FiArrowUpRight, FiPenTool, FiPlay, FiCode, FiBox } from 'react-icons/fi';
 import { journey } from '../../data/journey';
+import { journeyMaps } from '../../data/journeyMaps';
 import { StoryImage } from './SpecialtyHero';
 import { useGsapScope } from '../../hooks/useGsapScope';
 import { useReducedMotion } from '../../hooks/useMediaQuery';
 import { gsap } from '../../lib/gsap';
 
+export function JourneyMap({ country, className = '' }) {
+  const map = journeyMaps[country];
+  return <svg className={`atlas-map ${className}`} viewBox="0 0 500 500" aria-hidden="true"><path className="atlas-map-shadow" d={map.path} /><path d={map.path} />{map.bilbao && <g><circle cx={map.bilbao[0]} cy={map.bilbao[1]} r="13" className="atlas-map-beacon" /><circle cx={map.bilbao[0]} cy={map.bilbao[1]} r="4" /><path d={`M${map.bilbao.join(',')}h60l20,-25`} className="atlas-map-leader" /></g>}</svg>;
+}
+
 function ChapterScene({ id }) {
-  if (id === 'colombia') return <div className="journey-image-world" data-depth="back"><StoryImage name="nicolas-agency" alt="Recreación conceptual de Nicolás en un estudio creativo" /><div className="journey-glass-frame" data-depth="front" /></div>;
-  if (id === 'platzi') return <div className="journey-design-world" aria-hidden="true">
-    <div className="journey-design-grid" />
-    <div className="journey-type-object" data-depth="back">Aa<span>FORMA / CONTRASTE / INTENCIÓN</span></div>
-    <div className="journey-color-object" data-depth="front"><i /><i /><i /><i /><span>Una mirada propia.</span></div>
-    <div className="journey-design-portrait" data-depth="portrait"><StoryImage name="nicolas-reading" /></div>
-  </div>;
-  if (id === 'escuela-42') return <div className="journey-code-world">
-    <span className="journey-school-number" aria-hidden="true">42</span>
-    <div className="journey-code-plane" data-depth="back" aria-hidden="true"><span>C / PENSAR · PROBAR · ENTENDER</span><pre>{'size_t ft_strlen(const char *s)\n{\n    size_t i = 0;\n\n    while (s[i])\n        i++;\n    return (i);\n}'}</pre><small>Una función. Un problema que puedes entender.</small></div>
-    <img className="journey-coder" data-depth="portrait" src="/img/portraits/portrait-elevado-960.webp" alt="Nicolás trabajando con su portátil" width="768" height="960" loading="lazy" />
-    <div className="journey-code-token" data-depth="front" aria-hidden="true">{'{ construir(); }'}</div>
-  </div>;
-  return <div className="journey-image-world journey-image-world--today" data-depth="back"><StoryImage name="nicolas-workspace" alt="Retrato conceptual de Nicolás trabajando en su estudio" /><div className="journey-location" aria-hidden="true"><span>DE COLOMBIA A</span><strong>Bilbao.</strong><span>42 URDULIZ BIZKAIA · SIGO APRENDIENDO</span></div><div className="journey-today-ring" data-depth="front" aria-hidden="true" /></div>;
+  if (id === 'colombia') return <>
+    <div className="atlas-place-word" aria-hidden="true">COLOMBIA</div>
+    <div className="atlas-colombia-map" data-depth="map"><JourneyMap country="colombia" /><span>ORIGEN / CO</span></div>
+    <div className="atlas-campaign" data-depth="object" aria-hidden="true"><span>UNA IDEA QUE</span><strong>se<br /><em>siente.</em></strong><div><FiPlay /> COMUNICAR / CONECTAR</div></div>
+    <StoryImage className="atlas-agency-portrait" name="nicolas-agency-cutout" alt="Retrato conceptual de Nicolás con bocetos de diseño" />
+    <div className="atlas-date" aria-hidden="true">2023<span>— 2025</span></div>
+  </>;
+  if (id === 'platzi') return <>
+    <div className="atlas-type-sheet" data-depth="object" aria-hidden="true"><span>EL OJO TAMBIÉN SE ENTRENA</span><strong>Aa<span>&</span></strong><div>FORMA · COLOR · JERARQUÍA</div><FiPenTool /></div>
+    <div className="atlas-swatches" data-depth="map" aria-hidden="true"><i /><i /><i /><i /><span>Encontrar mi lenguaje.</span></div>
+    <StoryImage className="atlas-reader" name="nicolas-reading" alt="Retrato conceptual de Nicolás aprendiendo con un libro" />
+    <SiPlatzi className="atlas-brand atlas-brand--platzi" aria-label="Platzi" />
+    <svg className="atlas-bezier" viewBox="0 0 700 400" aria-hidden="true"><path d="M30 350C180 10 350 450 650 50" /><path d="M30 350L180 10M350 450L650 50" /><circle cx="30" cy="350" r="8" /><circle cx="650" cy="50" r="8" /></svg>
+  </>;
+  if (id === 'escuela-42') return <>
+    <Si42 className="atlas-brand atlas-brand--42" aria-label="42" />
+    <div className="atlas-code-stack" data-depth="object" aria-hidden="true"><div className="atlas-code-layer atlas-code-layer--back"><span>01 / ENTENDER</span><FiBox /></div><div className="atlas-code-layer"><span>02 / CONSTRUIR</span><pre>{'while (idea)\n{\n  aprender();\n  construir();\n  probar();\n}'}</pre><small>UN PROCESO, NO UNA RESPUESTA MÁGICA.</small></div></div>
+    <img className="atlas-coder" src="/img/portraits/portrait-elevado-960.webp" alt="Nicolás trabajando con su portátil" width="768" height="960" loading="lazy" />
+    <span className="atlas-code-location">42 URDULIZ<br /><strong>BIZKAIA</strong><small>APRENDIZAJE EN CURSO</small></span>
+  </>;
+  return <>
+    <span className="atlas-bilbao-word" aria-hidden="true">Bilbao.</span>
+    <div className="atlas-spain-map" data-depth="map"><JourneyMap country="spain" /><span>BILBAO / MI PRESENTE</span></div>
+    <div className="atlas-arrival-path" aria-hidden="true"><span>CO</span><i /><FiArrowUpRight /><i /><span>BIO</span></div>
+    <StoryImage className="atlas-walker" name="nicolas-walking-cutout" alt="Retrato conceptual de Nicolás caminando hacia su siguiente etapa" />
+    <div className="atlas-discipline-orbit" data-depth="object" aria-hidden="true"><span><FiCode /> WEB</span><span><FiPlay /> MOTION</span><span><FiBox /> 3D</span></div>
+  </>;
 }
 
 export function PortraitJourney() {
   const [paused, setPaused] = useState(false);
+  const [renderer, setRenderer] = useState('poster');
   const reduced = useReducedMotion();
-  const timelines = useRef([]);
+  const timelines = useRef([]), engine = useRef(null), host = useRef(null), position = useRef({ phase: 0 });
   const scope = useGsapScope(root => {
     timelines.current = [];
-    root.querySelectorAll('.journey-chapter').forEach(section => {
-      const timeline = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: .65 } });
-      timeline.fromTo(section.querySelector('[data-depth="back"]'), { yPercent: -5, scale: 1.08 }, { yPercent: 5, scale: 1, ease: 'none' }, 0);
-      timelines.current.push(timeline);
-      const front = section.querySelector('[data-depth="front"]');
-      if (front) timeline.fromTo(front, { y: 55, rotateY: -14, rotateZ: -6 }, { y: -65, rotateY: 14, rotateZ: 4, ease: 'none' }, 0);
-      const portrait = section.querySelector('[data-depth="portrait"]');
-      if (portrait) timeline.fromTo(portrait, { yPercent: 7 }, { yPercent: -4, ease: 'none' }, 0);
+    const region = root.querySelector('.atlas-travel-region');
+    const sections = [...root.querySelectorAll('.journey-chapter')];
+    const links = [...root.querySelectorAll('.journey-navigation a')];
+    let current = -1;
+    const travel = gsap.to(position.current, {
+      phase: 3, ease: 'none',
+      scrollTrigger: { trigger: region, start: 'top top', endTrigger: sections[3], end: 'top top', scrub: .45, invalidateOnRefresh: true },
+      onUpdate: () => {
+        engine.current?.update(position.current.phase);
+        const next = Math.min(3, Math.round(position.current.phase));
+        if (next !== current) { current = next; links.forEach((link, i) => { if (i === next) link.setAttribute('aria-current', 'step'); else link.removeAttribute('aria-current'); }); }
+      },
     });
+    timelines.current.push(travel);
+    sections.forEach(section => {
+      const objects = section.querySelectorAll('[data-depth="object"]');
+      const maps = section.querySelectorAll('[data-depth="map"]');
+      const timeline = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: .6 } });
+      if (objects.length) timeline.fromTo(objects, { y: 35, rotate: -5 }, { y: -35, rotate: 3, ease: 'none' }, 0);
+      if (maps.length) timeline.fromTo(maps, { y: -20 }, { y: 25, ease: 'none' }, 0);
+      timelines.current.push(timeline);
+    });
+    return () => links.forEach(link => link.removeAttribute('aria-current'));
   });
   useEffect(() => {
+    if (reduced) return;
+    let cancelled = false, started = false;
+    const start = async () => {
+      if (started) return; started = true;
+      try {
+        const { createJourneyScene } = await import('../../lib/three/journeyScene');
+        if (cancelled) return;
+        engine.current = createJourneyScene(host.current, () => setRenderer('fallback'));
+        engine.current.update(position.current.phase); setRenderer('ready');
+      } catch { if (!cancelled) setRenderer('fallback'); }
+    };
+    const io = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { start(); io.disconnect(); } }, { rootMargin: '200px' });
+    if (io) io.observe(host.current); else start();
+    return () => { cancelled = true; io?.disconnect(); engine.current?.dispose(); engine.current = null; };
+  }, [reduced]);
+  useEffect(() => { if (renderer === 'fallback') { engine.current?.dispose(); engine.current = null; } }, [renderer]);
+  useEffect(() => {
     timelines.current.forEach(timeline => {
-      if (paused) {
-        timeline.scrollTrigger?.disable(false, false);
-        timeline.scrollTrigger?.getTween()?.pause();
-      } else {
-        timeline.scrollTrigger?.enable(false, false);
-      }
+      if (paused) { timeline.scrollTrigger?.disable(false, false); timeline.scrollTrigger?.getTween()?.pause(); }
+      else timeline.scrollTrigger?.enable(false, false);
     });
-  }, [paused]);
-  return <div className="journey-experience" ref={scope} data-still={paused || reduced} data-reduced={reduced}>
+  }, [paused, reduced]);
+  return <div className="journey-experience" ref={scope} data-still={paused || reduced} data-reduced={reduced} data-renderer={renderer}>
     <nav className="journey-navigation" aria-label="Etapas de mi recorrido">
-      <span>MI RECORRIDO</span><div>{journey.map((chapter, i) => <a href={`#${chapter.id}`} key={chapter.id}><small>0{i + 1}</small> {chapter.label}</a>)}</div>
+      <span>ATLAS PERSONAL / 04 ETAPAS</span><div>{journey.map((chapter, i) => <a href={`#${chapter.id}`} key={chapter.id}><small>0{i + 1}</small> {chapter.label}</a>)}</div>
       <button type="button" onClick={() => setPaused(value => !value)} aria-pressed={paused || reduced} disabled={reduced}>{paused || reduced ? 'Efectos pausados' : 'Pausar efectos'}</button>
     </nav>
-    {journey.map((chapter, i) => <section className={`journey-chapter journey-chapter--${chapter.id}`} id={chapter.id} key={chapter.id} aria-labelledby={`title-${chapter.id}`}>
-      <div className="journey-chapter-stage">
-        <div className="journey-scenery"><ChapterScene id={chapter.id} /></div>
-        <div className="journey-chapter-copy"><p className="eyebrow">0{i + 1} / {chapter.label} · {chapter.chapter}</p><h2 id={`title-${chapter.id}`}>{chapter.title}</h2><p>{chapter.text}</p><p className="journey-turn">{chapter.turn}</p><a className="arrow-link" href={chapter.href}>{chapter.link}</a></div>
-        <span className="journey-scene-index" aria-hidden="true">0{i + 1}<span>/ 04</span></span>
-      </div>
-    </section>)}
+    <div className="atlas-travel-region">
+      <div className="atlas-traveller" aria-hidden="true"><div ref={host} className="atlas-traveller-canvas" /></div>
+      {journey.map((chapter, i) => <section className={`journey-chapter journey-chapter--${chapter.id}`} id={chapter.id} key={chapter.id} aria-labelledby={`title-${chapter.id}`}>
+        <div className="atlas-art"><ChapterScene id={chapter.id} /><img className="atlas-static-king" src="/img/manifesto/icons/strategy.webp" alt="" width="480" height="480" loading="lazy" /></div>
+        <div className="journey-chapter-copy"><p className="eyebrow">0{i + 1} / {chapter.chapter}</p><h2 id={`title-${chapter.id}`}>{chapter.title}</h2><p>{chapter.text}</p><a className="arrow-link" href={chapter.href}>{chapter.link}</a></div>
+        <span className="atlas-chapter-foot" aria-hidden="true">{chapter.turn}</span>
+      </section>)}
+    </div>
   </div>;
 }

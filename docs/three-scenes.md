@@ -54,3 +54,7 @@ poster y una explicación legible. El movimiento reducido elimina las transicion
 Para futuras escenas, reduce polígonos y texturas antes de exportar y comprueba
 el resultado en un teléfono real. No hay que añadir React Three Fiber para esta
 escena; Three.js directo ya resuelve los controles y el ciclo de vida necesarios.
+
+## Rey que recorre la historia
+
+`src/lib/three/journeyScene.js` reutiliza `createKing()` en un canvas transparente. `journeyPose.js` define cuatro posiciones y orientaciones, en coordenadas normalizadas; para cambiar la ruta se editan esos puntos. La fase 0–3 llega desde GSAP en `PortraitJourney.jsx`. El capítulo 42 activa la malla de la misma geometría; no se descarga otro modelo. En móvil se reduce el tamaño y se baja el trayecto para proteger la lectura. `JourneyMap` dibuja contornos vectoriales locales, sin solicitudes a servicios de mapas.

@@ -29,6 +29,13 @@ export function Cursor() {
       const ringY = gsap.quickTo(ringEl, 'y', { duration: 0.38, ease: 'power3.out' });
 
       const onMove = (event) => {
+        if (event.pointerType === 'touch') return;
+        // Keep the native pointer until the replacement has a real position.
+        if (!document.documentElement.hasAttribute('data-custom-cursor')) {
+          gsap.set(dotEl, { x: event.clientX, y: event.clientY, opacity: 1 });
+          gsap.set(ringEl, { x: event.clientX, y: event.clientY, opacity: 1 });
+          document.documentElement.setAttribute('data-custom-cursor', '');
+        }
         dotX(event.clientX);
         dotY(event.clientY);
         ringX(event.clientX);
@@ -62,15 +69,17 @@ export function Cursor() {
         gsap.to(dotEl, { scale: isHovered ? 0.6 : 1, duration: 0.25, ease: 'back.out(2)' });
       };
 
-      const onLeave = () => gsap.to([dotEl, ringEl], { opacity: 0, duration: 0.2 });
-      const onEnter = () => gsap.to([dotEl, ringEl], { opacity: 1, duration: 0.2 });
+      const onLeave = () => {
+        document.documentElement.removeAttribute('data-custom-cursor');
+        gsap.set([dotEl, ringEl], { opacity: 0 });
+      };
 
       window.addEventListener('pointermove', onMove, { passive: true });
       window.addEventListener('pointerover', onOver, { passive: true });
       window.addEventListener('pointerdown', onDown);
       window.addEventListener('pointerup', onUp);
       document.addEventListener('pointerleave', onLeave);
-      document.addEventListener('pointerenter', onEnter);
+      window.addEventListener('blur', onLeave);
 
       return () => {
         window.removeEventListener('pointermove', onMove);
@@ -78,7 +87,8 @@ export function Cursor() {
         window.removeEventListener('pointerdown', onDown);
         window.removeEventListener('pointerup', onUp);
         document.removeEventListener('pointerleave', onLeave);
-        document.removeEventListener('pointerenter', onEnter);
+        window.removeEventListener('blur', onLeave);
+        document.documentElement.removeAttribute('data-custom-cursor');
       };
     });
 
